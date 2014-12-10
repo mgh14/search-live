@@ -22,8 +22,8 @@ public class Application {
   // arg 4: the number of seconds for each resource
   public static void main(String[] args) {
     if (args.length < 4) {
-      System.out.println("Usage: [authString] [searchString] " +
-        "[int numResults] [int secondsToSleep]");
+      System.out.println("Usage: <authString> <searchString (e.g. \"cool wallpaper\")> " +
+        "<(int) numResults (> 0, <= 50)> <(int) secondsToSleep (>= 0)>");
     }
 
     final int numResults = Integer.parseInt(args[2]);
