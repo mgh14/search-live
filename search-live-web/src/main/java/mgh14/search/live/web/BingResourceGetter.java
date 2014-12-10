@@ -20,28 +20,35 @@ public class BingResourceGetter {
   private static final String QUERY_PARAMS = "?$format=json&$top=" + NUM_RESULTS + "&Query=%27{}%27";
   private static final String AUTH_HEADER_VALUE = "Basic {}";
 
-  private List<URI> resourceUris;
+  private List<URI> allResourceUris;
   private String searchUrl;
   private String nextSearchUrl;
 
   public BingResourceGetter(String resourceType) {
-    resourceUris = new LinkedList<URI>();
+    allResourceUris = new LinkedList<URI>();
     searchUrl = HOST_PATH + resourceType + QUERY_PARAMS;
     nextSearchUrl = null;
   }
 
   public List<URI> getResources(String authToken, String searchString, int pageToGet) {
+    final List<URI> pagedUris = new LinkedList<URI>();
     final JSONArray array = getMediaUrlArray(authToken, searchString, pageToGet);
     if (array != null) {
       for (int i = 0; i < array.length(); i++) {
         final JSONObject entry = (JSONObject) array.get(i);
-        final String mediaUrl = entry.get("MediaUrl").toString();
-        System.out.println(mediaUrl);
-        resourceUris.add(URI.create(mediaUrl));
+        final URI mediaUrl = URI.create(entry.get("MediaUrl").toString());
+        System.out.println("Procured MediaUrl: [" + mediaUrl + "]");
+
+        pagedUris.add(mediaUrl);
+        allResourceUris.add(mediaUrl);
       }
     }
 
-    return resourceUris;
+    return pagedUris;
+  }
+
+  public List<URI> getAllResourceUris() {
+    return allResourceUris;
   }
 
   private JSONArray getMediaUrlArray(String authToken, String searchString, int pageToGet) {
