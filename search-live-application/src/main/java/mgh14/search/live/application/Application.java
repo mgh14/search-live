@@ -16,26 +16,37 @@ public class Application {
 
   private String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
 
-  private void sleep(int milliseconds) {
-    try {
-      Thread.sleep(milliseconds);
+  // arg 1: the auth token
+  // arg 2: the search query
+  // arg 3: the number of results to return for each page
+  public static void main(String[] args) {
+    final String authString = args[0];
+    if(authString == null || authString.isEmpty()) {
+      System.out.println("Please enter your auth token");
+      System.exit(-1);
     }
-    catch (InterruptedException e) {
-      System.out.println("Interrupted");
-      e.printStackTrace();
+    final String searchString = args[1];
+    if(searchString == null || searchString.isEmpty()) {
+      System.out.println("Please enter a search query (e.g. \"desktop wallpaper\"");
+      System.exit(-1);
     }
+    if(args[2] == null || args[2].isEmpty()) {
+      System.out.println("Please enter the number of search results per page. (e.g. 50)");
+      System.exit(-1);
+    }
+    final int numResults = Integer.parseInt(args[2]);
+    if(numResults < 0) {
+      System.out.println("Please enter a valid (positive, integer) number");
+      System.exit(-1);
+    }
+
+    Application application = new Application();
+    application.startCycle(authString, searchString, numResults);
   }
 
-  private List<URI> getShuffledResources(BingResourceGetter getter, String authToken,
-      String searchString, int pageToGet) {
+  private void startCycle(final String authToken, final String searchString,
+      final int numResults) {
 
-    List<URI> resourceUris = getter.getResources(authToken, searchString, pageToGet);
-    Collections.shuffle(resourceUris);
-
-    return resourceUris;
-  }
-
-  private void startCycle(final String authToken, final String searchString) {
     if(searchString == null || searchString.isEmpty()) {
       System.out.println("Again, please enter a search query (e.g. \"desktop wallpaper\"");
       return;
@@ -47,7 +58,7 @@ public class Application {
 
         WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
         ImageSaver imageSaver = new ImageSaver();
-        BingResourceGetter getter = new BingResourceGetter("Image");
+        BingResourceGetter getter = new BingResourceGetter("Image", numResults);
         int pageToGet = 1;
         List<URI> resourceUris = getShuffledResources(getter, authToken, searchString, 1);
 
@@ -81,22 +92,23 @@ public class Application {
 
   }
 
-  // arg 1: the auth token
-  // arg 2: the search query
-  public static void main(String[] args) {
-    final String authString = args[0];
-    if(authString == null || authString.isEmpty()) {
-      System.out.println("Please enter your auth token");
-      return;
-    }
-    final String searchString = args[1];
-    if(searchString == null || searchString.isEmpty()) {
-      System.out.println("Please enter a search query (e.g. \"desktop wallpaper\"");
-      return;
-    }
+  private List<URI> getShuffledResources(BingResourceGetter getter, String authToken,
+                                         String searchString, int pageToGet) {
 
-    Application application = new Application();
-    application.startCycle(authString, searchString);
+    List<URI> resourceUris = getter.getResources(authToken, searchString, pageToGet);
+    Collections.shuffle(resourceUris);
+
+    return resourceUris;
+  }
+
+  private void sleep(int milliseconds) {
+    try {
+      Thread.sleep(milliseconds);
+    }
+    catch (InterruptedException e) {
+      System.out.println("Interrupted");
+      e.printStackTrace();
+    }
   }
 
 }

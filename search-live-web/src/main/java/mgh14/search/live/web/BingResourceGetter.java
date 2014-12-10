@@ -15,18 +15,20 @@ import org.json.JSONObject;
  * Uses Bing to fetch resource URL's
  */
 public class BingResourceGetter {
-  private static final int NUM_RESULTS = 50;
+
   private static final String HOST_PATH = "https://api.datamarket.azure.com/Bing/Search/v1/";
-  private static final String QUERY_PARAMS = "?$format=json&$top=" + NUM_RESULTS + "&Query=%27{}%27";
+  private static final String QUERY_PARAMS = "?$format=json&Query=%27{}%27";
+  private static final String TOP_PARAM = "$top=";
   private static final String AUTH_HEADER_VALUE = "Basic {}";
 
   private List<URI> allResourceUris;
   private String searchUrl;
   private String nextSearchUrl;
 
-  public BingResourceGetter(String resourceType) {
+  public BingResourceGetter(String resourceType, int numResults) {
     allResourceUris = new LinkedList<URI>();
-    searchUrl = HOST_PATH + resourceType + QUERY_PARAMS;
+    searchUrl = URI.create(HOST_PATH + resourceType + QUERY_PARAMS + "&"
+      + TOP_PARAM + numResults).toString(); // make sure it's a valid URI
     nextSearchUrl = null;
   }
 
