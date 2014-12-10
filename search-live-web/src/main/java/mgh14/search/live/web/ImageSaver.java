@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.net.URL;
 
 /**
- *
+ * Class for downloading an image from the internet
  */
 public class ImageSaver {
 

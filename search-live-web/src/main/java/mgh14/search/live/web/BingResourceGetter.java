@@ -12,7 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- *
+ * Uses Bing to fetch resource URL's
  */
 public class BingResourceGetter {
   private static final int NUM_RESULTS = 50;
@@ -56,10 +56,13 @@ public class BingResourceGetter {
       return null;
     }
 
+    // For pagination
     String destinationUrl = nextSearchUrl;
     if(pageToGet == 1) {
       destinationUrl = searchUrl.replace("{}", searchString.replace(" ", "+"));
     }
+
+    // get the response
     HttpResponse<JsonNode> response;
     try {
       response = Unirest.get(destinationUrl)
@@ -70,6 +73,7 @@ public class BingResourceGetter {
       return null;
     }
 
+    // parse resources
     nextSearchUrl = null;
     try {
       JsonNode body = response.getBody();

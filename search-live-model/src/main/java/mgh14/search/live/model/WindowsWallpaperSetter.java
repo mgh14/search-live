@@ -5,6 +5,11 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.win32.WinDef.UINT_PTR;
 import com.sun.jna.win32.*;
 
+/**
+ * Class for setting desktop wallpaper given the path to an image
+ * for the Windows operating system.
+ */
+// TODO: Test in Windows environments other than Windows 7 64-bit
 public class WindowsWallpaperSetter {
 
   public void setDesktopWallpaper(String path) {
