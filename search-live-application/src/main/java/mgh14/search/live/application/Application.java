@@ -21,30 +21,14 @@ public class Application {
   // arg 3: the number of results to return for each page
   // arg 4: the number of seconds for each resource
   public static void main(String[] args) {
-    if (args.length == 0) {
-      System.out.println("No arguments! Four required");
+    if (args.length < 4) {
+      System.out.println("Usage: [authString] [searchString] " +
+        "[int numResults] [int secondsToSleep]");
     }
-    final String authString = args[0];
-    if (authString == null || authString.isEmpty()) {
-      System.out.println("Please enter your auth token");
-      System.exit(-1);
-    }
-    final String searchString = args[1];
-    if (searchString == null || searchString.isEmpty()) {
-      System.out.println("Please enter a search query (e.g. \"desktop wallpaper\"");
-      System.exit(-1);
-    }
-    if (args[2] == null || args[2].isEmpty()) {
-      System.out.println("Please enter the number of search results per page. (e.g. 50)");
-      System.exit(-1);
-    }
+
     final int numResults = Integer.parseInt(args[2]);
     if (numResults < 0) {
       System.out.println("Please enter a valid (positive, integer) number of results");
-      System.exit(-1);
-    }
-    if (args[3] == null || args[3].isEmpty()) {
-      System.out.println("Please enter the number of seconds to sleep (e.g. 30)");
       System.exit(-1);
     }
     final int secondsToSleep = Integer.parseInt(args[3]);
@@ -54,7 +38,7 @@ public class Application {
     }
 
     Application application = new Application();
-    application.startCycle(authString, searchString, numResults, secondsToSleep);
+    application.startCycle(args[0], args[1], numResults, secondsToSleep);
   }
 
   private void startCycle(final String authToken, final String searchString,
