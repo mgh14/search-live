@@ -19,33 +19,46 @@ public class Application {
   // arg 1: the auth token
   // arg 2: the search query
   // arg 3: the number of results to return for each page
+  // arg 4: the number of seconds for each resource
   public static void main(String[] args) {
+    if (args.length == 0) {
+      System.out.println("No arguments! Four required");
+    }
     final String authString = args[0];
-    if(authString == null || authString.isEmpty()) {
+    if (authString == null || authString.isEmpty()) {
       System.out.println("Please enter your auth token");
       System.exit(-1);
     }
     final String searchString = args[1];
-    if(searchString == null || searchString.isEmpty()) {
+    if (searchString == null || searchString.isEmpty()) {
       System.out.println("Please enter a search query (e.g. \"desktop wallpaper\"");
       System.exit(-1);
     }
-    if(args[2] == null || args[2].isEmpty()) {
+    if (args[2] == null || args[2].isEmpty()) {
       System.out.println("Please enter the number of search results per page. (e.g. 50)");
       System.exit(-1);
     }
     final int numResults = Integer.parseInt(args[2]);
-    if(numResults < 0) {
-      System.out.println("Please enter a valid (positive, integer) number");
+    if (numResults < 0) {
+      System.out.println("Please enter a valid (positive, integer) number of results");
+      System.exit(-1);
+    }
+    if (args[3] == null || args[3].isEmpty()) {
+      System.out.println("Please enter the number of seconds to sleep (e.g. 30)");
+      System.exit(-1);
+    }
+    final int secondsToSleep = Integer.parseInt(args[3]);
+    if (numResults < 0) {
+      System.out.println("Please enter a valid (positive, integer) number of seconds to sleep");
       System.exit(-1);
     }
 
     Application application = new Application();
-    application.startCycle(authString, searchString, numResults);
+    application.startCycle(authString, searchString, numResults, secondsToSleep);
   }
 
   private void startCycle(final String authToken, final String searchString,
-      final int numResults) {
+      final int numResults, final int secondsToSleep) {
 
     if(searchString == null || searchString.isEmpty()) {
       System.out.println("Again, please enter a search query (e.g. \"desktop wallpaper\"");
@@ -80,7 +93,7 @@ public class Application {
             setter.setDesktopWallpaper(filename);
 
             // sleep for x milliseconds (enjoy the background!)
-            sleep(8000);
+            sleep(secondsToSleep * 1000);
           }
 
           // refresh resource URI's
