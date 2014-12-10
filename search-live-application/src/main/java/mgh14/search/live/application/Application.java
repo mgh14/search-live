@@ -9,11 +9,21 @@ import mgh14.search.live.web.BingResourceGetter;
 import mgh14.search.live.web.ImageSaver;
 
 /**
- *
+ * Application class for starting the background image cycle
  */
 public class Application {
 
   private String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
+
+  private void sleep(int milliseconds) {
+    try {
+      Thread.sleep(milliseconds);
+    }
+    catch (InterruptedException e) {
+      System.out.println("Interrupted");
+      e.printStackTrace();
+    }
+  }
 
   private void startCycle(final String authToken, final String searchString) {
     if(searchString == null || searchString.isEmpty()) {
@@ -32,44 +42,38 @@ public class Application {
         WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
         ImageSaver imageSaver = new ImageSaver();
 
-        int counter = 0;
-        while(true) {
-          if(resourceUris.size() == 0) {
-            System.out.println("No more URL's. Exiting...");
-            break;
-          }
-          if(counter >= resourceUris.size()) {
-            System.out.println("Reached list size. Refreshing list...");
-            resourceUris = getter.getResources(authToken, searchString, ++pageToGet);
-            counter = 0;
+        while (true) {
+          for (URI resource : resourceUris) {
+            final String resourceStr = resource.toString();
+            final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
+            final String filename = ROOT_DIR + "rsrc" + System.currentTimeMillis() + filetype;
+
+            // download image
+            try {
+              imageSaver.saveImage(resourceStr, ROOT_DIR, filename);
+            }
+            catch (IOException e) {
+              continue;
+            }
+
+            // set image to desktop
+            setter.setDesktopWallpaper(filename);
+
+            // sleep for x milliseconds (enjoy the background!)
+            sleep(8000);
           }
 
-          final String resource = resourceUris.get(counter).toString();
-          final String filetype = resource.substring(resource.lastIndexOf("."));
-          final String filename = ROOT_DIR + "rsrc" + System.currentTimeMillis() + filetype;
-
-          counter++;
-          try {
-            imageSaver.saveImage(resource, ROOT_DIR, filename);
-          } catch (IOException e) {
-            continue;
-          }
-
-          setter.setDesktopWallpaper(filename);
-
-          try {
-            Thread.sleep(10000);
-          }
-          catch (InterruptedException e) {
-            System.out.println("Interrupted");
-            e.printStackTrace();
-          }
+          // refresh resource URI's
+          System.out.println("Reached end of resource list. Refreshing list...");
+          resourceUris = getter.getResources(authToken, searchString, ++pageToGet);
         }
       }
     }).start();
 
   }
 
+  // arg 1: the auth token
+  // arg 2: the search query
   public static void main(String[] args) {
     final String authString = args[0];
     if(authString == null || authString.isEmpty()) {
