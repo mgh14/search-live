@@ -76,6 +76,7 @@ public class Application {
             catch (IOException e) {
               continue;
             }
+            counter++;
 
             // set image to desktop
             setter.setDesktopWallpaper(filename);
