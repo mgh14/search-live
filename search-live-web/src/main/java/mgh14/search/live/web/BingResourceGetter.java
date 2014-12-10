@@ -27,8 +27,8 @@ public class BingResourceGetter {
 
   public BingResourceGetter(String resourceType, int numResults) {
     allResourceUris = new LinkedList<URI>();
-    searchUrl = URI.create(HOST_PATH + resourceType + QUERY_PARAMS + "&"
-      + TOP_PARAM + numResults).toString(); // make sure it's a valid URI
+    searchUrl = HOST_PATH + resourceType + QUERY_PARAMS + "&"
+      + TOP_PARAM + numResults;
     nextSearchUrl = null;
   }
 
