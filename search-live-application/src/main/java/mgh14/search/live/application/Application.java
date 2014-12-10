@@ -66,7 +66,7 @@ public class Application {
           for (URI resource : resourceUris) {
             final String resourceStr = resource.toString();
             final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
-            final String filename = ROOT_DIR + "rsrc" + counter + "-" +
+            final String filename = ROOT_DIR + "rsrc" + counter++ + "-" +
               System.currentTimeMillis() + filetype;
 
             // download image
@@ -76,7 +76,6 @@ public class Application {
             catch (IOException e) {
               continue;
             }
-            counter++;
 
             // set image to desktop
             setter.setDesktopWallpaper(filename);
