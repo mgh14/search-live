@@ -12,11 +12,13 @@ import java.net.URL;
 public class ImageSaver {
 
   public void saveImage(String resourceUrl, String ROOT_DIR, String localFilename) throws IOException {
+    System.out.println("Downloading URL [" + resourceUrl + "]...");
     try {
       downloadImageToFile(resourceUrl, ROOT_DIR, localFilename);
     } catch (IOException e) {
-      System.out.println("couldn\'t save image: " + resourceUrl);
-      throw new IOException("Couldnt save image: " + resourceUrl);
+      final String exceptionMessage = "Couldnt download image: " + resourceUrl;
+      System.out.println(exceptionMessage);
+      throw new IOException(exceptionMessage);
     }
   }
 
