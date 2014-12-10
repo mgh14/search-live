@@ -19,7 +19,9 @@ public class Application {
   // arg 1: the auth token
   // arg 2: the search query
   // arg 3: the number of results to return for each page
-  // arg 4: the number of seconds for each resource
+  // arg 4: the number of seconds for each resource (NOTE:
+  //  for the limit of 5,000 requests/month imposed by
+  //  Bing, this should be about 300)
   public static void main(String[] args) {
     if (args.length < 4) {
       System.out.println("Usage: <authString> <searchString (e.g. \"cool wallpaper\")> " +
@@ -60,10 +62,12 @@ public class Application {
         List<URI> resourceUris = getShuffledResources(getter, authToken, searchString, 1);
 
         while (true) {
+          int counter = 0;
           for (URI resource : resourceUris) {
             final String resourceStr = resource.toString();
             final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
-            final String filename = ROOT_DIR + "rsrc" + System.currentTimeMillis() + filetype;
+            final String filename = ROOT_DIR + "rsrc" + counter + "-" +
+              System.currentTimeMillis() + filetype;
 
             // download image
             try {
