@@ -2,6 +2,7 @@ package mgh14.search.live.application;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 import mgh14.search.live.model.WindowsWallpaperSetter;
@@ -25,6 +26,15 @@ public class Application {
     }
   }
 
+  private List<URI> getShuffledResources(BingResourceGetter getter, String authToken,
+      String searchString, int pageToGet) {
+
+    List<URI> resourceUris = getter.getResources(authToken, searchString, pageToGet);
+    Collections.shuffle(resourceUris);
+
+    return resourceUris;
+  }
+
   private void startCycle(final String authToken, final String searchString) {
     if(searchString == null || searchString.isEmpty()) {
       System.out.println("Again, please enter a search query (e.g. \"desktop wallpaper\"");
@@ -35,12 +45,11 @@ public class Application {
     new Thread(new Runnable() {
       public void run(){
 
-        BingResourceGetter getter = new BingResourceGetter("Image");
-        int pageToGet = 1;
-        List<URI> resourceUris = getter.getResources(authToken, searchString, pageToGet);
-
         WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
         ImageSaver imageSaver = new ImageSaver();
+        BingResourceGetter getter = new BingResourceGetter("Image");
+        int pageToGet = 1;
+        List<URI> resourceUris = getShuffledResources(getter, authToken, searchString, 1);
 
         while (true) {
           for (URI resource : resourceUris) {
@@ -65,7 +74,7 @@ public class Application {
 
           // refresh resource URI's
           System.out.println("Reached end of resource list. Refreshing list...");
-          resourceUris = getter.getResources(authToken, searchString, ++pageToGet);
+          resourceUris = getShuffledResources(getter, authToken, searchString, ++pageToGet);
         }
       }
     }).start();
