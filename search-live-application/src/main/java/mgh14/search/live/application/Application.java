@@ -14,7 +14,7 @@ import mgh14.search.live.web.ImageSaver;
  */
 public class Application {
 
-  private String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
+  private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
 
   // arg 1: the auth token
   // arg 2: the search query
