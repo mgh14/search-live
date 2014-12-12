@@ -12,6 +12,7 @@
     <module>search-live-model</module>
     <module>search-live-web</module>
     <module>search-live-application</module>
+    <module>search-live-gui</module>
     <module>search-live-assembly</module>
   </modules>
 
