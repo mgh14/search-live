@@ -14,7 +14,7 @@ import org.json.JSONObject;
 /**
  * Uses Bing to fetch resource URL's
  */
-public class BingResourceGetter {
+public class BingApiResourceGetter {
 
   private static final String HOST_PATH = "https://api.datamarket.azure.com/Bing/Search/v1/";
   private static final String QUERY_PARAMS = "?$format=json&Query=%27{}%27";
@@ -25,7 +25,7 @@ public class BingResourceGetter {
   private String searchUrl;
   private String nextSearchUrl;
 
-  public BingResourceGetter(String resourceType, int numResults) {
+  public BingApiResourceGetter(String resourceType, int numResults) {
     allResourceUris = new LinkedList<URI>();
     searchUrl = HOST_PATH + resourceType + QUERY_PARAMS + "&"
       + TOP_PARAM + numResults;

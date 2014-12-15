@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import mgh14.search.live.model.WindowsWallpaperSetter;
-import mgh14.search.live.web.BingResourceGetter;
+import mgh14.search.live.web.BingApiResourceGetter;
 import mgh14.search.live.web.ImageSaver;
 
 /**
@@ -57,7 +57,7 @@ public class Application {
 
         WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
         ImageSaver imageSaver = new ImageSaver();
-        BingResourceGetter getter = new BingResourceGetter("Image", numResults);
+        BingApiResourceGetter getter = new BingApiResourceGetter("Image", numResults);
         int pageToGet = 1;
         List<URI> resourceUris = getShuffledResources(getter, authToken, searchString, 1);
 
@@ -93,7 +93,7 @@ public class Application {
 
   }
 
-  private List<URI> getShuffledResources(BingResourceGetter getter, String authToken,
+  private List<URI> getShuffledResources(BingApiResourceGetter getter, String authToken,
                                          String searchString, int pageToGet) {
 
     List<URI> resourceUris = getter.getResources(authToken, searchString, pageToGet);
