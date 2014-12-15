@@ -22,11 +22,12 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   private List<URI> allResourceUris;
   private String searchUrl;
   private String searchString;
-  
+  private int numResultsToGet;
     
-  public BingHtmlResourceUrlGetter(String resourceType) {
+  public BingHtmlResourceUrlGetter(String resourceType, int numResultsToGet) {
     searchUrl = HOST + resourceType + SEARCH_PATH;
     allResourceUris = new LinkedList<URI>();
+    this.numResultsToGet = numResultsToGet;
   }
 
   public void setSearchString(String searchString) {
@@ -43,12 +44,17 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
     // Otherwise, fetch the wallpaper URL's
     final Document doc = getSearchDocument(searchString);
 
-      final Elements resourcesDetails = doc.select("a[m]");
+    final Elements resourcesDetails = doc.select("a[m]");
     for (Element link : resourcesDetails) {
-        allResourceUris.add(parseResource(link.attr("abs:m")));
+      if (allResourceUris.size() > numResultsToGet) {
+        System.out.println("Reached result limit. Not adding more resources");
+        break;
       }
 
-      return allResourceUris;
+      allResourceUris.add(parseResource(link.attr("abs:m")));
+    }
+
+    return allResourceUris;
   }
 
   private Document getSearchDocument(String searchString) {

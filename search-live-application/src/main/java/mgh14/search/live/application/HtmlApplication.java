@@ -31,7 +31,8 @@ public class HtmlApplication {
       System.exit(-1);
     }
 
-    ApplicationCycler htmlApplication = new ApplicationCycler(new BingHtmlResourceUrlGetter("images"));
+    ApplicationCycler htmlApplication = new ApplicationCycler(
+      new BingHtmlResourceUrlGetter("images", numResults));
     htmlApplication.startCycle(args[0], secondsToSleep);
   }
 
