@@ -26,6 +26,7 @@ public class BingApiResourceUrlGetter implements ResourceUrlGetter {
 
   private String authHeader;
   private List<URI> allResourceUris;
+  private String searchString;
   private String searchUrl;
   private String nextSearchUrl;
   private int pageToGet = 1;
@@ -38,7 +39,11 @@ public class BingApiResourceUrlGetter implements ResourceUrlGetter {
     nextSearchUrl = null;
   }
 
-  public List<URI> getResources(String searchString) {
+  public void setSearchString(String searchString) {
+    this.searchString = searchString;
+  }
+
+  public List<URI> getResources() {
     final List<URI> pagedUris = new LinkedList<URI>();
     final JSONArray array = getMediaUrlArray(searchString, pageToGet++);
     if (array != null) {

@@ -27,6 +27,7 @@ public class ApplicationCycler {
       System.out.println("Please enter a search query (e.g. \"desktop wallpaper\"");
       return;
     }
+    resourceUrlGetter.setSearchString(searchString);
 
     // run wallpaper cycle on separate thread
     new Thread(new Runnable() {
@@ -34,7 +35,7 @@ public class ApplicationCycler {
 
         WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
         ImageSaver imageSaver = new ImageSaver();
-        List<URI> resourceUris = getShuffledResources(resourceUrlGetter, searchString);
+        List<URI> resourceUris = getShuffledResources(resourceUrlGetter);
 
         while (true) {
           int counter = 0;
@@ -61,16 +62,16 @@ public class ApplicationCycler {
 
           // refresh resource URI's
           System.out.println("Reached end of resource list. Refreshing list...");
-          resourceUris = getShuffledResources(resourceUrlGetter, searchString);
+          resourceUris = getShuffledResources(resourceUrlGetter);
         }
       }
     }).start();
 
   }
 
-  private List<URI> getShuffledResources(ResourceUrlGetter getter, String searchString) {
+  private List<URI> getShuffledResources(ResourceUrlGetter getter) {
 
-    List<URI> resourceUris = getter.getResources(searchString);
+    List<URI> resourceUris = getter.getResources();
     Collections.shuffle(resourceUris);
 
     return resourceUris;

@@ -21,6 +21,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
   private List<URI> allResourceUris;
   private String searchUrl;
+  private String searchString;
   
     
   public BingHtmlResourceUrlGetter(String resourceType) {
@@ -28,8 +29,18 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
     allResourceUris = new LinkedList<URI>();
   }
 
+  public void setSearchString(String searchString) {
+    this.searchString = searchString;
+  }
+
   @Override
-  public List<URI> getResources(String searchString) {
+  public List<URI> getResources() {
+    // Recycle wallpaper if it has already been retrieved
+    if (!allResourceUris.isEmpty()) {
+      return allResourceUris;
+    }
+
+    // Otherwise, fetch the wallpaper URL's
     final Document doc = getSearchDocument(searchString);
 
       final Elements resourcesDetails = doc.select("a[m]");
