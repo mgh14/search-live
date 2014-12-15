@@ -15,7 +15,7 @@ import org.jsoup.select.Elements;
  * (i.e. uses the HTML of the search page from a
  * regular GET request--no authorization is needed)
  */
-public class BingHtmlResourceGetter implements ResourceGetter {
+public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   private static final String HOST = "https://www.bing.com/";
   private static final String SEARCH_PATH = "/search?q=";
 
@@ -23,7 +23,7 @@ public class BingHtmlResourceGetter implements ResourceGetter {
   private String searchUrl;
   
     
-  public BingHtmlResourceGetter(String resourceType) {
+  public BingHtmlResourceUrlGetter(String resourceType) {
     searchUrl = HOST + resourceType + SEARCH_PATH;
     allResourceUris = new LinkedList<URI>();
   }
