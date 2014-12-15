@@ -27,8 +27,8 @@ public class WallpaperDeleter {
         }
 
         final String filename = fileEntry.getName();
-        final String timestampStr = fileEntry.getName()
-          .substring(filename.lastIndexOf("-") + 1, filename.lastIndexOf("."));
+        final String timestampStr = filename.substring(filename.lastIndexOf("-") + 1,
+          filename.lastIndexOf("."));
         final long timestamp = Long.parseLong(timestampStr);
         if ((currentTime - timestamp) >= expiryPeriod) {
           deleteExpiredFile(fileEntry.toPath());
@@ -36,7 +36,7 @@ public class WallpaperDeleter {
       }
     }
 
-    System.out.println("Finished deleting expired pictures for timestamp " + currentTime + "...");
+    System.out.println("Finished deleting expired pictures for timestamp " + currentTime);
   }
 
   private void deleteExpiredFile(Path filepath) {
