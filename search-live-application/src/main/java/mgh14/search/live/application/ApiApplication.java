@@ -1,6 +1,7 @@
 package mgh14.search.live.application;
 
 import mgh14.search.live.web.BingApiResourceUrlGetter;
+import org.apache.commons.cli.CommandLine;
 
 /**
  * Application class for starting the background image cycle. This
@@ -12,30 +13,63 @@ import mgh14.search.live.web.BingApiResourceUrlGetter;
  */
 public class ApiApplication {
 
-  // arg 1: the auth token
-  // arg 2: the search query
-  // arg 3: the number of results to return for each page
-  // arg 4: the number of seconds for each resource (NOTE:
-  //  for the limit of 5,000 requests/month imposed by
-  //  Bing, this should be about 300)
+  static ConfigProperties props;
+  static {
+    props = new ConfigProperties("C:\\Users\\mgh14\\search-live\\" +
+      "search-live-application\\src\\main\\resources\\");
+  }
+
+  // arg -authKey: the Bing API access key
+  // arg -query: the search query
+  // arg -numResults: the number of results to return for each page
+  // arg -sleepTime: the number of seconds for each resource to
+  // be viewed (NOTE: for the limit of 5,000 requests/month imposed
+  // by Bing, this argument should be about 300)
   public static void main(String[] args) {
-    if (args.length < 4) {
-      System.out.println("Usage: <authString> <searchString (e.g. \"cool wallpaper\")> " +
-        "<(int) numResults (> 0, <= 50)> <(int) secondsToSleep (>= 0)>");
-    }
+    final ApiApplication application = new ApiApplication();
 
-    final int numResults = Integer.parseInt(args[2]);
-    if (numResults < 0) {
-      System.out.println("Please enter a valid (positive, integer) number of results");
-      System.exit(-1);
-    }
-    final int secondsToSleep = Integer.parseInt(args[3]);
-    if (numResults < 0) {
-      System.out.println("Please enter a valid (positive, integer) number of seconds to sleep");
+    // parse the command line arguments
+    CommandLine line = application.parseArgs(args);
+    if (line == null) {
+      System.out.println("Error parsing args");
       System.exit(-1);
     }
 
-    ApplicationCycler htmlApplication = new ApplicationCycler(new BingApiResourceUrlGetter(args[0], "Image", numResults));
-    htmlApplication.startCycle(args[1], secondsToSleep);
+    final String authKey = (line.hasOption("authKey")) ?
+      line.getOptionValue("authKey") : null;
+    application.validateAuthKey(authKey);
+
+    // validate numResults
+    final int numResults = (line.hasOption("numResults")) ?
+      Integer.parseInt(line.getOptionValue("numResults")) :
+      Integer.parseInt((String) props.getProperty("default-num-results"));
+    application.validateNumResults(numResults,
+      Integer.parseInt((String) props.getProperty("max-num-results")));
+
+    // validate secondsToSleep
+    final int secondsToSleep = (line.hasOption("sleepTime")) ?
+      Integer.parseInt(line.getOptionValue("sleepTime")) :
+      Integer.parseInt((String) props.getProperty("default-num-seconds-to-sleep"));
+    application.validateSecondsToSleep(secondsToSleep);
+
+    ApplicationCycler htmlApplication = new ApplicationCycler(
+      new BingApiResourceUrlGetter(authKey, "Image", numResults));
+    htmlApplication.startCycle(line.getOptionValue("query"), secondsToSleep);
+  }
+
+  CommandLine parseArgs(String[] args) {
+    return CommandLineHelper.parseArgs(CommandLineHelper.getApiResourceOptions(), args);
+  }
+
+  void validateAuthKey(String authKey) {
+    CommandLineHelper.validateAuthKey(authKey);
+  }
+
+  void validateNumResults(int numResults, int maxResults) {
+    CommandLineHelper.validateNumResults(numResults, maxResults);
+  }
+
+  void validateSecondsToSleep(int secondsToSleep) {
+    CommandLineHelper.validateSecondsToSleep(secondsToSleep);
   }
 }

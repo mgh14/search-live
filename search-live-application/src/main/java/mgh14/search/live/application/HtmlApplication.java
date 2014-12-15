@@ -50,7 +50,7 @@ public class HtmlApplication {
   }
 
   CommandLine parseArgs(String[] args) {
-    return CommandLineHelper.parseArgs(args);
+    return CommandLineHelper.parseArgs(CommandLineHelper.getHtmlResourceOptions(), args);
   }
 
   void validateNumResults(int numResults, int maxResults) {

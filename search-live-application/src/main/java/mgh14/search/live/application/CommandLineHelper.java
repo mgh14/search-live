@@ -12,8 +12,47 @@ import org.apache.commons.cli.PosixParser;
  */
 public class CommandLineHelper {
 
-  public static CommandLine parseArgs(String[] args) {
+  static CommandLine parseArgs(Options options, String[] args) {
     // create the parser
+    CommandLineParser parser = new PosixParser();
+
+    // parse and return the command line arguments
+    try {
+      return parser.parse(options, args);
+    }
+    catch (ParseException exp) {
+      System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+      System.exit(-1);
+    }
+
+    return null;
+  }
+
+  static void validateNumResults(int numResults, int maxResults) {
+    // validate numResults
+    if (numResults < 0 || numResults > maxResults) {
+
+      System.out.println("Please enter a valid (positive, integer between 0 and 50) number of results");
+      System.exit(-1);
+    }
+  }
+
+  static void validateSecondsToSleep(int secondsToSleep) {
+    if (secondsToSleep < 0) {
+      System.out.println("Please enter a valid (positive, integer) " +
+        "number of seconds to sleep");
+      System.exit(-1);
+    }
+  }
+
+  static void validateAuthKey(String authKey) {
+    if (authKey == null || authKey.isEmpty()) {
+      System.out.println("Please enter your auth key.");
+      System.exit(-1);
+    }
+  }
+
+  static Options getHtmlResourceOptions() {
     Options options = new Options();
     options.addOption(OptionBuilder.isRequired()
       .hasArg()
@@ -25,34 +64,18 @@ public class CommandLineHelper {
     options.addOption(OptionBuilder.hasArg()
       .withDescription("Number of seconds to sleep between wallpaper changes")
       .create("sleepTime"));
-    CommandLineParser parser = new PosixParser();
 
-    // parse and return the command line arguments
-    try {
-      return parser.parse( options, args );
-    }
-    catch (ParseException exp) {
-      System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
-      System.exit(-1);
-    }
-
-    return null;
+    return options;
   }
 
-  public static void validateNumResults(int numResults, int maxResults) {
-    // validate numResults
-    if (numResults < 0 || numResults > maxResults) {
+  static Options getApiResourceOptions() {
+    final Options options = getHtmlResourceOptions();
+    options.addOption(OptionBuilder.isRequired()
+      .hasArg()
+      .withDescription("Authorization key for access to Bing API")
+      .create("authKey"));
 
-      System.out.println("Please enter a valid (positive, integer between 0 and 50) number of results");
-      System.exit(-1);
-    }
+    return options;
   }
 
-  public static void validateSecondsToSleep(int secondsToSleep) {
-    if (secondsToSleep < 0) {
-      System.out.println("Please enter a valid (positive, integer) " +
-        "number of seconds to sleep");
-      System.exit(-1);
-    }
-  }
 }
