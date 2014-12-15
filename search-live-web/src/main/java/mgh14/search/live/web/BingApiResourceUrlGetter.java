@@ -13,6 +13,9 @@ import org.json.JSONObject;
 
 /**
  * Uses Bing's API to fetch resource URL's
+ *
+ * Note: this class automatically uses pagination,
+ * and this feature can't be turned off right now
  */
 public class BingApiResourceUrlGetter implements ResourceUrlGetter {
 
