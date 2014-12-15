@@ -34,8 +34,7 @@ public class ApplicationCycler {
 
         WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
         ImageSaver imageSaver = new ImageSaver();
-        int pageToGet = 1;
-        List<URI> resourceUris = getShuffledResources(resourceUrlGetter, searchString, 1);
+        List<URI> resourceUris = getShuffledResources(resourceUrlGetter, searchString);
 
         while (true) {
           int counter = 0;
@@ -62,17 +61,16 @@ public class ApplicationCycler {
 
           // refresh resource URI's
           System.out.println("Reached end of resource list. Refreshing list...");
-          resourceUris = getShuffledResources(resourceUrlGetter, searchString, ++pageToGet);
+          resourceUris = getShuffledResources(resourceUrlGetter, searchString);
         }
       }
     }).start();
 
   }
 
-  private List<URI> getShuffledResources(ResourceUrlGetter getter, String searchString,
-                                         int pageToGet) {
+  private List<URI> getShuffledResources(ResourceUrlGetter getter, String searchString) {
 
-    List<URI> resourceUris = getter.getResources(searchString, pageToGet);
+    List<URI> resourceUris = getter.getResources(searchString);
     Collections.shuffle(resourceUris);
 
     return resourceUris;

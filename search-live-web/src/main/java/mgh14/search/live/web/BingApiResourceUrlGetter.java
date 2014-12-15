@@ -25,6 +25,7 @@ public class BingApiResourceUrlGetter implements ResourceUrlGetter {
   private List<URI> allResourceUris;
   private String searchUrl;
   private String nextSearchUrl;
+  private int pageToGet = 1;
 
   public BingApiResourceUrlGetter(String authToken, String resourceType, int numResults) {
     setAuthHeader(authToken);
@@ -34,9 +35,9 @@ public class BingApiResourceUrlGetter implements ResourceUrlGetter {
     nextSearchUrl = null;
   }
 
-  public List<URI> getResources(String searchString, int pageToGet) {
+  public List<URI> getResources(String searchString) {
     final List<URI> pagedUris = new LinkedList<URI>();
-    final JSONArray array = getMediaUrlArray(searchString, pageToGet);
+    final JSONArray array = getMediaUrlArray(searchString, pageToGet++);
     if (array != null) {
       for (int i = 0; i < array.length(); i++) {
         final JSONObject entry = (JSONObject) array.get(i);

@@ -8,5 +8,5 @@ import java.util.List;
  */
 public interface ResourceUrlGetter {
 
-  List<URI> getResources(String searchString, int pageToGet);
+  List<URI> getResources(String searchString);
 }

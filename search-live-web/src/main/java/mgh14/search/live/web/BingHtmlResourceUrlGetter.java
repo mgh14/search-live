@@ -29,7 +29,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   }
 
   @Override
-  public List<URI> getResources(String searchString, int pageToGet) {
+  public List<URI> getResources(String searchString) {
     final Document doc = getSearchDocument(searchString);
 
       final Elements resourcesDetails = doc.select("a[m]");
