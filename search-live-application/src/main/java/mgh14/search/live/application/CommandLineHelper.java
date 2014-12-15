@@ -1,0 +1,58 @@
+package mgh14.search.live.application;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
+
+/**
+ *
+ */
+public class CommandLineHelper {
+
+  public static CommandLine parseArgs(String[] args) {
+    // create the parser
+    Options options = new Options();
+    options.addOption(OptionBuilder.isRequired()
+      .hasArg()
+      .withDescription("Seed resource query (e.g. wallpaper HD)")
+      .create("query"));
+    options.addOption(OptionBuilder.hasArg()
+      .withDescription("Number of results to return for each resource query")
+      .create("numResults"));
+    options.addOption(OptionBuilder.hasArg()
+      .withDescription("Number of seconds to sleep between wallpaper changes")
+      .create("sleepTime"));
+    CommandLineParser parser = new PosixParser();
+
+    // parse and return the command line arguments
+    try {
+      return parser.parse( options, args );
+    }
+    catch (ParseException exp) {
+      System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
+      System.exit(-1);
+    }
+
+    return null;
+  }
+
+  public static void validateNumResults(int numResults, int maxResults) {
+    // validate numResults
+    if (numResults < 0 || numResults > maxResults) {
+
+      System.out.println("Please enter a valid (positive, integer between 0 and 50) number of results");
+      System.exit(-1);
+    }
+  }
+
+  public static void validateSecondsToSleep(int secondsToSleep) {
+    if (secondsToSleep < 0) {
+      System.out.println("Please enter a valid (positive, integer) " +
+        "number of seconds to sleep");
+      System.exit(-1);
+    }
+  }
+}
