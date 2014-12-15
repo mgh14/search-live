@@ -12,9 +12,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Uses Bing to fetch resource URL's
+ * Uses Bing's API to fetch resource URL's
  */
-public class BingApiResourceGetter {
+public class BingApiResourceGetter implements ResourceGetter {
 
   private static final String HOST_PATH = "https://api.datamarket.azure.com/Bing/Search/v1/";
   private static final String QUERY_PARAMS = "?$format=json&Query=%27{}%27";

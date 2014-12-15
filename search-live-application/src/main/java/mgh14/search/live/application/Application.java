@@ -8,6 +8,7 @@ import java.util.List;
 import mgh14.search.live.model.WindowsWallpaperSetter;
 import mgh14.search.live.web.BingApiResourceGetter;
 import mgh14.search.live.web.ImageSaver;
+import mgh14.search.live.web.ResourceGetter;
 
 /**
  * Application class for starting the background image cycle
@@ -57,7 +58,7 @@ public class Application {
 
         WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
         ImageSaver imageSaver = new ImageSaver();
-        BingApiResourceGetter getter = new BingApiResourceGetter(authToken, "Image", numResults);
+        ResourceGetter getter = new BingApiResourceGetter(authToken, "Image", numResults);
         int pageToGet = 1;
         List<URI> resourceUris = getShuffledResources(getter, searchString, 1);
 
@@ -93,7 +94,7 @@ public class Application {
 
   }
 
-  private List<URI> getShuffledResources(BingApiResourceGetter getter, String searchString,
+  private List<URI> getShuffledResources(ResourceGetter getter, String searchString,
     int pageToGet) {
 
     List<URI> resourceUris = getter.getResources(searchString, pageToGet);

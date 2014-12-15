@@ -11,30 +11,33 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
- *
+ * Uses Bing's search page to fetch resource URL's
+ * (i.e. uses the HTML of the search page from a
+ * regular GET request--no authorization is needed)
  */
-public class BingHtmlResourceGetter {
+public class BingHtmlResourceGetter implements ResourceGetter {
   private static final String HOST = "https://www.bing.com/";
   private static final String SEARCH_PATH = "/search?q=";
 
-  private List<URI> resourceUris;
+  private List<URI> allResourceUris;
   private String searchUrl;
   
     
   public BingHtmlResourceGetter(String resourceType) {
     searchUrl = HOST + resourceType + SEARCH_PATH;
-    resourceUris = new LinkedList<URI>();
+    allResourceUris = new LinkedList<URI>();
   }
 
-  public List<URI> getResources(String searchString) {
+  @Override
+  public List<URI> getResources(String searchString, int pageToGet) {
     final Document doc = getSearchDocument(searchString);
 
       final Elements resourcesDetails = doc.select("a[m]");
     for (Element link : resourcesDetails) {
-        resourceUris.add(parseResource(link.attr("abs:m")));
+        allResourceUris.add(parseResource(link.attr("abs:m")));
       }
 
-      return resourceUris;
+      return allResourceUris;
   }
 
   private Document getSearchDocument(String searchString) {
