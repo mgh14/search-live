@@ -8,7 +8,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 
 /**
- *
+ * Class offering helpful methods for parsing command
+ * line options.
  */
 public class CommandLineHelper {
 
