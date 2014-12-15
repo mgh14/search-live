@@ -46,15 +46,16 @@ public class ApplicationCycler {
               System.currentTimeMillis() + filetype;
 
             // download image
+            String finalFilename;
             try {
-              imageSaver.saveImage(resourceStr, ROOT_DIR, filename);
+              finalFilename = imageSaver.saveImage(resourceStr, ROOT_DIR, filename);
             }
             catch (IOException e) {
               continue;
             }
 
             // set image to desktop
-            setter.setDesktopWallpaper(filename);
+            setter.setDesktopWallpaper(finalFilename);
 
             // sleep for x milliseconds (enjoy the background!)
             sleep(secondsToSleep * 1000);

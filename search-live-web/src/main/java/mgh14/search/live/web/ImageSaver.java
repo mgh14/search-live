@@ -5,21 +5,33 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class for downloading an image from the internet
  */
 public class ImageSaver {
 
-  public void saveImage(String resourceUrl, String ROOT_DIR, String localFilename) throws IOException {
+  private Map<String, String> downloadedResources = new HashMap<String, String>();
+
+  public String saveImage(String resourceUrl, String ROOT_DIR, String localFilename) throws IOException {
+    if (downloadedResources.keySet().contains(resourceUrl)) {
+      System.out.println("Media URL [" + resourceUrl + "] already exists on disk. Skipping download...");
+      return downloadedResources.get(resourceUrl);
+    }
+
     System.out.println("Downloading URL [" + resourceUrl + "]...");
     try {
       downloadImageToFile(resourceUrl, ROOT_DIR, localFilename);
     } catch (IOException e) {
-      final String exceptionMessage = "Couldnt download image: " + resourceUrl;
+      final String exceptionMessage = "Couldn\'t download image: [" + resourceUrl + "]";
       System.out.println(exceptionMessage);
       throw new IOException(exceptionMessage);
     }
+
+    downloadedResources.put(resourceUrl, localFilename);
+    return localFilename;
   }
 
   private void downloadImageToFile(String imageUrl, String ROOT_DIR, String destinationFile) throws IOException {
