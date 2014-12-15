@@ -57,9 +57,9 @@ public class Application {
 
         WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
         ImageSaver imageSaver = new ImageSaver();
-        BingApiResourceGetter getter = new BingApiResourceGetter("Image", numResults);
+        BingApiResourceGetter getter = new BingApiResourceGetter(authToken, "Image", numResults);
         int pageToGet = 1;
-        List<URI> resourceUris = getShuffledResources(getter, authToken, searchString, 1);
+        List<URI> resourceUris = getShuffledResources(getter, searchString, 1);
 
         while (true) {
           int counter = 0;
@@ -86,17 +86,17 @@ public class Application {
 
           // refresh resource URI's
           System.out.println("Reached end of resource list. Refreshing list...");
-          resourceUris = getShuffledResources(getter, authToken, searchString, ++pageToGet);
+          resourceUris = getShuffledResources(getter, searchString, ++pageToGet);
         }
       }
     }).start();
 
   }
 
-  private List<URI> getShuffledResources(BingApiResourceGetter getter, String authToken,
-                                         String searchString, int pageToGet) {
+  private List<URI> getShuffledResources(BingApiResourceGetter getter, String searchString,
+    int pageToGet) {
 
-    List<URI> resourceUris = getter.getResources(authToken, searchString, pageToGet);
+    List<URI> resourceUris = getter.getResources(searchString, pageToGet);
     Collections.shuffle(resourceUris);
 
     return resourceUris;

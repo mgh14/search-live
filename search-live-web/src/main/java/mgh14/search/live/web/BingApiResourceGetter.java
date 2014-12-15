@@ -21,20 +21,22 @@ public class BingApiResourceGetter {
   private static final String TOP_PARAM = "$top=";
   private static final String AUTH_HEADER_VALUE = "Basic {}";
 
+  private String authHeader;
   private List<URI> allResourceUris;
   private String searchUrl;
   private String nextSearchUrl;
 
-  public BingApiResourceGetter(String resourceType, int numResults) {
+  public BingApiResourceGetter(String authToken, String resourceType, int numResults) {
+    setAuthHeader(authToken);
     allResourceUris = new LinkedList<URI>();
     searchUrl = HOST_PATH + resourceType + QUERY_PARAMS + "&"
       + TOP_PARAM + numResults;
     nextSearchUrl = null;
   }
 
-  public List<URI> getResources(String authToken, String searchString, int pageToGet) {
+  public List<URI> getResources(String searchString, int pageToGet) {
     final List<URI> pagedUris = new LinkedList<URI>();
-    final JSONArray array = getMediaUrlArray(authToken, searchString, pageToGet);
+    final JSONArray array = getMediaUrlArray(searchString, pageToGet);
     if (array != null) {
       for (int i = 0; i < array.length(); i++) {
         final JSONObject entry = (JSONObject) array.get(i);
@@ -53,7 +55,11 @@ public class BingApiResourceGetter {
     return allResourceUris;
   }
 
-  private JSONArray getMediaUrlArray(String authToken, String searchString, int pageToGet) {
+  public void setAuthHeader(String authToken) {
+    this.authHeader = AUTH_HEADER_VALUE.replace("{}", authToken);
+  }
+
+  private JSONArray getMediaUrlArray(String searchString, int pageToGet) {
     if(searchString == null || searchString.isEmpty()) {
       return null;
     }
@@ -68,7 +74,7 @@ public class BingApiResourceGetter {
     HttpResponse<JsonNode> response;
     try {
       response = Unirest.get(destinationUrl)
-        .header("Authorization", AUTH_HEADER_VALUE.replace("{}", authToken)).asJson();
+        .header("Authorization", authHeader).asJson();
     }
     catch (UnirestException e) {
       e.printStackTrace();
