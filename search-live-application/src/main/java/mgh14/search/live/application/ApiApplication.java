@@ -3,7 +3,12 @@ package mgh14.search.live.application;
 import mgh14.search.live.web.BingApiResourceUrlGetter;
 
 /**
+ * Application class for starting the background image cycle. This
+ * application uses Microsoft's Azure Marketplace API to fetch the
+ * resource URL's.
  *
+ * The implications of using the API here include the need for
+ * an authorization header but also the ability to paginate.
  */
 public class ApiApplication {
 
