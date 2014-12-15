@@ -39,26 +39,47 @@
   </dependencies>
 
   <build>
-    <finalName>searchLive</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.3</version>
         <executions>
           <execution>
-            <id>make-bundles</id>
+            <id>make-html-bundles</id>
             <goals>
               <goal>single</goal>
             </goals>
             <phase>package</phase>
             <configuration>
+              <finalName>HtmlApplication</finalName>
               <descriptors>
                 <descriptor>src/assembly/bin.xml</descriptor>
               </descriptors>
 
               <archive>
                 <manifest>
-                  <mainClass>mgh14.search.live.application.Application</mainClass>
+                  <mainClass>mgh14.search.live.application.HtmlApplication</mainClass>
+                </manifest>
+              </archive>
+
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>make-api-bundles</id>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <finalName>ApiApplication</finalName>
+              <descriptors>
+                <descriptor>src/assembly/bin.xml</descriptor>
+              </descriptors>
+
+              <archive>
+                <manifest>
+                  <mainClass>mgh14.search.live.application.ApiApplication</mainClass>
                 </manifest>
               </archive>
 

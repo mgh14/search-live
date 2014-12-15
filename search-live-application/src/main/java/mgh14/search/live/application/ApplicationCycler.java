@@ -6,49 +6,25 @@ import java.util.Collections;
 import java.util.List;
 
 import mgh14.search.live.model.WindowsWallpaperSetter;
-import mgh14.search.live.web.BingHtmlResourceUrlGetter;
 import mgh14.search.live.web.ImageSaver;
 import mgh14.search.live.web.ResourceUrlGetter;
 
 /**
- * Application class for starting the background image cycle
+ *
  */
-public class Application {
+public class ApplicationCycler {
 
   private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
 
-  // arg 1: the auth token
-  // arg 2: the search query
-  // arg 3: the number of results to return for each page
-  // arg 4: the number of seconds for each resource (NOTE:
-  //  for the limit of 5,000 requests/month imposed by
-  //  Bing, this should be about 300)
-  public static void main(String[] args) {
-    if (args.length < 4) {
-      System.out.println("Usage: <authString> <searchString (e.g. \"cool wallpaper\")> " +
-        "<(int) numResults (> 0, <= 50)> <(int) secondsToSleep (>= 0)>");
-    }
+  private ResourceUrlGetter resourceUrlGetter;
 
-    final int numResults = Integer.parseInt(args[2]);
-    if (numResults < 0) {
-      System.out.println("Please enter a valid (positive, integer) number of results");
-      System.exit(-1);
-    }
-    final int secondsToSleep = Integer.parseInt(args[3]);
-    if (numResults < 0) {
-      System.out.println("Please enter a valid (positive, integer) number of seconds to sleep");
-      System.exit(-1);
-    }
-
-    Application application = new Application();
-    application.startCycle(args[0], args[1], numResults, secondsToSleep);
+  public ApplicationCycler(ResourceUrlGetter resourceUrlGetter) {
+    this.resourceUrlGetter = resourceUrlGetter;
   }
 
-  private void startCycle(final String authToken, final String searchString,
-      final int numResults, final int secondsToSleep) {
-
+  public void startCycle(final String searchString, final int secondsToSleep) {
     if(searchString == null || searchString.isEmpty()) {
-      System.out.println("Again, please enter a search query (e.g. \"desktop wallpaper\"");
+      System.out.println("Please enter a search query (e.g. \"desktop wallpaper\"");
       return;
     }
 
@@ -58,10 +34,8 @@ public class Application {
 
         WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
         ImageSaver imageSaver = new ImageSaver();
-        //ResourceGetter getter = new BingApiResourceGetter(authToken, "Image", numResults);
-        ResourceUrlGetter getter = new BingHtmlResourceUrlGetter("images");
         int pageToGet = 1;
-        List<URI> resourceUris = getShuffledResources(getter, searchString, 1);
+        List<URI> resourceUris = getShuffledResources(resourceUrlGetter, searchString, 1);
 
         while (true) {
           int counter = 0;
@@ -88,7 +62,7 @@ public class Application {
 
           // refresh resource URI's
           System.out.println("Reached end of resource list. Refreshing list...");
-          resourceUris = getShuffledResources(getter, searchString, ++pageToGet);
+          resourceUris = getShuffledResources(resourceUrlGetter, searchString, ++pageToGet);
         }
       }
     }).start();
@@ -96,7 +70,7 @@ public class Application {
   }
 
   private List<URI> getShuffledResources(ResourceUrlGetter getter, String searchString,
-    int pageToGet) {
+                                         int pageToGet) {
 
     List<URI> resourceUris = getter.getResources(searchString, pageToGet);
     Collections.shuffle(resourceUris);
@@ -109,7 +83,7 @@ public class Application {
       Thread.sleep(milliseconds);
     }
     catch (InterruptedException e) {
-      System.out.println("Interrupted");
+      System.out.println("Interrupted cycle");
       e.printStackTrace();
     }
   }
