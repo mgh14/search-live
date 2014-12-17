@@ -18,7 +18,7 @@ public class WindowsWallpaperSetter {
       return;
     }
 
-    System.out.println("Setting new image: " + path + ";");
+    System.out.println("Setting image: [" + path + "]...");
 
     SPI.INSTANCE.SystemParametersInfo(
       new UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
