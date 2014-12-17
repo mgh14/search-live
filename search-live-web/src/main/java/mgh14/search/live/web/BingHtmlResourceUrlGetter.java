@@ -62,17 +62,17 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
         return null;
       }
 
-      final URI searchUri = URI.create(searchUrl + searchString.replaceAll(" ", ""));
+    final URI searchUri = URI.create(searchUrl + searchString.replaceAll(" ", "+"));
     Document doc;
     try {
-        doc = Jsoup.connect(searchUri.toString()).followRedirects(true).get();
-      }
+      doc = Jsoup.connect(searchUri.toString()).followRedirects(true).get();
+    }
     catch (IOException e) {
-        e.printStackTrace();
-        doc = null;
-      }
+      e.printStackTrace();
+      doc = null;
+    }
 
-      return doc;
+    return doc;
   }
 
   private URI parseResource(String resourceAttr) {
