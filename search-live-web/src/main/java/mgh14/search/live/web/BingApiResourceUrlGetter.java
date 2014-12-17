@@ -43,6 +43,10 @@ public class BingApiResourceUrlGetter implements ResourceUrlGetter {
     this.searchString = searchString;
   }
 
+  public void setAuthHeader(String authToken) {
+    this.authHeader = AUTH_HEADER_VALUE.replace("{}", authToken);
+  }
+
   public List<URI> getResources() {
     final List<URI> pagedUris = new LinkedList<URI>();
     final JSONArray array = getMediaUrlArray(searchString, pageToGet++);
@@ -62,10 +66,6 @@ public class BingApiResourceUrlGetter implements ResourceUrlGetter {
 
   public List<URI> getAllResourceUris() {
     return allResourceUris;
-  }
-
-  public void setAuthHeader(String authToken) {
-    this.authHeader = AUTH_HEADER_VALUE.replace("{}", authToken);
   }
 
   private JSONArray getMediaUrlArray(String searchString, int pageToGet) {
