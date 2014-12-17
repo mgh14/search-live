@@ -46,8 +46,9 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
     final Elements resourcesDetails = doc.select("a[m]");
     for (Element link : resourcesDetails) {
-      if (allResourceUris.size() > numResultsToGet) {
-        System.out.println("Reached result limit. Not adding more resources");
+      if (allResourceUris.size() >= numResultsToGet) {
+        System.out.println("Reached result limit of " + numResultsToGet
+          + ". Not adding more resources");
         break;
       }
 
