@@ -31,7 +31,7 @@ public class CommandLineHelper {
 
   static void validateNumResults(int numResults, int maxResults) {
     // validate numResults
-    if (numResults < 0 || numResults > maxResults) {
+    if (numResults < 1 || numResults > maxResults) {
 
       System.out.println("Please enter a valid (positive, integer between 0 and 50) number of results");
       System.exit(-1);
