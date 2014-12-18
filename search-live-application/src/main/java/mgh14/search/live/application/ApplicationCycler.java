@@ -1,25 +1,31 @@
 package mgh14.search.live.application;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import mgh14.search.live.model.WindowsWallpaperSetter;
-import mgh14.search.live.web.ImageSaver;
+import mgh14.search.live.web.QueueLoader;
 import mgh14.search.live.web.ResourceUrlGetter;
 
 /**
- *
+ * Class that cycles desktop wallpaper resources
  */
 public class ApplicationCycler {
 
-  private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
+
+  private static final int SECONDS_TO_TIMEOUT = 30;
 
   private ResourceUrlGetter resourceUrlGetter;
-
-  public ApplicationCycler(ResourceUrlGetter resourceUrlGetter) {
+  private List<String> filenames = new LinkedList<String>();
+  private ConcurrentLinkedQueue<String> queue;
+  private QueueLoader queueLoader;
+  public ApplicationCycler(final ResourceUrlGetter resourceUrlGetter) {
     this.resourceUrlGetter = resourceUrlGetter;
+    queue = new ConcurrentLinkedQueue<String>();
+
+    queueLoader = new QueueLoader();
+    queueLoader.setQueue(queue);
   }
 
   public void startCycle(final String searchString, final int secondsToSleep) {
@@ -29,53 +35,31 @@ public class ApplicationCycler {
     }
     resourceUrlGetter.setSearchString(searchString);
 
-    // run wallpaper cycle on separate thread
-    new Thread(new Runnable() {
-      public void run(){
+    queueLoader.startResourceDownloads(resourceUrlGetter);
 
-        WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
-        ImageSaver imageSaver = new ImageSaver();
-        List<URI> resourceUris = getShuffledResources(resourceUrlGetter);
-
-        while (true) {
-          int counter = 0;
-          for (URI resource : resourceUris) {
-            final String resourceStr = resource.toString();
-            final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
-            final String filename = ROOT_DIR + "rsrc" + counter++ + "-" +
-              System.currentTimeMillis() + filetype;
-
-            // download image
-            String finalFilename;
-            try {
-              finalFilename = imageSaver.saveImage(resourceStr, ROOT_DIR, filename);
-            }
-            catch (IOException e) {
-              continue;
-            }
-
-            // set image to desktop
-            setter.setDesktopWallpaper(finalFilename);
-
-            // sleep for x milliseconds (enjoy the background!)
-            sleep(secondsToSleep * 1000);
-          }
-
-          // refresh resource URI's
-          System.out.println("Reached end of resource list. Refreshing list...");
-          resourceUris = getShuffledResources(resourceUrlGetter);
+    // run wallpaper cycle
+    WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
+    System.out.println("Starting wallpaper cycle...");
+    while (true) {
+      long startTime = System.currentTimeMillis();
+      while (queue.isEmpty()) {
+        if (System.currentTimeMillis() - startTime > SECONDS_TO_TIMEOUT * 1000) {
+          System.out.println("Waited " + SECONDS_TO_TIMEOUT +
+            " seconds, queue is still empty...exiting");
+          System.exit(0);
         }
       }
-    }).start();
 
-  }
+      final String filename = queue.poll();
+      filenames.add(filename);
 
-  private List<URI> getShuffledResources(ResourceUrlGetter getter) {
+      // set image to desktop
+      setter.setDesktopWallpaper(filename);
 
-    List<URI> resourceUris = getter.getResources();
-    Collections.shuffle(resourceUris);
+      // sleep for x milliseconds (enjoy the background!)
+      sleep(secondsToSleep * 1000);
+    }
 
-    return resourceUris;
   }
 
   private void sleep(int milliseconds) {
