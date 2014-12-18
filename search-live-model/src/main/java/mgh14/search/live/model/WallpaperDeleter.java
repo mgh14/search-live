@@ -13,6 +13,24 @@ import java.nio.file.Path;
  */
 public class WallpaperDeleter {
 
+  public void deleteFile(Path filepath) {
+    if(filepath == null) {
+      return;
+    }
+
+    System.out.println("Deleting file: " + filepath + "...");
+
+    try {
+      Files.delete(filepath);
+    } catch (NoSuchFileException x) {
+      System.out.format("%s: no such file or directory%n", filepath);
+    } catch (DirectoryNotEmptyException x) {
+      System.out.format("%s not empty%n", filepath);
+    } catch (IOException x) {
+      x.printStackTrace();
+    }
+  }
+
   public void deleteExpiredFiles(final File folder) {
     final long currentTime = System.currentTimeMillis();
     System.out.println("Deleting expired pictures for timestamp " + currentTime + "...");
@@ -40,21 +58,7 @@ public class WallpaperDeleter {
   }
 
   private void deleteExpiredFile(Path filepath) {
-    if(filepath == null) {
-      return;
-    }
-
-    System.out.println("Deleting file: " + filepath + "...");
-
-    try {
-      Files.delete(filepath);
-    } catch (NoSuchFileException x) {
-      System.out.format("%s: no such file or directory%n", filepath);
-    } catch (DirectoryNotEmptyException x) {
-      System.out.format("%s not empty%n", filepath);
-    } catch (IOException x) {
-      x.printStackTrace();
-    }
+    deleteFile(filepath);
   }
 
 }
