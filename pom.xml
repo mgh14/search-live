@@ -26,6 +26,7 @@
     <commons-logging.version>1.1.1</commons-logging.version>
     <json.version>20140107</json.version>
     <jsoup.version>1.7.2</jsoup.version>
+    <commons-io.version>2.4</commons-io.version>
   </properties>
 
   <dependencyManagement>
@@ -85,6 +86,13 @@
         <artifactId>jsoup</artifactId>
         <version>${jsoup.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
+      </dependency>
+
 
     </dependencies>
   </dependencyManagement>

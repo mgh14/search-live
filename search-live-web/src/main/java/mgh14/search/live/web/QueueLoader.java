@@ -1,5 +1,6 @@
 package mgh14.search.live.web;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
@@ -47,6 +48,7 @@ public class QueueLoader {
             if (!urlsToFilenames.containsKey(resourceStr)) {
               finalFilename = imageSaver.saveImage(resourceStr, ROOT_DIR, filename);
               if (!(finalFilename == null || finalFilename.trim().isEmpty())) {
+                makeFileReadableAndWriteable(finalFilename);
                 queue.add(finalFilename);
               }
             }
@@ -69,6 +71,13 @@ public class QueueLoader {
         System.out.println("Finished downloads");
       }
     }).start();
+  }
+
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  private void makeFileReadableAndWriteable(String filename) {
+    final File file = new File(filename);
+    file.setReadable(true);
+    file.setWritable(true);
   }
 
   private List<URI> getShuffledResources(ResourceUrlGetter getter) {
