@@ -15,9 +15,12 @@ public class ImageSaver {
 
   private Map<String, String> downloadedResources = new HashMap<String, String>();
 
-  public String saveImage(String resourceUrl, String ROOT_DIR, String localFilename) throws IOException {
+  public String saveImage(String resourceUrl, String ROOT_DIR,
+    String localFilename) throws IOException {
+
     if (downloadedResources.keySet().contains(resourceUrl)) {
-      System.out.println("Media URL [" + resourceUrl + "] already exists on disk. Skipping download...");
+      System.out.println("Media URL [" + resourceUrl + "] already exists" +
+        " on disk. Skipping download...");
       return downloadedResources.get(resourceUrl);
     }
 
@@ -25,7 +28,8 @@ public class ImageSaver {
     try {
       downloadImageToFile(resourceUrl, ROOT_DIR, localFilename);
     } catch (IOException e) {
-      final String exceptionMessage = "Couldn\'t download image: [" + resourceUrl + "]";
+      final String exceptionMessage = "IOException: Couldn\'t " +
+        "download image: [" + resourceUrl + "]";
       System.out.println(exceptionMessage);
       throw new IOException(exceptionMessage);
     }
@@ -34,7 +38,9 @@ public class ImageSaver {
     return localFilename;
   }
 
-  private void downloadImageToFile(String imageUrl, String ROOT_DIR, String destinationFile) throws IOException {
+  private void downloadImageToFile(String imageUrl, String ROOT_DIR,
+    String destinationFile) throws IOException {
+
     URL url = new URL(imageUrl);
     InputStream is = url.openStream();
 
