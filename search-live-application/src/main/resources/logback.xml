@@ -16,7 +16,7 @@
     </encoder>
   </appender>
 
-  <logger name="mgh14.search.live.application" level="INFO">
+  <logger name="mgh14.search.live.application" level="DEBUG">
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="FILELOG"/>
   </logger>
