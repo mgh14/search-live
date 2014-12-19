@@ -1,5 +1,6 @@
 .idea
 target
 *.iml
+*.class
 search-live-application/dependency-reduced-pom.xml
 search-live-model/dependency-reduced-pom.xml
