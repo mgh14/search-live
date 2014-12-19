@@ -5,6 +5,8 @@ import mgh14.search.live.model.web.BingHtmlResourceUrlGetter;
 import mgh14.search.live.service.ApplicationCycler;
 import mgh14.search.live.service.SaveController;
 import org.apache.commons.cli.CommandLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Application class for starting the background image cycle. This
@@ -14,6 +16,8 @@ import org.apache.commons.cli.CommandLine;
  * an authorization header but also a lack of pagination ability.
  */
 public class HtmlApplication {
+
+  private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
 
   static ConfigProperties props;
   static {
@@ -30,7 +34,7 @@ public class HtmlApplication {
     // parse the command line arguments
     CommandLine line = application.parseArgs(args);
     if (line == null) {
-      System.out.println("Error parsing args");
+      Log.error("Error parsing args");
       System.exit(-1);
     }
 

@@ -6,12 +6,16 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class offering helpful methods for parsing command
  * line options.
  */
 public class CommandLineHelper {
+
+  private static final Logger Log = LoggerFactory.getLogger(CommandLineHelper.class);
 
   static CommandLine parseArgs(Options options, String[] args) {
     // create the parser
@@ -22,7 +26,7 @@ public class CommandLineHelper {
       return parser.parse(options, args);
     }
     catch (ParseException exp) {
-      System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+      Log.error("Parsing failed. Reason: {}", exp.getMessage());
       System.exit(-1);
     }
 
@@ -33,7 +37,8 @@ public class CommandLineHelper {
     // validate numResults
     if (numResults < 1 || numResults > maxResults) {
 
-      System.out.println("Please enter a valid (positive, integer between 0 and 50) number of results");
+      System.out.println("Please enter a valid (positive, integer " +
+        "between 0 and 50) number of results");
       System.exit(-1);
     }
   }

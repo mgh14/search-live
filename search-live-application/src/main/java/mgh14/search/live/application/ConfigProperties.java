@@ -7,10 +7,15 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Class for loading configuration properties
  */
 public class ConfigProperties {
+
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   private Properties properties;
 
@@ -21,8 +26,8 @@ public class ConfigProperties {
       loadPropertyValues(dirLocation);
     }
     catch (IOException e) {
-      System.out.println("Warning: Couldn\'t load properties file " +
-        "in dir [" + dirLocation + "]. Continuing...");
+      Log.warn("Warning: Couldn\'t load properties file " +
+        "in dir [{}]. Continuing...", dirLocation);
     }
   }
 

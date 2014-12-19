@@ -3,6 +3,8 @@ package mgh14.search.live.application;
 import mgh14.search.live.model.web.BingApiResourceUrlGetter;
 import mgh14.search.live.service.ApplicationCycler;
 import org.apache.commons.cli.CommandLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Application class for starting the background image cycle. This
@@ -13,6 +15,8 @@ import org.apache.commons.cli.CommandLine;
  * an authorization header but also the ability to paginate.
  */
 public class ApiApplication {
+
+  private static final Logger Log = LoggerFactory.getLogger(ApiApplication.class);
 
   static ConfigProperties props;
   static {
@@ -32,7 +36,7 @@ public class ApiApplication {
     // parse the command line arguments
     CommandLine line = application.parseArgs(args);
     if (line == null) {
-      System.out.println("Error parsing args");
+      Log.error("Error parsing args");
       System.exit(-1);
     }
 

@@ -12,11 +12,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import mgh14.search.live.service.SaveController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class SaveGui {
+
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   private JFrame mainFrame;
   private JLabel statusLabel;
@@ -58,10 +62,13 @@ public class SaveGui {
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         statusLabel.setText("Image saved.");
-        System.out.println("Saving current image...");
         final String fileSaved = controller.saveCurrentImage();
-        if(fileSaved != null) {
-          System.out.println("Image saved: [" + fileSaved + "]");
+        Log.info("Saving current image [{}]...", fileSaved);
+        if(fileSaved != null && !fileSaved.isEmpty() && !fileSaved.equals("null")) {
+          Log.info("Image saved: [{}]", fileSaved);
+        }
+        else {
+          Log.error("Image couldnt be saved: [{}]", fileSaved);
         }
       }
     });
