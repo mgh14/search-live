@@ -21,7 +21,7 @@ public class ApplicationCycler {
 
 
   private static final int SECONDS_TO_TIMEOUT = 30;
-  private static final String SAVE_DIRECTORY = "C:\\Users\\mgh14\\Pictures\\";
+  private static final String BASE_SAVE_DIRECTORY = "C:\\Users\\mgh14\\Pictures\\";
 
   private ResourceUrlGetter resourceUrlGetter;
   private List<String> filenames = new LinkedList<String>();
@@ -29,6 +29,7 @@ public class ApplicationCycler {
   private QueueLoader queueLoader;
   private String absoluteCurrentFilename;
   private WallpaperDeleter deleter;
+  private String searchStringFolder;
 
   public ApplicationCycler(final ResourceUrlGetter resourceUrlGetter) {
     this.resourceUrlGetter = resourceUrlGetter;
@@ -40,6 +41,8 @@ public class ApplicationCycler {
     absoluteCurrentFilename = null;
 
     deleter = new WallpaperDeleter();
+
+    searchStringFolder = null;
   }
 
   public void startCycle(final String searchString, final int secondsToSleep) {
@@ -48,6 +51,7 @@ public class ApplicationCycler {
       return;
     }
     resourceUrlGetter.setSearchString(searchString);
+    searchStringFolder = searchString.replace(" ", "-") + "\\";
 
     queueLoader.startResourceDownloads(resourceUrlGetter);
 
@@ -108,7 +112,7 @@ public class ApplicationCycler {
 
     try {
       FileUtils.copyFile(new File(absoluteCurrentFilename),
-        new File(SAVE_DIRECTORY + filename));
+        new File(BASE_SAVE_DIRECTORY + searchStringFolder + filename));
     }
     catch (IOException e) {
       System.out.println("IOException copying file: " + absoluteCurrentFilename);
