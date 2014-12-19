@@ -13,7 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Class responsible for loading the queue that the application
+ * will use to set the desktop images
  */
 public class QueueLoader {
 

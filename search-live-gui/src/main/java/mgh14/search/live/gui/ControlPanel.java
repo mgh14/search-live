@@ -16,9 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Class for constructing the SearchLive control
+ * panel GUI
  */
-public class SaveGui {
+public class ControlPanel {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
@@ -28,7 +29,7 @@ public class SaveGui {
 
   private SaveController controller;
 
-  public SaveGui(SaveController controller) {
+  public ControlPanel(SaveController controller) {
     this.controller = controller;
 
     prepareGui();

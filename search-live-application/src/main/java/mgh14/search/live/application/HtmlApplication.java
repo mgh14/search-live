@@ -1,6 +1,6 @@
 package mgh14.search.live.application;
 
-import mgh14.search.live.gui.SaveGui;
+import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.model.web.BingHtmlResourceUrlGetter;
 import mgh14.search.live.service.ApplicationCycler;
 import mgh14.search.live.service.SaveController;
@@ -52,7 +52,7 @@ public class HtmlApplication {
     application.validateSecondsToSleep(secondsToSleep);
 
     SaveController controller = new SaveController();
-    new SaveGui(controller);
+    new ControlPanel(controller);
     ApplicationCycler htmlApplication = new ApplicationCycler(
       new BingHtmlResourceUrlGetter("images", numResults));
     controller.setApplicationCycler(htmlApplication);
