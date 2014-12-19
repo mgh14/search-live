@@ -35,7 +35,7 @@ public class SaveGui {
   //public void set
 
   private void prepareGui() {
-    mainFrame = new JFrame("Java Swing Examples");
+    mainFrame = new JFrame("SearchLive Control Panel");
     mainFrame.setSize(200, 200);
     mainFrame.setLayout(new GridLayout(3, 1));
     mainFrame.addWindowListener(new WindowAdapter() {
@@ -58,15 +58,16 @@ public class SaveGui {
   }
 
   private void createSaveButton(){
-    headerLabel.setText("Control in action: Button");
-
-    JButton okButton = new JButton("OK");
+    JButton okButton = new JButton("Save Current Image");
 
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        statusLabel.setText("Ok Button clicked.");
+        statusLabel.setText("Image saved.");
         System.out.println("Saving current image...");
-        controller.saveCurrentImage();
+        final String fileSaved = controller.saveCurrentImage();
+        if(fileSaved != null) {
+          System.out.println("Image saved: [" + fileSaved + "]");
+        }
       }
     });
 

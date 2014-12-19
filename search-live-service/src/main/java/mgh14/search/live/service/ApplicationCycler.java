@@ -102,7 +102,7 @@ public class ApplicationCycler {
     }*/
   }
 
-  public void saveCurrentImage() {
+  public String saveCurrentImage() {
     final String filename = absoluteCurrentFilename.substring(
       absoluteCurrentFilename.lastIndexOf("\\"));
 
@@ -112,7 +112,10 @@ public class ApplicationCycler {
     }
     catch (IOException e) {
       System.out.println("IOException copying file: " + absoluteCurrentFilename);
+      return null;
     }
+
+    return absoluteCurrentFilename;
   }
 
   private void sleep(int milliseconds) {

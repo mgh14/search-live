@@ -11,7 +11,7 @@ public class SaveController {
     this.cycler = cycler;
   }
 
-  public void saveCurrentImage() {
-    cycler.saveCurrentImage();
+  public String saveCurrentImage() {
+    return cycler.saveCurrentImage();
   }
 }
