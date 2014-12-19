@@ -2,7 +2,7 @@
 
 <configuration>
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" level="INFO">
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
     </encoder>
@@ -16,9 +16,13 @@
     </encoder>
   </appender>
 
-  <logger name="mgh14.search.live.application" level="DEBUG">
+  <!--<logger name="mgh14.search.live.application.HtmlApplication" level="INFO">
+    <appender-ref ref="STDOUT"/>
+  </logger>-->
+
+  <root level="DEBUG">
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="FILELOG"/>
-  </logger>
+  </root>
 
 </configuration>
