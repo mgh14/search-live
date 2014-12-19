@@ -10,7 +10,8 @@
     <dependencySet>
       <includes>
         <include>mgh14:search-live-model</include>
-        <include>mgh14:search-live-web</include>
+        <include>mgh14:search-live-service</include>
+        <include>mgh14:search-live-gui</include>
         <include>mgh14:search-live-application</include>
       </includes>
 
