@@ -7,18 +7,23 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Deletes expired wallpaper images from the temp folder that
  * have been downloaded for past wallpaper cycles.
  */
 public class WallpaperDeleter {
 
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+
   public void deleteFile(Path filepath) {
     if(filepath == null) {
       return;
     }
 
-    System.out.println("Deleting file: " + filepath + "...");
+    Log.info("Deleting file: [{}]...", filepath);
 
     try {
       Files.delete(filepath);
@@ -29,11 +34,13 @@ public class WallpaperDeleter {
     } catch (IOException x) {
       x.printStackTrace();
     }
+
+    Log.debug("File deletion finished for [{}].", filepath);
   }
 
   public void deleteExpiredFiles(final File folder) {
     final long currentTime = System.currentTimeMillis();
-    System.out.println("Deleting expired pictures for timestamp " + currentTime + "...");
+    Log.info("Deleting expired pictures for timestamp {}...", currentTime);
 
     if(folder != null && folder.listFiles() != null) {
       long expiryPeriod = 24 * 60 * 60 * 1000;   // 1 day (in milliseconds)
@@ -54,7 +61,7 @@ public class WallpaperDeleter {
       }
     }
 
-    System.out.println("Finished deleting expired pictures for timestamp " + currentTime);
+    Log.info("Finished deleting expired pictures for timestamp {}", currentTime);
   }
 
   private void deleteExpiredFile(Path filepath) {

@@ -13,15 +13,19 @@ import mgh14.search.live.model.WindowsWallpaperSetter;
 import mgh14.search.live.model.web.QueueLoader;
 import mgh14.search.live.model.web.ResourceUrlGetter;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class that cycles desktop wallpaper resources
  */
 public class ApplicationCycler {
 
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   private static final int SECONDS_TO_TIMEOUT = 30;
   private static final String BASE_SAVE_DIRECTORY = "C:\\Users\\mgh14\\Pictures\\";
+  private static final String DIRECTORY_TIME_APPENDER = "-time";
 
   private ResourceUrlGetter resourceUrlGetter;
   private List<String> filenames = new LinkedList<String>();
@@ -47,23 +51,24 @@ public class ApplicationCycler {
 
   public void startCycle(final String searchString, final int secondsToSleep) {
     if(searchString == null || searchString.isEmpty()) {
-      System.out.println("Please enter a search query (e.g. \"desktop wallpaper\"");
+      Log.error("Please enter a search query (e.g. \"desktop wallpaper\"");
       return;
     }
     resourceUrlGetter.setSearchString(searchString);
-    searchStringFolder = searchString.replace(" ", "-") + "\\";
+    searchStringFolder = searchString.replace(" ", "-") + DIRECTORY_TIME_APPENDER
+      + System.currentTimeMillis() + "\\";
 
     queueLoader.startResourceDownloads(resourceUrlGetter);
 
     // run wallpaper cycle
     WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
-    System.out.println("Starting wallpaper cycle...");
+    Log.debug("Starting wallpaper cycle...");
     while (true) {
       long startTime = System.currentTimeMillis();
       while (queue.isEmpty()) {
         if (System.currentTimeMillis() - startTime > SECONDS_TO_TIMEOUT * 1000) {
-          System.out.println("Waited " + SECONDS_TO_TIMEOUT +
-            " seconds, queue is still empty...exiting");
+          Log.info("Waited {} seconds, queue is still empty...exiting",
+            SECONDS_TO_TIMEOUT);
           System.exit(0);
         }
       }
@@ -79,8 +84,8 @@ public class ApplicationCycler {
         // sleep for x milliseconds (enjoy the background!)
         sleep(secondsToSleep * 1000);
       } else {
-        System.out.println("Couldn\'t open file: [" + filename + "]. " +
-          "Deleting and moving to next resource...");
+        Log.error("Couldn\'t open file: [{}]. " +
+          "Deleting and moving to next resource...", filename);
         deleter.deleteFile(new File(filename).toPath());
       }
     }
@@ -98,12 +103,6 @@ public class ApplicationCycler {
     final int pixelTolerance = 5;
     return (image != null && image.getWidth() > pixelTolerance
       && image.getHeight() > pixelTolerance);
-
-    /*for (int i=0; i<image.getWidth(); i++) {
-      for (int j=0; j<image.getHeight(); j++) {
-        System.out.println(image.getRGB(i, j));
-      }
-    }*/
   }
 
   public String saveCurrentImage() {
@@ -115,7 +114,7 @@ public class ApplicationCycler {
         new File(BASE_SAVE_DIRECTORY + searchStringFolder + filename));
     }
     catch (IOException e) {
-      System.out.println("IOException copying file: " + absoluteCurrentFilename);
+      Log.error("IOException copying file: {}", absoluteCurrentFilename);
       return null;
     }
 
@@ -127,7 +126,7 @@ public class ApplicationCycler {
       Thread.sleep(milliseconds);
     }
     catch (InterruptedException e) {
-      System.out.println("Interrupted cycle");
+      Log.debug("Interrupted sleep cycle");
       e.printStackTrace();
     }
   }

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.WinDef.UINT_PTR;
 import com.sun.jna.win32.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for setting desktop wallpaper given the path to an image
@@ -12,13 +14,15 @@ import com.sun.jna.win32.*;
 // TODO: Test in Windows environments other than Windows 7 64-bit
 public class WindowsWallpaperSetter {
 
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+
   public void setDesktopWallpaper(String path) {
     if (path == null || path.isEmpty()) {
-      System.out.println("Invalid file name");
+      Log.error("Invalid null/empty file name");
       return;
     }
 
-    System.out.println("Setting image: [" + path + "]...");
+    Log.info("Setting image: [{}]...", path);
 
     SPI.INSTANCE.SystemParametersInfo(
       new UINT_PTR(SPI.SPI_SETDESKWALLPAPER),

@@ -9,10 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  */
 public class QueueLoader {
+
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
 
@@ -68,7 +73,7 @@ public class QueueLoader {
         counter = 0;
       }*/
 
-        System.out.println("Finished downloads");
+        Log.info("Finished downloads");
       }
     }).start();
   }

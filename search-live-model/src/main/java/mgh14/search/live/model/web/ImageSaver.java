@@ -8,29 +8,33 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Class for downloading an image from the internet
  */
 public class ImageSaver {
 
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
   private Map<String, String> downloadedResources = new HashMap<String, String>();
 
   public String saveImage(String resourceUrl, String ROOT_DIR,
     String localFilename) throws IOException {
 
     if (downloadedResources.keySet().contains(resourceUrl)) {
-      System.out.println("Media URL [" + resourceUrl + "] already exists" +
-        " on disk. Skipping download...");
+      Log.info("Media URL [{}] already exists" +
+        " on disk. Skipping download...", resourceUrl);
       return downloadedResources.get(resourceUrl);
     }
 
-    System.out.println("Downloading URL [" + resourceUrl + "]...");
+    Log.info("Downloading URL [{}]...", resourceUrl);
     try {
       downloadImageToFile(resourceUrl, ROOT_DIR, localFilename);
     } catch (IOException e) {
       final String exceptionMessage = "IOException: Couldn\'t " +
         "download image: [" + resourceUrl + "]";
-      System.out.println(exceptionMessage);
+      Log.error(exceptionMessage);
       throw new IOException(exceptionMessage);
     }
 

@@ -10,6 +10,8 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Uses Bing's API to fetch resource URL's
@@ -18,6 +20,8 @@ import org.json.JSONObject;
  * and this feature can't be turned off right now
  */
 public class BingApiResourceUrlGetter implements ResourceUrlGetter {
+
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   private static final String HOST_PATH = "https://api.datamarket.azure.com/Bing/Search/v1/";
   private static final String QUERY_PARAMS = "?$format=json&Query=%27{}%27";
@@ -54,7 +58,7 @@ public class BingApiResourceUrlGetter implements ResourceUrlGetter {
       for (int i = 0; i < array.length(); i++) {
         final JSONObject entry = (JSONObject) array.get(i);
         final URI mediaUrl = URI.create(entry.get("MediaUrl").toString());
-        System.out.println("Procured MediaUrl: [" + mediaUrl + "]");
+        Log.info("Procured MediaUrl: [{}]", mediaUrl);
 
         pagedUris.add(mediaUrl);
         allResourceUris.add(mediaUrl);

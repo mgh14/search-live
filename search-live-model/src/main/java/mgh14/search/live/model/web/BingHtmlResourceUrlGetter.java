@@ -9,6 +9,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Uses Bing's search page to fetch resource URL's
@@ -16,6 +18,9 @@ import org.jsoup.select.Elements;
  * regular GET request--no authorization is needed)
  */
 public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
+
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+
   private static final String HOST = "https://www.bing.com/";
   private static final String SEARCH_PATH = "/search?q=";
 
@@ -47,8 +52,8 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
     final Elements resourcesDetails = doc.select("a[m]");
     for (Element link : resourcesDetails) {
       if (allResourceUris.size() >= numResultsToGet) {
-        System.out.println("Reached result limit of " + numResultsToGet
-          + ". Not adding more resources");
+        Log.info("Reached result limit of {}. Not adding more resources",
+          numResultsToGet);
         break;
       }
 
