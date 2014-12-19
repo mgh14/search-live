@@ -19,7 +19,6 @@ import mgh14.search.live.service.SaveController;
 public class SaveGui {
 
   private JFrame mainFrame;
-  private JLabel headerLabel;
   private JLabel statusLabel;
   private JPanel controlPanel;
 
@@ -32,8 +31,6 @@ public class SaveGui {
     createSaveButton();
   }
 
-  //public void set
-
   private void prepareGui() {
     mainFrame = new JFrame("SearchLive Control Panel");
     mainFrame.setSize(200, 200);
@@ -43,15 +40,13 @@ public class SaveGui {
         //System.out.println("Finished");
       }
     });
-    headerLabel = new JLabel("abc", JLabel.CENTER);
-    statusLabel = new JLabel("def",JLabel.CENTER);
 
+    statusLabel = new JLabel("",JLabel.CENTER);
     statusLabel.setSize(350,100);
 
     controlPanel = new JPanel();
     controlPanel.setLayout(new FlowLayout());
 
-    mainFrame.add(headerLabel);
     mainFrame.add(controlPanel);
     mainFrame.add(statusLabel);
     mainFrame.setVisible(true);
