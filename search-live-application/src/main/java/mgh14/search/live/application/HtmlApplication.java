@@ -1,6 +1,7 @@
 package mgh14.search.live.application;
 
-import mgh14.search.live.web.BingHtmlResourceUrlGetter;
+import mgh14.search.live.model.web.BingHtmlResourceUrlGetter;
+import mgh14.search.live.service.ApplicationCycler;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -44,8 +45,11 @@ public class HtmlApplication {
       Integer.parseInt((String) props.getProperty("default-num-seconds-to-sleep"));
     application.validateSecondsToSleep(secondsToSleep);
 
+    //SaveController controller = new SaveController();
+    //new SaveGui(controller);
     ApplicationCycler htmlApplication = new ApplicationCycler(
       new BingHtmlResourceUrlGetter("images", numResults));
+    //controller.setApplicationCycler(htmlApplication);
     htmlApplication.startCycle(line.getOptionValue("query"), secondsToSleep);
   }
 

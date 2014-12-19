@@ -14,27 +14,27 @@
 
   <dependencies>
     <dependency>
-      <groupId>mgh14</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>search-live-model</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>mgh14</groupId>
-      <artifactId>search-live-web</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>search-live-service</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>mgh14</groupId>
-      <artifactId>search-live-application</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>mgh14</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>search-live-gui</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>search-live-application</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
   </dependencies>

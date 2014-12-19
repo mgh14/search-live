@@ -1,4 +1,4 @@
-package mgh14.search.live.web;
+package mgh14.search.live.model.web;
 
 import java.io.IOException;
 import java.net.URI;

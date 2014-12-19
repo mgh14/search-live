@@ -1,4 +1,4 @@
-package mgh14.search.live.application;
+package mgh14.search.live.service;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,8 +10,8 @@ import javax.imageio.ImageIO;
 
 import mgh14.search.live.model.WallpaperDeleter;
 import mgh14.search.live.model.WindowsWallpaperSetter;
-import mgh14.search.live.web.QueueLoader;
-import mgh14.search.live.web.ResourceUrlGetter;
+import mgh14.search.live.model.web.QueueLoader;
+import mgh14.search.live.model.web.ResourceUrlGetter;
 import org.apache.commons.io.FileUtils;
 
 /**

@@ -1,6 +1,7 @@
 package mgh14.search.live.application;
 
-import mgh14.search.live.web.BingApiResourceUrlGetter;
+import mgh14.search.live.model.web.BingApiResourceUrlGetter;
+import mgh14.search.live.service.ApplicationCycler;
 import org.apache.commons.cli.CommandLine;
 
 /**

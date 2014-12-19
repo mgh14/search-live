@@ -1,4 +1,4 @@
-package mgh14.search.live.web;
+package mgh14.search.live.model.web;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
