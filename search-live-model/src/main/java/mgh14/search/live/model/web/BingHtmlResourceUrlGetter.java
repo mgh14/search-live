@@ -48,16 +48,17 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
     // Otherwise, fetch the wallpaper URL's
     final Document doc = getSearchDocument(searchString);
+    if (doc != null) {
+      final Elements resourcesDetails = doc.select("a[m]");
+      for (Element link : resourcesDetails) {
+        if (allResourceUris.size() >= numResultsToGet) {
+          Log.info("Reached result limit of {}. Not adding more resources",
+            numResultsToGet);
+          break;
+        }
 
-    final Elements resourcesDetails = doc.select("a[m]");
-    for (Element link : resourcesDetails) {
-      if (allResourceUris.size() >= numResultsToGet) {
-        Log.info("Reached result limit of {}. Not adding more resources",
-          numResultsToGet);
-        break;
+        allResourceUris.add(parseResource(link.attr("abs:m")));
       }
-
-      allResourceUris.add(parseResource(link.attr("abs:m")));
     }
 
     return allResourceUris;
@@ -74,7 +75,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
       doc = Jsoup.connect(searchUri.toString()).followRedirects(true).get();
     }
     catch (IOException e) {
-      e.printStackTrace();
+      Log.error("IOException (is the network connected?): ", e);
       doc = null;
     }
 
