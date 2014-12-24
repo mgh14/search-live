@@ -114,7 +114,7 @@ public class ApplicationCycler {
         new File(BASE_SAVE_DIRECTORY + searchStringFolder + filename));
     }
     catch (IOException e) {
-      Log.error("IOException copying file: {}", absoluteCurrentFilename);
+      Log.error("IOException copying file: {}", absoluteCurrentFilename, e);
       return null;
     }
 
@@ -126,8 +126,7 @@ public class ApplicationCycler {
       Thread.sleep(milliseconds);
     }
     catch (InterruptedException e) {
-      Log.debug("Interrupted sleep cycle");
-      e.printStackTrace();
+      Log.debug("Interrupted sleep cycle", e);
     }
   }
 
