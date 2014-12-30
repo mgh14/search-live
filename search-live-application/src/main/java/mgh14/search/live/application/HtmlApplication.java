@@ -55,15 +55,15 @@ public class HtmlApplication {
     application.validateSecondsToSleep(secondsToSleep);
 
     // instantiate application objects
-    SaveController controller = new SaveController();
+    final SaveController controller = new SaveController();
     new ControlPanel(controller);
 
-    CommandExecutor executor = new CommandExecutor();
+    final CommandExecutor executor = new CommandExecutor();
     executor.setResourceCycler(new ResourceCycler(
       new BingHtmlResourceUrlGetter("images", numResults)));
     controller.setCommandExecutor(executor);
 
-    CycleCommand startCommand = new CycleCommand(CycleAction.START, "searchString:" +
+    final CycleCommand startCommand = new CycleCommand(CycleAction.START, "searchString:" +
       line.getOptionValue("query") + ";secondsToSleep:" + secondsToSleep);
     executor.addCommandToQueue(startCommand);
 
