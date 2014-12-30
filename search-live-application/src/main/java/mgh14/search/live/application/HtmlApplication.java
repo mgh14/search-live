@@ -1,12 +1,12 @@
 package mgh14.search.live.application;
 
 import mgh14.search.live.gui.ControlPanel;
+import mgh14.search.live.gui.GuiController;
 import mgh14.search.live.model.messaging.CycleAction;
 import mgh14.search.live.model.messaging.CycleCommand;
 import mgh14.search.live.model.web.BingHtmlResourceUrlGetter;
 import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.ResourceCycler;
-import mgh14.search.live.service.SaveController;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,7 @@ public class HtmlApplication {
     application.validateSecondsToSleep(secondsToSleep);
 
     // instantiate application objects
-    final SaveController controller = new SaveController();
+    final GuiController controller = new GuiController();
     new ControlPanel(controller);
 
     final CommandExecutor executor = new CommandExecutor();

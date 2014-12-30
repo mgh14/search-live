@@ -1,13 +1,14 @@
-package mgh14.search.live.service;
+package mgh14.search.live.gui;
 
 import mgh14.search.live.model.messaging.CycleAction;
 import mgh14.search.live.model.messaging.CycleCommand;
+import mgh14.search.live.service.CommandExecutor;
 
 /**
  * UI Controller that gives commands to the model's
  * command executor.
  */
-public class SaveController {
+public class GuiController {
 
   private CommandExecutor executor;
 

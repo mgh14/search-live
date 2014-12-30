@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import mgh14.search.live.service.SaveController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +25,9 @@ public class ControlPanel {
   private JLabel statusLabel;
   private JPanel controlPanel;
 
-  private SaveController controller;
+  private GuiController controller;
 
-  public ControlPanel(SaveController controller) {
+  public ControlPanel(GuiController controller) {
     this.controller = controller;
 
     prepareGui();
