@@ -58,9 +58,9 @@ public class ControlPanel {
   }
 
   private void createSaveButton(){
-    JButton okButton = new JButton("Save Current Image");
+    JButton saveCurrentResourceButton = new JButton("Save Current Image");
 
-    okButton.addActionListener(new ActionListener() {
+    saveCurrentResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         statusLabel.setText("Image saved.");
         final String fileSaved = controller.saveCurrentImage();
@@ -74,7 +74,7 @@ public class ControlPanel {
       }
     });
 
-    controlPanel.add(okButton);
+    controlPanel.add(saveCurrentResourceButton);
     mainFrame.setVisible(true);
   }
 
