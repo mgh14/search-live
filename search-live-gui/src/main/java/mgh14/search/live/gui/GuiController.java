@@ -17,14 +17,14 @@ public class GuiController {
   private CommandExecutor executor;
 
   public void pauseResourceCycle() {
-    executor.addCommandToQueue(new CycleCommand(CycleAction.PAUSE, null));
+    executor.addCommandToQueue(new CycleCommand(CycleAction.PAUSE));
   }
 
   public void saveCurrentImage() {
-    executor.addCommandToQueue(new CycleCommand(CycleAction.SAVE, null));
+    executor.addCommandToQueue(new CycleCommand(CycleAction.SAVE));
   }
 
   public void shutdownApplication() {
-    executor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN, null));
+    executor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN));
   }
 }

@@ -9,12 +9,8 @@ public class CycleCommand {
   private CycleAction cycleAction;
   private String body;
 
-  public CycleCommand() {
-    this(CycleAction.NOP, null);
-  }
-
-  public CycleCommand(String body) {
-    this(null, body);
+  public CycleCommand(CycleAction action) {
+    this(action, null);
   }
 
   public CycleCommand(CycleAction cycleAction, String body) {
