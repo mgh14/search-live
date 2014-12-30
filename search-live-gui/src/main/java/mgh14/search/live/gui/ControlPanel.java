@@ -63,9 +63,9 @@ public class ControlPanel {
 
     saveCurrentResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        setStatusLabel("not implemented yet");
-        /*statusLabel.setText("Image saved.");
-        final String fileSaved = controller.saveCurrentImage();
+        controller.saveCurrentImage();
+        setStatusLabel("Image saved");
+        /*final String fileSaved = controller.saveCurrentImage();
         Log.info("Saving current image [{}]...", fileSaved);
         if(fileSaved != null && !fileSaved.isEmpty() && !fileSaved.equals("null")) {
           Log.info("Image saved: [{}]", fileSaved);

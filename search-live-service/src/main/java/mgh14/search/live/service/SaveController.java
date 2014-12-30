@@ -19,7 +19,7 @@ public class SaveController {
     executor.addCommandToQueue(new CycleCommand(CycleAction.PAUSE, null));
   }
 
-/*  public String saveCurrentImage() {
-    return cycler.saveCurrentImage();
-  }*/
+  public void saveCurrentImage() {
+    executor.addCommandToQueue(new CycleCommand(CycleAction.SAVE, null));
+  }
 }

@@ -51,6 +51,9 @@ public class CommandExecutor {
         Log.info("Pausing cycle...");
         resourceCycler.pauseCycle();
       }
+      if (CycleAction.SAVE.equals(action)) {
+        processSave();
+      }
     }
   }
 
@@ -65,6 +68,12 @@ public class CommandExecutor {
           Integer.parseInt(properties.get("secondsToSleep")));
       }
     }).start();
+  }
+
+  private void processSave() {
+    Log.info("Image saved: [{}]", resourceCycler.saveCurrentImage());
+
+    //TODO: How will UI be notified now?
   }
 
   private Map<String, String> getPropsFromBody(String body) {
