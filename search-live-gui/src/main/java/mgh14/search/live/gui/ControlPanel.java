@@ -43,11 +43,12 @@ public class ControlPanel {
     createSaveButton();
     createPauseButton();
     createResumeButton();
+    createNextButton();
   }
 
   private void prepareGui() {
     mainFrame = new JFrame("SearchLive Control Panel");
-    mainFrame.setSize(200, 340);
+    mainFrame.setSize(200, 440);
     mainFrame.setLayout(new GridLayout(3, 1));
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent){
@@ -111,6 +112,19 @@ public class ControlPanel {
     });
 
     controlPanel.add(resumeResourceCycleButton);
+  }
+
+  private void createNextButton() {
+    JButton nextResourceButton = new JButton("Next Resource");
+
+    nextResourceButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        controller.cycleNextResource();
+        setStatusLabel("Next resource retrieved.");
+      }
+    });
+
+    controlPanel.add(nextResourceButton);
   }
 
   private void setStatusLabel(String statusText) {
