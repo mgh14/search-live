@@ -89,7 +89,7 @@ public class ResourceCycler {
           sleep(secondsToSleep * 1000);
         }
         else {
-          Log.error("Couldn\'t open file: [{}]. " +
+          Log.error("Couldn't open file: [{}]. " +
             "Deleting and moving to next resource...", filename);
           deleter.deleteFile(new File(filename).toPath());
         }
@@ -100,19 +100,6 @@ public class ResourceCycler {
 
   public void pauseCycle() {
     cycleRunning = false;
-  }
-
-  public boolean canOpenImage(String absoluteFilepath) {
-    BufferedImage image;
-    try {
-      image = ImageIO.read(new File(absoluteFilepath));
-    } catch (Exception e) {
-      return false;
-    }
-
-    final int pixelTolerance = 5;
-    return (image != null && image.getWidth() > pixelTolerance
-      && image.getHeight() > pixelTolerance);
   }
 
   public String saveCurrentImage() {
@@ -129,6 +116,19 @@ public class ResourceCycler {
     }
 
     return absoluteCurrentFilename;
+  }
+
+  private boolean canOpenImage(String absoluteFilepath) {
+    BufferedImage image;
+    try {
+      image = ImageIO.read(new File(absoluteFilepath));
+    } catch (Exception e) {
+      return false;
+    }
+
+    final int pixelTolerance = 5;
+    return (image != null && image.getWidth() > pixelTolerance
+      && image.getHeight() > pixelTolerance);
   }
 
   private void sleep(int milliseconds) {
