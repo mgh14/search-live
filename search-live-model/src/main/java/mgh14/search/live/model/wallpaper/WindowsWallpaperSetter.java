@@ -6,12 +6,14 @@ import com.sun.jna.platform.win32.WinDef.UINT_PTR;
 import com.sun.jna.win32.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Class for setting desktop wallpaper given the path to an image
  * for the Windows operating system.
  */
 // TODO: Test in Windows environments other than Windows 7 64-bit
+@Component
 public class WindowsWallpaperSetter {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());

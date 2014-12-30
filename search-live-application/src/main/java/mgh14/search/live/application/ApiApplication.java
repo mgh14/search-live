@@ -1,7 +1,5 @@
 package mgh14.search.live.application;
 
-import mgh14.search.live.model.web.BingApiResourceUrlGetter;
-import mgh14.search.live.service.ResourceCycler;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,9 +55,9 @@ public class ApiApplication {
       Integer.parseInt((String) props.getProperty("default-num-seconds-to-sleep"));
     application.validateSecondsToSleep(secondsToSleep);
 
-    ResourceCycler htmlApplication = new ResourceCycler(
+    /*ResourceCycler htmlApplication = new ResourceCycler(
       new BingApiResourceUrlGetter(authKey, "Image", numResults));
-    htmlApplication.startCycle(line.getOptionValue("query"), secondsToSleep);
+    htmlApplication.startCycle(line.getOptionValue("query"), secondsToSleep);*/
   }
 
   CommandLine parseArgs(String[] args) {

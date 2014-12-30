@@ -11,12 +11,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Uses Bing's search page to fetch resource URL's
  * (i.e. uses the HTML of the search page from a
  * regular GET request--no authorization is needed)
  */
+@Component
 public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
@@ -25,18 +27,27 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   private static final String SEARCH_PATH = "/search?q=";
 
   private List<URI> allResourceUris;
-  private String searchUrl;
+  private String resourceType;
   private String searchString;
   private int numResultsToGet;
-    
-  public BingHtmlResourceUrlGetter(String resourceType, int numResultsToGet) {
-    searchUrl = HOST + resourceType + SEARCH_PATH;
+
+  public BingHtmlResourceUrlGetter() {
     allResourceUris = new LinkedList<URI>();
-    this.numResultsToGet = numResultsToGet;
+    setResourceType(null);
+    setSearchString(null);
+    setNumResultsToGet(0);
+  }
+
+  public void setResourceType(String resourceType) {
+    this.resourceType = resourceType;
   }
 
   public void setSearchString(String searchString) {
     this.searchString = searchString;
+  }
+
+  public void setNumResultsToGet(int numResultsToGet) {
+    this.numResultsToGet = numResultsToGet;
   }
 
   @Override
@@ -69,7 +80,8 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
         return null;
       }
 
-    final URI searchUri = URI.create(searchUrl + searchString.replaceAll(" ", "+"));
+    final URI searchUri = URI.create(HOST + resourceType + SEARCH_PATH +
+      searchString.replaceAll(" ", "+"));
     Document doc;
     try {
       doc = Jsoup.connect(searchUri.toString()).followRedirects(true).get();
@@ -84,8 +96,10 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
   private URI parseResource(String resourceAttr) {
     final String resourceAttributeName = "imgurl:";
-    final int imgUrlStart = resourceAttr.indexOf(resourceAttributeName) + resourceAttributeName.length();
-    String url = resourceAttr.substring(imgUrlStart, resourceAttr.indexOf(",", imgUrlStart)).replace("\"", "");
+    final int imgUrlStart = resourceAttr.indexOf(resourceAttributeName) +
+      resourceAttributeName.length();
+    String url = resourceAttr.substring(imgUrlStart,
+      resourceAttr.indexOf(",", imgUrlStart)).replace("\"", "");
     return URI.create(url);
   }
 }

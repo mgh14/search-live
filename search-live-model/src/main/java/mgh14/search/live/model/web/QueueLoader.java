@@ -11,23 +11,23 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
- * Class responsible for loading the queue that the application
+ * Class responsible for loading the resourceQueue that the application
  * will use to set the desktop images
  */
+@Component
 public class QueueLoader {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
-
   private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
 
   private Map<String, String> urlsToFilenames = new HashMap<String, String>();
-  private ConcurrentLinkedQueue<String> queue;
 
-  public void setQueue(ConcurrentLinkedQueue<String> queue) {
-    this.queue = queue;
-  }
+  @Autowired
+  private ConcurrentLinkedQueue<String> resourceQueue;
 
   public String getRelativeResourceFilename(String resourceStr, int downloadNumber) {
     // construct (local) filename
@@ -55,7 +55,7 @@ public class QueueLoader {
               finalFilename = imageSaver.saveImage(resourceStr, ROOT_DIR, filename);
               if (!(finalFilename == null || finalFilename.trim().isEmpty())) {
                 makeFileReadableAndWriteable(finalFilename);
-                queue.add(finalFilename);
+                resourceQueue.add(finalFilename);
               }
             }
           }

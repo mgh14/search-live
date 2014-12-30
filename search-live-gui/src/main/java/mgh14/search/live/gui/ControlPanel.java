@@ -13,10 +13,13 @@ import javax.swing.JPanel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Class for constructing the SearchLive control panel GUI
  */
+@Component
 public class ControlPanel {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
@@ -25,10 +28,11 @@ public class ControlPanel {
   private JLabel statusLabel;
   private JPanel controlPanel;
 
+  @Autowired
   private GuiController controller;
 
-  public ControlPanel(GuiController controller) {
-    this.controller = controller;
+  public ControlPanel() {
+    this.controller = null;
 
     prepareGui();
     createSaveButton();

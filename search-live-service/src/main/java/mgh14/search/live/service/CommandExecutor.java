@@ -9,23 +9,25 @@ import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Class for executing commands on the resource cycler
  */
+@Component
 public class CommandExecutor {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
+  //private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+  @Autowired
   private ResourceCycler resourceCycler;
   private Queue<CycleCommand> commandQueue;
 
   public CommandExecutor() {
     commandQueue = new ConcurrentLinkedQueue<CycleCommand>();
-  }
-
-  public void setResourceCycler(ResourceCycler resourceCycler) {
-    this.resourceCycler = resourceCycler;
   }
 
   public void addCommandToQueue(CycleCommand newCommand) {
@@ -77,12 +79,13 @@ public class CommandExecutor {
   }
 
   private Map<String, String> getPropsFromBody(String body) {
-    final Map properties = new HashMap<String, String>();
+    final Map<String, String> properties = new HashMap<String, String>();
 
     String[] rawProps = body.split(";");
     for (String prop : rawProps) {
       final int indexOfSeparator = prop.indexOf(":");
-      properties.put(prop.substring(0, indexOfSeparator), prop.substring(indexOfSeparator + 1));
+      properties.put(prop.substring(0, indexOfSeparator),
+        prop.substring(indexOfSeparator + 1));
     }
 
     return properties;

@@ -15,10 +15,13 @@ import mgh14.search.live.model.web.ResourceUrlGetter;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Class that cycles desktop wallpaper resources
  */
+@Component
 public class ResourceCycler {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
@@ -27,27 +30,26 @@ public class ResourceCycler {
   private static final String BASE_SAVE_DIRECTORY = "C:\\Users\\mgh14\\Pictures\\";
   private static final String DIRECTORY_TIME_APPENDER = "-time";
 
+  @Autowired
   private ResourceUrlGetter resourceUrlGetter;
-  private List<String> filenames = new LinkedList<String>();
+
+  @Autowired
   private ConcurrentLinkedQueue<String> queue;
+
+  @Autowired
   private QueueLoader queueLoader;
-  private String absoluteCurrentFilename;
+
+  @Autowired
   private WallpaperDeleter deleter;
+
+  private List<String> filenames = new LinkedList<String>();
+  private String absoluteCurrentFilename;
   private String searchStringFolder;
 
   private boolean cycleRunning;
 
-  public ResourceCycler(final ResourceUrlGetter resourceUrlGetter) {
-    this.resourceUrlGetter = resourceUrlGetter;
-    queue = new ConcurrentLinkedQueue<String>();
-
-    queueLoader = new QueueLoader();
-    queueLoader.setQueue(queue);
-
+  public ResourceCycler() {
     absoluteCurrentFilename = null;
-
-    deleter = new WallpaperDeleter();
-
     searchStringFolder = null;
   }
 

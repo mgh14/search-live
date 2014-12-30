@@ -9,11 +9,13 @@ import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Deletes expired wallpaper images from the temp folder that
  * have been downloaded for past wallpaper cycles.
  */
+@Component
 public class WallpaperDeleter {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
