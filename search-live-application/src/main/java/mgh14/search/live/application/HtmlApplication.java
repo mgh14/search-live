@@ -1,7 +1,10 @@
 package mgh14.search.live.application;
 
 import mgh14.search.live.gui.ControlPanel;
+import mgh14.search.live.model.messaging.CycleAction;
+import mgh14.search.live.model.messaging.CycleCommand;
 import mgh14.search.live.model.web.BingHtmlResourceUrlGetter;
+import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.ResourceCycler;
 import mgh14.search.live.service.SaveController;
 import org.apache.commons.cli.CommandLine;
@@ -51,12 +54,21 @@ public class HtmlApplication {
       Integer.parseInt((String) props.getProperty("default-num-seconds-to-sleep"));
     application.validateSecondsToSleep(secondsToSleep);
 
+    // instantiate application objects
     SaveController controller = new SaveController();
     new ControlPanel(controller);
-    ResourceCycler htmlApplication = new ResourceCycler(
-      new BingHtmlResourceUrlGetter("images", numResults));
-    controller.setApplicationCycler(htmlApplication);
-    htmlApplication.startCycle(line.getOptionValue("query"), secondsToSleep);
+
+    CommandExecutor executor = new CommandExecutor();
+    executor.setResourceCycler(new ResourceCycler(
+      new BingHtmlResourceUrlGetter("images", numResults)));
+    controller.setCommandExecutor(executor);
+
+    CycleCommand startCommand = new CycleCommand(CycleAction.START, "searchString:" +
+      line.getOptionValue("query") + ";secondsToSleep:" + secondsToSleep);
+    executor.addCommandToQueue(startCommand);
+
+    // begin executor commands
+    executor.run();
   }
 
   CommandLine parseArgs(String[] args) {
