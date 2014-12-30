@@ -23,4 +23,8 @@ public class GuiController {
   public void saveCurrentImage() {
     executor.addCommandToQueue(new CycleCommand(CycleAction.SAVE, null));
   }
+
+  public void shutdownApplication() {
+    executor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN, null));
+  }
 }

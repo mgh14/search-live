@@ -11,6 +11,6 @@ public enum CycleAction {
   NEXT,
   PREVIOUS,
   SAVE,
-  EXIT,
+  SHUTDOWN,
   NOP
 }

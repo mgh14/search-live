@@ -58,6 +58,9 @@ public class CommandExecutor {
       if (CycleAction.SAVE.equals(action)) {
         processSave();
       }
+      if (CycleAction.SHUTDOWN.equals(action)) {
+        processShutdown();
+      }
     }
   }
 
@@ -91,6 +94,16 @@ public class CommandExecutor {
     }
 
     return properties;
+  }
+
+  private void processShutdown() {
+    Log.debug("Shutting down application...");
+
+    Log.debug("Shutting down executor service...");
+    executorService.shutdown();
+
+    Log.debug("Finished application shutdown.");
+    System.exit(0);
   }
 
 

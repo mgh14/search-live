@@ -48,13 +48,11 @@ public class ControlPanel {
     mainFrame.setLayout(new GridLayout(3, 1));
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent){
-        Log.debug("Shutting down executor service...");
-        executorService.shutdown();
-        System.exit(0);
+        controller.shutdownApplication();
       }
     });
 
-    statusLabel = new JLabel("",JLabel.CENTER);
+    statusLabel = new JLabel("", JLabel.CENTER);
     statusLabel.setSize(350,100);
 
     controlPanel = new JPanel();
@@ -93,7 +91,6 @@ public class ControlPanel {
 
     controlPanel.add(saveCurrentResourceButton);
     controlPanel.add(pauseResourceCycleButton);
-    mainFrame.setVisible(true);
   }
 
   private void setStatusLabel(String statusText) {
