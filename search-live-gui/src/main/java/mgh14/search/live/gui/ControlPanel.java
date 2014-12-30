@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.concurrent.ExecutorService;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,6 +32,9 @@ public class ControlPanel {
   @Autowired
   private GuiController controller;
 
+  @Autowired
+  private ExecutorService executorService;
+
   public ControlPanel() {
     this.controller = null;
 
@@ -44,6 +48,8 @@ public class ControlPanel {
     mainFrame.setLayout(new GridLayout(3, 1));
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent){
+        Log.debug("Shutting down executor service...");
+        executorService.shutdown();
         System.exit(0);
       }
     });
@@ -85,7 +91,6 @@ public class ControlPanel {
       }
     });
 
-
     controlPanel.add(saveCurrentResourceButton);
     controlPanel.add(pauseResourceCycleButton);
     mainFrame.setVisible(true);
@@ -93,7 +98,7 @@ public class ControlPanel {
 
   private void setStatusLabel(String statusText) {
     statusLabel.setText(statusText);
-    new Thread(new Runnable() {
+    executorService.execute(new Runnable() {
       @Override
       public void run() {
         try {
@@ -105,7 +110,7 @@ public class ControlPanel {
 
         statusLabel.setText("");
       }
-    }).start();
+    });
   }
 
 }

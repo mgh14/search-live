@@ -1,6 +1,8 @@
 package mgh14.search.live.application;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import mgh14.search.live.model.web.BingHtmlResourceUrlGetter;
 import mgh14.search.live.service.CommandExecutor;
@@ -31,6 +33,11 @@ public class HtmlApplication {
   @Bean
   public ConcurrentLinkedQueue<String> resourceQueue() {
     return new ConcurrentLinkedQueue<String>();
+  }
+
+  @Bean
+  public ExecutorService executorService() {
+    return Executors.newFixedThreadPool(10);
   }
 
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);

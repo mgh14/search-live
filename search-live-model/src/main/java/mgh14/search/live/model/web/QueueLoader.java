@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,9 @@ public class QueueLoader {
   @Autowired
   private ConcurrentLinkedQueue<String> resourceQueue;
 
+  @Autowired
+  private ExecutorService executorService;
+
   public String getRelativeResourceFilename(String resourceStr, int downloadNumber) {
     // construct (local) filename
     final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
@@ -37,7 +41,7 @@ public class QueueLoader {
   }
 
   public void startResourceDownloads(final ResourceUrlGetter resourceUrlGetter) {
-    new Thread(new Runnable() {
+    executorService.execute(new Runnable() {
       public void run() {
         ImageSaver imageSaver = new ImageSaver();
 
@@ -76,7 +80,7 @@ public class QueueLoader {
 
         Log.info("Finished downloads");
       }
-    }).start();
+    });
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")

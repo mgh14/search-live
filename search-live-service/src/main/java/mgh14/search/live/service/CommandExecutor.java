@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
 
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
@@ -20,7 +21,8 @@ public class CommandExecutor {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
-  //private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+  @Autowired
+  private ExecutorService executorService;
 
   @Autowired
   private ResourceCycler resourceCycler;
@@ -63,13 +65,13 @@ public class CommandExecutor {
     Log.info("Starting resource cycle...");
     final Map<String, String> properties = getPropsFromBody(commandBody);
 
-    new Thread(new Runnable() {
+    executorService.execute(new Runnable() {
       @Override
       public void run() {
         resourceCycler.startCycle(properties.get("searchString"),
           Integer.parseInt(properties.get("secondsToSleep")));
       }
-    }).start();
+    });
   }
 
   private void processSave() {
