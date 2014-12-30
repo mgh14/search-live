@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Class that cycles desktop wallpaper resources
  */
-public class ApplicationCycler {
+public class ResourceCycler {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
@@ -35,7 +35,7 @@ public class ApplicationCycler {
   private WallpaperDeleter deleter;
   private String searchStringFolder;
 
-  public ApplicationCycler(final ResourceUrlGetter resourceUrlGetter) {
+  public ResourceCycler(final ResourceUrlGetter resourceUrlGetter) {
     this.resourceUrlGetter = resourceUrlGetter;
     queue = new ConcurrentLinkedQueue<String>();
 

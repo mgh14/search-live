@@ -2,7 +2,7 @@ package mgh14.search.live.application;
 
 import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.model.web.BingHtmlResourceUrlGetter;
-import mgh14.search.live.service.ApplicationCycler;
+import mgh14.search.live.service.ResourceCycler;
 import mgh14.search.live.service.SaveController;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class HtmlApplication {
 
     SaveController controller = new SaveController();
     new ControlPanel(controller);
-    ApplicationCycler htmlApplication = new ApplicationCycler(
+    ResourceCycler htmlApplication = new ResourceCycler(
       new BingHtmlResourceUrlGetter("images", numResults));
     controller.setApplicationCycler(htmlApplication);
     htmlApplication.startCycle(line.getOptionValue("query"), secondsToSleep);

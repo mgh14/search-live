@@ -5,9 +5,9 @@ package mgh14.search.live.service;
  */
 public class SaveController {
 
-  ApplicationCycler cycler;
+  ResourceCycler cycler;
 
-  public void setApplicationCycler(ApplicationCycler cycler) {
+  public void setApplicationCycler(ResourceCycler cycler) {
     this.cycler = cycler;
   }
 
