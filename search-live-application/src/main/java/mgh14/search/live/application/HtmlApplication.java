@@ -2,8 +2,8 @@ package mgh14.search.live.application;
 
 import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.gui.GuiController;
-import mgh14.search.live.model.messaging.CycleAction;
-import mgh14.search.live.model.messaging.CycleCommand;
+import mgh14.search.live.service.messaging.CycleAction;
+import mgh14.search.live.service.messaging.CycleCommand;
 import mgh14.search.live.model.web.BingHtmlResourceUrlGetter;
 import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.ResourceCycler;

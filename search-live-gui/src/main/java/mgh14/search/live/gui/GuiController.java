@@ -1,7 +1,7 @@
 package mgh14.search.live.gui;
 
-import mgh14.search.live.model.messaging.CycleAction;
-import mgh14.search.live.model.messaging.CycleCommand;
+import mgh14.search.live.service.messaging.CycleAction;
+import mgh14.search.live.service.messaging.CycleCommand;
 import mgh14.search.live.service.CommandExecutor;
 
 /**

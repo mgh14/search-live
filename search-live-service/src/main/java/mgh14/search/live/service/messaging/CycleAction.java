@@ -1,4 +1,4 @@
-package mgh14.search.live.model.messaging;
+package mgh14.search.live.service.messaging;
 
 /**
  * Actions that can be taken by the application

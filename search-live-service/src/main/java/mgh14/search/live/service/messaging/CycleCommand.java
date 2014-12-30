@@ -1,4 +1,4 @@
-package mgh14.search.live.model.messaging;
+package mgh14.search.live.service.messaging;
 
 /**
  * Medium for communicating commands and message bodies

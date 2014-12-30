@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import mgh14.search.live.model.messaging.CycleAction;
-import mgh14.search.live.model.messaging.CycleCommand;
+import mgh14.search.live.service.messaging.CycleAction;
+import mgh14.search.live.service.messaging.CycleCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

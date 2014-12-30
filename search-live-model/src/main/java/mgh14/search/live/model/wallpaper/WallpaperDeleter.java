@@ -1,4 +1,4 @@
-package mgh14.search.live.model;
+package mgh14.search.live.model.wallpaper;
 
 import java.io.File;
 import java.io.IOException;

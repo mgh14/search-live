@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.imageio.ImageIO;
 
-import mgh14.search.live.model.WallpaperDeleter;
-import mgh14.search.live.model.WindowsWallpaperSetter;
+import mgh14.search.live.model.wallpaper.WallpaperDeleter;
+import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
 import mgh14.search.live.model.web.QueueLoader;
 import mgh14.search.live.model.web.ResourceUrlGetter;
 import org.apache.commons.io.FileUtils;

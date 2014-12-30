@@ -1,4 +1,4 @@
-package mgh14.search.live.model;
+package mgh14.search.live.model.wallpaper;
 
 import java.util.HashMap;
 import com.sun.jna.Native;
