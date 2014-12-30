@@ -20,6 +20,10 @@ public class GuiController {
     executor.addCommandToQueue(new CycleCommand(CycleAction.PAUSE));
   }
 
+  public void resumeResourceCycle() {
+    executor.addCommandToQueue(new CycleCommand(CycleAction.RESUME));
+  }
+
   public void saveCurrentImage() {
     executor.addCommandToQueue(new CycleCommand(CycleAction.SAVE));
   }

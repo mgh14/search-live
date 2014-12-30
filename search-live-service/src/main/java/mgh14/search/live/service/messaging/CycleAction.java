@@ -5,8 +5,9 @@ package mgh14.search.live.service.messaging;
  * cycle loop
  */
 public enum CycleAction {
+  START_SERVICE,
   PAUSE,
-  START,
+  RESUME,
   STOP,
   NEXT,
   PREVIOUS,

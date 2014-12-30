@@ -48,12 +48,16 @@ public class CommandExecutor {
       final CycleCommand command = commandQueue.poll();
       final CycleAction action = command.getCycleAction();
       Log.debug("Processing command: command=[{}], body=[{}]", action, command.getBody());
-      if (CycleAction.START.equals(action)) {
+      if (CycleAction.START_SERVICE.equals(action)) {
         processStart(command.getBody());
       }
       if (CycleAction.PAUSE.equals(action)) {
         Log.info("Pausing cycle...");
         resourceCycler.pauseCycle();
+      }
+      if (CycleAction.RESUME.equals(action)) {
+        Log.info("Resuming cycle...");
+        resourceCycler.resumeCycle();
       }
       if (CycleAction.SAVE.equals(action)) {
         processSave();

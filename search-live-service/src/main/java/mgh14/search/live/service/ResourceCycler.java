@@ -54,7 +54,7 @@ public class ResourceCycler {
   }
 
   public void startCycle(final String searchString, final int secondsToSleep) {
-    cycleRunning = true;
+    setCycleRunning(true);
     if(searchString == null || searchString.isEmpty()) {
       Log.error("Please enter a search query (e.g. \"desktop wallpaper\"");
       return;
@@ -101,7 +101,11 @@ public class ResourceCycler {
   }
 
   public void pauseCycle() {
-    cycleRunning = false;
+    setCycleRunning(false);
+  }
+
+  public void resumeCycle() {
+    setCycleRunning(true);
   }
 
   public String saveCurrentImage() {
@@ -140,6 +144,10 @@ public class ResourceCycler {
     catch (InterruptedException e) {
       Log.debug("Interrupted sleep cycle", e);
     }
+  }
+
+  private void setCycleRunning(boolean cycleRunning) {
+    this.cycleRunning = cycleRunning;
   }
 
 }

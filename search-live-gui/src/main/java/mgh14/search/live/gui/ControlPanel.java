@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 public class ControlPanel {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private static final int SECONDS_BEFORE_LABEL_CLEAR = 15;
 
   private JFrame mainFrame;
   private JLabel statusLabel;
@@ -40,11 +41,13 @@ public class ControlPanel {
 
     prepareGui();
     createSaveButton();
+    createPauseButton();
+    createResumeButton();
   }
 
   private void prepareGui() {
     mainFrame = new JFrame("SearchLive Control Panel");
-    mainFrame.setSize(200, 240);
+    mainFrame.setSize(200, 340);
     mainFrame.setLayout(new GridLayout(3, 1));
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent){
@@ -53,7 +56,7 @@ public class ControlPanel {
     });
 
     statusLabel = new JLabel("", JLabel.CENTER);
-    statusLabel.setSize(350,100);
+    statusLabel.setSize(350, 100);
 
     controlPanel = new JPanel();
     controlPanel.setLayout(new FlowLayout());
@@ -65,7 +68,6 @@ public class ControlPanel {
 
   private void createSaveButton(){
     JButton saveCurrentResourceButton = new JButton("Save Current Image");
-    JButton pauseResourceCycleButton = new JButton("Pause Resource Cycle");
 
     saveCurrentResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -82,6 +84,12 @@ public class ControlPanel {
       }
     });
 
+    controlPanel.add(saveCurrentResourceButton);
+  }
+
+  private void createPauseButton() {
+    JButton pauseResourceCycleButton = new JButton("Pause Resource Cycle");
+
     pauseResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         controller.pauseResourceCycle();
@@ -89,8 +97,20 @@ public class ControlPanel {
       }
     });
 
-    controlPanel.add(saveCurrentResourceButton);
     controlPanel.add(pauseResourceCycleButton);
+  }
+
+  private void createResumeButton() {
+    JButton resumeResourceCycleButton = new JButton("Resume Resource Cycle");
+
+    resumeResourceCycleButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        controller.resumeResourceCycle();
+        setStatusLabel("Resumed cycle");
+      }
+    });
+
+    controlPanel.add(resumeResourceCycleButton);
   }
 
   private void setStatusLabel(String statusText) {
@@ -99,7 +119,7 @@ public class ControlPanel {
       @Override
       public void run() {
         try {
-          Thread.sleep(15 * 1000);
+          Thread.sleep(SECONDS_BEFORE_LABEL_CLEAR * 1000);
         }
         catch (InterruptedException e) {
           e.printStackTrace();

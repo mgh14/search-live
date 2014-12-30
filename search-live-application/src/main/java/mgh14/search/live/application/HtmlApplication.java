@@ -78,7 +78,7 @@ public class HtmlApplication {
       Integer.parseInt((String) application.getProperty("default-num-seconds-to-sleep"));
     application.validateSecondsToSleep(secondsToSleep);
 
-    final CycleCommand startCommand = new CycleCommand(CycleAction.START, "searchString:" +
+    final CycleCommand startCommand = new CycleCommand(CycleAction.START_SERVICE, "searchString:" +
       line.getOptionValue("query") + ";secondsToSleep:" + secondsToSleep);
     final CommandExecutor commandExecutor = context.getBean(CommandExecutor.class);
     commandExecutor.addCommandToQueue(startCommand);
