@@ -1,5 +1,8 @@
 package mgh14.search.live.service;
 
+import mgh14.search.live.model.messaging.CycleAction;
+import mgh14.search.live.model.messaging.CycleCommand;
+
 /**
  * UI Controller that gives commands to the model's
  * command executor.
@@ -12,7 +15,11 @@ public class SaveController {
     this.executor = executor;
   }
 
-  /*public String saveCurrentImage() {
+  public void pauseResourceCycle() {
+    executor.addCommandToQueue(new CycleCommand(CycleAction.PAUSE, null));
+  }
+
+/*  public String saveCurrentImage() {
     return cycler.saveCurrentImage();
   }*/
 }

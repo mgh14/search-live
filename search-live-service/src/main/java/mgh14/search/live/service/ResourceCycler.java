@@ -35,6 +35,8 @@ public class ResourceCycler {
   private WallpaperDeleter deleter;
   private String searchStringFolder;
 
+  private boolean cycleRunning;
+
   public ResourceCycler(final ResourceUrlGetter resourceUrlGetter) {
     this.resourceUrlGetter = resourceUrlGetter;
     queue = new ConcurrentLinkedQueue<String>();
@@ -50,6 +52,7 @@ public class ResourceCycler {
   }
 
   public void startCycle(final String searchString, final int secondsToSleep) {
+    cycleRunning = true;
     if(searchString == null || searchString.isEmpty()) {
       Log.error("Please enter a search query (e.g. \"desktop wallpaper\"");
       return;
@@ -64,32 +67,39 @@ public class ResourceCycler {
     WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
     Log.debug("Starting wallpaper cycle...");
     while (true) {
-      long startTime = System.currentTimeMillis();
-      while (queue.isEmpty()) {
-        if (System.currentTimeMillis() - startTime > SECONDS_TO_TIMEOUT * 1000) {
-          Log.info("Waited {} seconds, queue is still empty...exiting",
-            SECONDS_TO_TIMEOUT);
-          System.exit(0);
+      if (cycleRunning) {
+        long startTime = System.currentTimeMillis();
+        while (queue.isEmpty()) {
+          if (System.currentTimeMillis() - startTime > SECONDS_TO_TIMEOUT * 1000) {
+            Log.info("Waited {} seconds, queue is still empty...exiting",
+              SECONDS_TO_TIMEOUT);
+            System.exit(0);
+          }
         }
-      }
 
-      final String filename = queue.poll();
-      if (canOpenImage(filename)) {
-        filenames.add(filename);
-        absoluteCurrentFilename = filename;
+        final String filename = queue.poll();
+        if (canOpenImage(filename)) {
+          filenames.add(filename);
+          absoluteCurrentFilename = filename;
 
-        // set image to desktop
-        setter.setDesktopWallpaper(filename);
+          // set image to desktop
+          setter.setDesktopWallpaper(filename);
 
-        // sleep for x milliseconds (enjoy the background!)
-        sleep(secondsToSleep * 1000);
-      } else {
-        Log.error("Couldn\'t open file: [{}]. " +
-          "Deleting and moving to next resource...", filename);
-        deleter.deleteFile(new File(filename).toPath());
+          // sleep for x milliseconds (enjoy the background!)
+          sleep(secondsToSleep * 1000);
+        }
+        else {
+          Log.error("Couldn\'t open file: [{}]. " +
+            "Deleting and moving to next resource...", filename);
+          deleter.deleteFile(new File(filename).toPath());
+        }
       }
     }
 
+  }
+
+  public void pauseCycle() {
+    cycleRunning = false;
   }
 
   public boolean canOpenImage(String absoluteFilepath) {

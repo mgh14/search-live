@@ -59,10 +59,12 @@ public class ControlPanel {
 
   private void createSaveButton(){
     JButton saveCurrentResourceButton = new JButton("Save Current Image");
+    JButton pauseResourceCycleButton = new JButton("Pause Resource Cycle");
 
     saveCurrentResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        statusLabel.setText("Image saved.");
+        setStatusLabel("not implemented yet");
+        /*statusLabel.setText("Image saved.");
         final String fileSaved = controller.saveCurrentImage();
         Log.info("Saving current image [{}]...", fileSaved);
         if(fileSaved != null && !fileSaved.isEmpty() && !fileSaved.equals("null")) {
@@ -70,12 +72,38 @@ public class ControlPanel {
         }
         else {
           Log.error("Image couldnt be saved: [{}]", fileSaved);
-        }
+        }*/
       }
     });
 
+    pauseResourceCycleButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        controller.pauseResourceCycle();
+        setStatusLabel("Paused cycle");
+      }
+    });
+
+
     controlPanel.add(saveCurrentResourceButton);
+    controlPanel.add(pauseResourceCycleButton);
     mainFrame.setVisible(true);
+  }
+
+  private void setStatusLabel(String statusText) {
+    statusLabel.setText(statusText);
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          Thread.sleep(15 * 1000);
+        }
+        catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+
+        statusLabel.setText("");
+      }
+    }).start();
   }
 
 }
