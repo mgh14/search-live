@@ -16,8 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for constructing the SearchLive control
- * panel GUI
+ * Class for constructing the SearchLive control panel GUI
  */
 public class ControlPanel {
 
@@ -38,7 +37,7 @@ public class ControlPanel {
 
   private void prepareGui() {
     mainFrame = new JFrame("SearchLive Control Panel");
-    mainFrame.setSize(200, 200);
+    mainFrame.setSize(200, 240);
     mainFrame.setLayout(new GridLayout(3, 1));
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent){
