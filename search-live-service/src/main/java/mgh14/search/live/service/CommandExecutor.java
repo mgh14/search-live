@@ -59,6 +59,9 @@ public class CommandExecutor {
         Log.info("Resuming cycle...");
         resourceCycler.resumeCycle();
       }
+      if (CycleAction.NEXT.equals(action)) {
+        processNext();
+      }
       if (CycleAction.SAVE.equals(action)) {
         processSave();
       }
@@ -84,10 +87,25 @@ public class CommandExecutor {
     });
   }
 
+  private void processNext() {
+    Log.info("Getting next resource in the cycle...");
+    resourceCycler.getNextResource();
+  }
+
   private void processSave() {
     Log.info("Image saved: [{}]", resourceCycler.saveCurrentImage());
 
     //TODO: How will UI be notified now?
+  }
+
+  private void processShutdown() {
+    Log.debug("Shutting down application...");
+
+    Log.debug("Shutting down executor service...");
+    executorService.shutdown();
+
+    Log.debug("Finished application shutdown.");
+    System.exit(0);
   }
 
   private Map<String, String> getPropsFromBody(String body) {
@@ -102,16 +120,5 @@ public class CommandExecutor {
 
     return properties;
   }
-
-  private void processShutdown() {
-    Log.debug("Shutting down application...");
-
-    Log.debug("Shutting down executor service...");
-    executorService.shutdown();
-
-    Log.debug("Finished application shutdown.");
-    System.exit(0);
-  }
-
 
 }

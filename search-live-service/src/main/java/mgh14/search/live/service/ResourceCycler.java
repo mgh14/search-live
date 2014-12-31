@@ -47,10 +47,13 @@ public class ResourceCycler {
   private String searchStringFolder;
 
   private boolean cycleRunning;
+  private boolean getNextResource;
 
   public ResourceCycler() {
     absoluteCurrentFilename = null;
     searchStringFolder = null;
+    setCycleRunning(false);
+    setGetNextResource(false);
   }
 
   public void startCycle(final String searchString, final int secondsToSleep) {
@@ -65,7 +68,7 @@ public class ResourceCycler {
 
     queueLoader.startResourceDownloads(resourceUrlGetter);
 
-    // run wallpaper cycle
+    // run resource cycle
     WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
     Log.debug("Starting wallpaper cycle...");
     while (true) {
@@ -88,7 +91,14 @@ public class ResourceCycler {
           setter.setDesktopWallpaper(filename);
 
           // sleep for x milliseconds (enjoy the background!)
-          sleep(secondsToSleep * 1000);
+          final long secondsToSleepInMillis = secondsToSleep * 1000;
+          final long sleepStartTime = System.currentTimeMillis();
+          while (!(getBool()) && (System.currentTimeMillis() - sleepStartTime) < secondsToSleepInMillis) {
+          }
+          if (getBool()) {
+            Log.info("Skipping to next resource..." + (System.currentTimeMillis() - sleepStartTime));
+            setGetNextResource(false);
+          }
         }
         else {
           Log.error("Couldn't open file: [{}]. " +
@@ -108,6 +118,11 @@ public class ResourceCycler {
     setCycleRunning(true);
   }
 
+  public void getNextResource() {
+    Log.info("setting get next resource");
+    setGetNextResource(true);
+  }
+
   public String saveCurrentImage() {
     final String filename = absoluteCurrentFilename.substring(
       absoluteCurrentFilename.lastIndexOf("\\"));
@@ -124,6 +139,9 @@ public class ResourceCycler {
     return absoluteCurrentFilename;
   }
 
+  public boolean getBool() {
+    return getNextResource;
+  }
   private boolean canOpenImage(String absoluteFilepath) {
     BufferedImage image;
     try {
@@ -148,6 +166,10 @@ public class ResourceCycler {
 
   private void setCycleRunning(boolean cycleRunning) {
     this.cycleRunning = cycleRunning;
+  }
+
+  private void setGetNextResource(boolean getNextResource) {
+    this.getNextResource = getNextResource;
   }
 
 }
