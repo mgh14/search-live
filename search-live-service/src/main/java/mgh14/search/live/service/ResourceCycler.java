@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.imageio.ImageIO;
 
 import mgh14.search.live.model.wallpaper.WallpaperDeleter;
@@ -40,25 +41,30 @@ public class ResourceCycler {
   private QueueLoader queueLoader;
 
   @Autowired
+  private WindowsWallpaperSetter setter;
+
+  @Autowired
   private WallpaperDeleter deleter;
 
   private List<String> filenames = new LinkedList<String>();
   private String absoluteCurrentFilename;
   private String searchStringFolder;
 
-  private boolean cycleRunning;
-  private boolean getNextResource;
+  private AtomicBoolean isCycleActive;
+  private AtomicBoolean getNextResource;
 
   public ResourceCycler() {
     absoluteCurrentFilename = null;
     searchStringFolder = null;
-    setCycleRunning(false);
+
+    isCycleActive = new AtomicBoolean();
+    setCycleActive(true);
+    getNextResource = new AtomicBoolean();
     setGetNextResource(false);
   }
 
   public void startCycle(final String searchString, final int secondsToSleep) {
-    setCycleRunning(true);
-    if(searchString == null || searchString.isEmpty()) {
+    if (searchString == null || searchString.isEmpty()) {
       Log.error("Please enter a search query (e.g. \"desktop wallpaper\"");
       return;
     }
@@ -69,10 +75,15 @@ public class ResourceCycler {
     queueLoader.startResourceDownloads(resourceUrlGetter);
 
     // run resource cycle
-    WindowsWallpaperSetter setter = new WindowsWallpaperSetter();
+    runCycle(secondsToSleep);
+  }
+
+  private void runCycle(final int secondsToSleep) {
     Log.debug("Starting wallpaper cycle...");
-    while (true) {
-      if (cycleRunning) {
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        while (true) {
         long startTime = System.currentTimeMillis();
         while (queue.isEmpty()) {
           if (System.currentTimeMillis() - startTime > SECONDS_TO_TIMEOUT * 1000) {
@@ -82,44 +93,50 @@ public class ResourceCycler {
           }
         }
 
-        final String filename = queue.poll();
-        if (canOpenImage(filename)) {
-          filenames.add(filename);
-          absoluteCurrentFilename = filename;
+          if (isCycleActive.get()) {
+            String filename = queue.poll();
+            if (canOpenImage(filename)) {
+              filenames.add(filename);
+              absoluteCurrentFilename = filename;
 
-          // set image to desktop
-          setter.setDesktopWallpaper(filename);
+              // set image to desktop
+              setter.setDesktopWallpaper(filename);
 
-          // sleep for x milliseconds (enjoy the background!)
-          final long secondsToSleepInMillis = secondsToSleep * 1000;
-          final long sleepStartTime = System.currentTimeMillis();
-          while (!(getBool()) && (System.currentTimeMillis() - sleepStartTime) < secondsToSleepInMillis) {
+              // sleep for x milliseconds (enjoy the background!)
+              final long secondsToSleepInMillis = secondsToSleep * 1000;
+              final long sleepStartTime = System.currentTimeMillis();
+              while (!(getNextResource.get()) &&
+                (System.currentTimeMillis() - sleepStartTime) <
+                  secondsToSleepInMillis) {
+              }
+              if (getNextResource.get()) {
+                Log.info("Skipping to next resource...");
+                setGetNextResource(false);
+              }
+            }
+            else {
+              Log.error("Couldn't open file: [{}]. " +
+                "Deleting and moving to next resource...", filename);
+              deleter.deleteFile(new File(filename).toPath());
+            }
           }
-          if (getBool()) {
-            Log.info("Skipping to next resource..." + (System.currentTimeMillis() - sleepStartTime));
-            setGetNextResource(false);
-          }
-        }
-        else {
-          Log.error("Couldn't open file: [{}]. " +
-            "Deleting and moving to next resource...", filename);
-          deleter.deleteFile(new File(filename).toPath());
         }
       }
-    }
-
+    }).start();
   }
 
   public void pauseCycle() {
-    setCycleRunning(false);
+    Log.debug("Pausing resource cycle...");
+    setCycleActive(false);
   }
 
   public void resumeCycle() {
-    setCycleRunning(true);
+    Log.debug("Resuming resource cycle...");
+    setCycleActive(true);
   }
 
   public void getNextResource() {
-    Log.info("setting get next resource");
+    Log.debug("Getting next resource...");
     setGetNextResource(true);
   }
 
@@ -139,14 +156,12 @@ public class ResourceCycler {
     return absoluteCurrentFilename;
   }
 
-  public boolean getBool() {
-    return getNextResource;
-  }
   private boolean canOpenImage(String absoluteFilepath) {
     BufferedImage image;
     try {
       image = ImageIO.read(new File(absoluteFilepath));
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       return false;
     }
 
@@ -155,21 +170,12 @@ public class ResourceCycler {
       && image.getHeight() > pixelTolerance);
   }
 
-  private void sleep(int milliseconds) {
-    try {
-      Thread.sleep(milliseconds);
-    }
-    catch (InterruptedException e) {
-      Log.debug("Interrupted sleep cycle", e);
-    }
+  private void setCycleActive(boolean cycleActive) {
+    isCycleActive.set(cycleActive);
   }
 
-  private void setCycleRunning(boolean cycleRunning) {
-    this.cycleRunning = cycleRunning;
-  }
-
-  private void setGetNextResource(boolean getNextResource) {
-    this.getNextResource = getNextResource;
+  private void setGetNextResource(boolean newGetNextResource) {
+    getNextResource.set(newGetNextResource);
   }
 
 }
