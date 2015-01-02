@@ -28,6 +28,9 @@ public class QueueLoader {
   private Map<String, String> urlsToFilenames = new HashMap<String, String>();
 
   @Autowired
+  private ResourceUrlGetter resourceUrlGetter;
+
+  @Autowired
   private ConcurrentLinkedQueue<String> resourceQueue;
 
   @Autowired
@@ -40,7 +43,7 @@ public class QueueLoader {
       System.currentTimeMillis() + filetype;
   }
 
-  public void startResourceDownloads(final ResourceUrlGetter resourceUrlGetter) {
+  public void startResourceDownloads() {
     executorService.execute(new Runnable() {
       public void run() {
         ImageSaver imageSaver = new ImageSaver();
@@ -78,7 +81,8 @@ public class QueueLoader {
         counter = 0;
       }*/
 
-        Log.info("Finished downloads");
+        Log.info("Finished downloads. Loaded [{}] resources into resource list.",
+          urlsToFilenames.size());
       }
     });
   }

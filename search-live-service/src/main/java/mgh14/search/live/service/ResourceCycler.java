@@ -80,7 +80,7 @@ public class ResourceCycler {
     searchStringFolder = searchString.replace(" ", "-") + DIRECTORY_TIME_APPENDER
       + System.currentTimeMillis() + "\\";
 
-    queueLoader.startResourceDownloads(resourceUrlGetter);
+    queueLoader.startResourceDownloads();
 
     // run resource cycle
     runCycle();
