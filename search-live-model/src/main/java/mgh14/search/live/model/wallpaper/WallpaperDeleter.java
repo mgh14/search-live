@@ -32,15 +32,15 @@ public class WallpaperDeleter {
 
     try {
       Files.delete(filepath);
+      Log.debug("File deletion finished for [{}].", filepath);
     } catch (NoSuchFileException x) {
-      System.out.format("%s: no such file or directory%n", filepath);
+      Log.info("No such file or directory: [{}]", filepath);
     } catch (DirectoryNotEmptyException x) {
-      System.out.format("%s not empty%n", filepath);
+      Log.info("Directory not empty: [{}]", filepath);
     } catch (IOException x) {
       x.printStackTrace();
     }
 
-    Log.debug("File deletion finished for [{}].", filepath);
   }
 
   public void deleteExpiredFiles(final File folder) {
