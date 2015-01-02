@@ -48,7 +48,7 @@ public class WallpaperDeleter {
     Log.info("Deleting expired pictures for timestamp {}...", currentTime);
 
     if(folder != null && folder.listFiles() != null) {
-      long expiryPeriod = 24 * 60 * 60 * 1000;   // 1 day (in milliseconds)
+      long expiryPeriod = 5 * 24 * 60 * 60 * 1000;   // 5 days (in milliseconds)
 
       for (final File fileEntry : folder.listFiles()) {
         if (fileEntry.isDirectory()) {
