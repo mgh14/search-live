@@ -49,8 +49,8 @@ public class ControlPanel {
 
   private void prepareGui() {
     mainFrame = new JFrame("SearchLive Control Panel");
-    mainFrame.setSize(200, 440);
-    mainFrame.setLayout(new GridLayout(3, 1));
+    mainFrame.setSize(200, 250);
+    mainFrame.setLayout(new FlowLayout());
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent){
         controller.shutdownApplication();
@@ -61,7 +61,7 @@ public class ControlPanel {
     statusLabel.setSize(350, 100);
 
     controlPanel = new JPanel();
-    controlPanel.setLayout(new FlowLayout());
+    controlPanel.setLayout(new GridLayout(0, 1));
 
     mainFrame.add(controlPanel);
     mainFrame.add(statusLabel);
