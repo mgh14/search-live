@@ -150,7 +150,7 @@ public class ControlPanel {
           Thread.sleep(SECONDS_BEFORE_LABEL_CLEAR * 1000);
         }
         catch (InterruptedException e) {
-          e.printStackTrace();
+          Log.error("Interrupted exception: ", e);
         }
 
         statusLabel.setText("");
