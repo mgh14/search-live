@@ -25,6 +25,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
   private static final String HOST = "https://www.bing.com/";
   private static final String SEARCH_PATH = "/search?q=";
+  private static final String PAGE_PARAM = " page ";
   private static final int FIRST_PAGE_TO_GET = 1;
 
   private List<URI> allResourceUris;
@@ -83,7 +84,8 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
       }
     }
     allResourceUris.addAll(pageResources);
-
+    Log.info("Retrieved {} URI's from document with search string \"{}\"",
+      pageResources.size(), searchString);
     // prepare search url for next page of results
     prepareSearchStringForPagination();
 
@@ -91,20 +93,19 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   }
 
   private void prepareSearchStringForPagination() {
-    String pageParam = " page ";
     if (pageToGet != FIRST_PAGE_TO_GET) {
       String newSearchString =  searchString.substring(0,
-        searchString.lastIndexOf(pageParam));
-      newSearchString += pageParam + (pageToGet + 1);
+        searchString.lastIndexOf(PAGE_PARAM));
+      newSearchString += PAGE_PARAM + (pageToGet + 1);
       searchString = newSearchString;
     }
     else {
       // add 'page <x>' to query string for further pagination
-      searchString += " page " + (FIRST_PAGE_TO_GET + 1);
+      searchString += PAGE_PARAM + (FIRST_PAGE_TO_GET + 1);
     }
     pageToGet++;
 
-    Log.debug("New search string assigned: [{}]", searchString);
+    Log.debug("Next (paginated) search string assigned: [{}]", searchString);
   }
 
   private Document getSearchDocument(String searchString) {
