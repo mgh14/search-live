@@ -27,6 +27,7 @@ public class ResourceCycler {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
+  private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
   private static final int SECONDS_TO_TIMEOUT = 30;
   private static final String BASE_SAVE_DIRECTORY = "C:\\Users\\mgh14\\Pictures\\";
   private static final String DIRECTORY_TIME_APPENDER = "-time";
@@ -49,6 +50,7 @@ public class ResourceCycler {
   private List<String> filenames = new LinkedList<String>();
   private String absoluteCurrentFilename;
   private String searchStringFolder;
+  private int secondsToSleep;
 
   private AtomicBoolean isCycleActive;
   private AtomicBoolean getNextResource;
@@ -57,13 +59,19 @@ public class ResourceCycler {
     absoluteCurrentFilename = null;
     searchStringFolder = null;
 
+    setSecondsToSleep(DEFAULT_SECONDS_TO_SLEEP);
+
     isCycleActive = new AtomicBoolean();
     setCycleActive(true);
     getNextResource = new AtomicBoolean();
     setGetNextResource(false);
   }
 
-  public void startCycle(final String searchString, final int secondsToSleep) {
+  public void setSecondsToSleep(int secondsToSleep) {
+    this.secondsToSleep = secondsToSleep;
+  }
+
+  public void startCycle(final String searchString) {
     if (searchString == null || searchString.isEmpty()) {
       Log.error("Please enter a search query (e.g. \"desktop wallpaper\"");
       return;
@@ -75,10 +83,10 @@ public class ResourceCycler {
     queueLoader.startResourceDownloads(resourceUrlGetter);
 
     // run resource cycle
-    runCycle(secondsToSleep);
+    runCycle();
   }
 
-  private void runCycle(final int secondsToSleep) {
+  private void runCycle() {
     Log.debug("Starting wallpaper cycle...");
     new Thread(new Runnable() {
       @Override

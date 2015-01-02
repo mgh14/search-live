@@ -81,8 +81,7 @@ public class CommandExecutor {
     executorService.execute(new Runnable() {
       @Override
       public void run() {
-        resourceCycler.startCycle(properties.get("searchString"),
-          Integer.parseInt(properties.get("secondsToSleep")));
+        resourceCycler.startCycle(properties.get("searchString"));
       }
     });
   }

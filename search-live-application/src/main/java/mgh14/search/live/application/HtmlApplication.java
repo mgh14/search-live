@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 
 import mgh14.search.live.model.web.BingHtmlResourceUrlGetter;
 import mgh14.search.live.service.CommandExecutor;
+import mgh14.search.live.service.ResourceCycler;
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
 import org.apache.commons.cli.CommandLine;
@@ -77,9 +78,10 @@ public class HtmlApplication {
       Integer.parseInt(line.getOptionValue("sleepTime")) :
       Integer.parseInt((String) application.getProperty("default-num-seconds-to-sleep"));
     application.validateSecondsToSleep(secondsToSleep);
+    context.getBean(ResourceCycler.class).setSecondsToSleep(secondsToSleep);
 
     final CycleCommand startCommand = new CycleCommand(CycleAction.START_SERVICE, "searchString:" +
-      line.getOptionValue("query") + ";secondsToSleep:" + secondsToSleep);
+      line.getOptionValue("query") + ";");
     final CommandExecutor commandExecutor = context.getBean(CommandExecutor.class);
     commandExecutor.addCommandToQueue(startCommand);
 
