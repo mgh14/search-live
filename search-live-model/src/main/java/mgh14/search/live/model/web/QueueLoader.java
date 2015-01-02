@@ -76,7 +76,7 @@ public class QueueLoader {
         }
 
         // refresh resource URI's if limit reached
-        if (resourceUrlGetter.getNumPagesRetrieved() <= numPagesToRetrieve) {
+        if (resourceUrlGetter.getNumPagesRetrieved() < numPagesToRetrieve) {
           System.out.println("Reached end of resource list for " +
             "page. Refreshing list...");
           startResourceDownloads();
