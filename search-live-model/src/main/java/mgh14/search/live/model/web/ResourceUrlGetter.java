@@ -11,4 +11,6 @@ public interface ResourceUrlGetter {
   void setSearchString(String searchString);
 
   List<URI> getResources();
+
+  int getNumPagesRetrieved();
 }

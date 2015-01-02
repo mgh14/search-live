@@ -51,6 +51,10 @@ public class BingApiResourceUrlGetter implements ResourceUrlGetter {
     this.authHeader = AUTH_HEADER_VALUE.replace("{}", authToken);
   }
 
+  public int getNumPagesRetrieved() {
+    return pageToGet - 1;
+  }
+
   public List<URI> getResources() {
     final List<URI> pagedUris = new LinkedList<URI>();
     final JSONArray array = getMediaUrlArray(searchString, pageToGet++);

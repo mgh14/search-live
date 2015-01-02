@@ -25,17 +25,20 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
   private static final String HOST = "https://www.bing.com/";
   private static final String SEARCH_PATH = "/search?q=";
+  private static final int FIRST_PAGE_TO_GET = 1;
 
   private List<URI> allResourceUris;
   private String resourceType;
   private String searchString;
   private int numResultsToGet;
+  private int pageToGet;
 
   public BingHtmlResourceUrlGetter() {
     allResourceUris = new LinkedList<URI>();
     setResourceType(null);
     setSearchString(null);
     setNumResultsToGet(0);
+    setPageToGet(FIRST_PAGE_TO_GET);
   }
 
   public void setResourceType(String resourceType) {
@@ -51,28 +54,57 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   }
 
   @Override
-  public List<URI> getResources() {
-    // Recycle wallpaper if it has already been retrieved
-    if (!allResourceUris.isEmpty()) {
-      return allResourceUris;
-    }
+  public int getNumPagesRetrieved() {
+    return pageToGet - 1;
+  }
 
-    // Otherwise, fetch the wallpaper URL's
+  private void setPageToGet(int pageToGet) {
+    if (pageToGet < 1) {
+      throw new IllegalArgumentException("Can't get a page less than one.");
+    }
+    this.pageToGet = pageToGet;
+  }
+
+  @Override
+  public List<URI> getResources() {
+    // fetch the resource URL's
+    final List<URI> pageResources = new LinkedList<URI>();
     final Document doc = getSearchDocument(searchString);
     if (doc != null) {
       final Elements resourcesDetails = doc.select("a[m]");
       for (Element link : resourcesDetails) {
-        if (allResourceUris.size() >= numResultsToGet) {
+        if (pageResources.size() >= numResultsToGet) {
           Log.info("Reached result limit of {}. Not adding more resources",
             numResultsToGet);
           break;
         }
 
-        allResourceUris.add(parseResource(link.attr("abs:m")));
+        pageResources.add(parseResource(link.attr("abs:m")));
       }
     }
+    allResourceUris.addAll(pageResources);
 
-    return allResourceUris;
+    // prepare search url for next page of results
+    prepareSearchStringForPagination();
+
+    return pageResources;
+  }
+
+  private void prepareSearchStringForPagination() {
+    String pageParam = " page ";
+    if (pageToGet != FIRST_PAGE_TO_GET) {
+      String newSearchString =  searchString.substring(0,
+        searchString.lastIndexOf(pageParam));
+      newSearchString += pageParam + (pageToGet + 1);
+      searchString = newSearchString;
+    }
+    else {
+      // add 'page <x>' to query string for further pagination
+      searchString += " page " + (FIRST_PAGE_TO_GET + 1);
+    }
+    pageToGet++;
+
+    Log.debug("New search string assigned: [{}]", searchString);
   }
 
   private Document getSearchDocument(String searchString) {

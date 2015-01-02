@@ -26,6 +26,7 @@ public class QueueLoader {
   private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
 
   private Map<String, String> urlsToFilenames = new HashMap<String, String>();
+  private int numPagesToRetrieve = 3;
 
   @Autowired
   private ResourceUrlGetter resourceUrlGetter;
@@ -75,14 +76,15 @@ public class QueueLoader {
         }
 
         // refresh resource URI's if limit reached
-      /*if (++counter >= numResults) {
-        System.out.println("Reached end of resource list. Refreshing list...");
-        queueLoader.startResourceDownloads(resourceUrlGetter);
-        counter = 0;
-      }*/
-
-        Log.info("Finished downloads. Loaded [{}] resources into resource list.",
-          urlsToFilenames.size());
+        if (resourceUrlGetter.getNumPagesRetrieved() <= numPagesToRetrieve) {
+          System.out.println("Reached end of resource list for " +
+            "page. Refreshing list...");
+          startResourceDownloads();
+        }
+        else {
+          Log.info("Finished downloads. Loaded [{}] resource URI's into resource list.",
+            urlsToFilenames.size());
+        }
       }
     });
   }
