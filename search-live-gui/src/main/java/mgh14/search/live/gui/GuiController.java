@@ -32,6 +32,10 @@ public class GuiController {
     executor.addCommandToQueue(new CycleCommand(CycleAction.SAVE));
   }
 
+  public void deleteAllResources() {
+    executor.addCommandToQueue(new CycleCommand(CycleAction.DELETE_RESOURCES));
+  }
+
   public void shutdownApplication() {
     executor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN));
   }

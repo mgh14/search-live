@@ -65,6 +65,9 @@ public class CommandExecutor {
       if (CycleAction.SAVE.equals(action)) {
         processSave();
       }
+      if (CycleAction.DELETE_RESOURCES.equals(action)) {
+        processDeleteResourceCache();
+      }
       if (CycleAction.SHUTDOWN.equals(action)) {
         processShutdown();
       }
@@ -95,6 +98,11 @@ public class CommandExecutor {
     Log.info("Image saved: [{}]", resourceCycler.saveCurrentImage());
 
     //TODO: How will UI be notified now?
+  }
+
+  private void processDeleteResourceCache() {
+    Log.info("Deleting resource cache...");
+    resourceCycler.deleteAllResources();
   }
 
   private void processShutdown() {

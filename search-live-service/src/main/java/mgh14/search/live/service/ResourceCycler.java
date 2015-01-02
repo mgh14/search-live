@@ -148,6 +148,11 @@ public class ResourceCycler {
     setGetNextResource(true);
   }
 
+  public void deleteAllResources() {
+    Log.debug("Deleting all resources...");
+    deleter.deleteAllResources();
+  }
+
   public String saveCurrentImage() {
     final String filename = absoluteCurrentFilename.substring(
       absoluteCurrentFilename.lastIndexOf("\\"));

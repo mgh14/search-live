@@ -20,6 +20,9 @@ public class WallpaperDeleter {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
+  public static final File resourceFolder =
+    new File("C:\\Users\\mgh14\\Pictures\\screen-temp\\");
+
   public void deleteFile(Path filepath) {
     if(filepath == null) {
       return;
@@ -64,6 +67,15 @@ public class WallpaperDeleter {
     }
 
     Log.info("Finished deleting expired pictures for timestamp {}", currentTime);
+  }
+
+  public void deleteAllResources() {
+    Log.info("Deleting all resources...");
+    if(resourceFolder.listFiles() != null) {
+      for (final File fileEntry : resourceFolder.listFiles()) {
+        fileEntry.delete();
+      }
+    }
   }
 
   private void deleteExpiredFile(Path filepath) {

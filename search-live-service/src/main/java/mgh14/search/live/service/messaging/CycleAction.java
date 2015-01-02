@@ -11,6 +11,7 @@ public enum CycleAction {
   NEXT,
   PREVIOUS,
   SAVE,
+  DELETE_RESOURCES,
   SHUTDOWN,
   NOP
 }

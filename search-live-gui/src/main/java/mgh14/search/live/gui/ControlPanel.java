@@ -44,6 +44,7 @@ public class ControlPanel {
     createPauseButton();
     createResumeButton();
     createNextButton();
+    createDeleteAllResourcesButton();
   }
 
   private void prepareGui() {
@@ -125,6 +126,19 @@ public class ControlPanel {
     });
 
     controlPanel.add(nextResourceButton);
+  }
+
+  private void createDeleteAllResourcesButton() {
+    JButton deleteAllResources = new JButton("Delete All Resources");
+
+    deleteAllResources.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        controller.deleteAllResources();
+        setStatusLabel("Resources deleted.");
+      }
+    });
+
+    controlPanel.add(deleteAllResources);
   }
 
   private void setStatusLabel(String statusText) {
