@@ -55,7 +55,7 @@ public class ControlPanel {
 
     try {
       UIManager.setLookAndFeel(
-        UIManager.getCrossPlatformLookAndFeelClassName());
+        UIManager.getSystemLookAndFeelClassName());
     }
     catch (ClassNotFoundException e) {
       Log.error(errorMessage, e);
