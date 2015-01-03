@@ -47,6 +47,7 @@ public class ControlPanel {
     createResumeButton();
     createNextButton();
     createDeleteAllResourcesButton();
+    mainFrame.revalidate();
   }
 
   private void setTheme() {
