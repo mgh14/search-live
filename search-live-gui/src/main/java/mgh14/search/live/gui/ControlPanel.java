@@ -11,6 +11,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +49,31 @@ public class ControlPanel {
     createDeleteAllResourcesButton();
   }
 
+  private void setTheme() {
+    final String errorMessage = "Error setting user interface theme. " +
+      "Setting default Java theme...\nStack trace: ";
+
+    try {
+      UIManager.setLookAndFeel(
+        UIManager.getCrossPlatformLookAndFeelClassName());
+    }
+    catch (ClassNotFoundException e) {
+      Log.error(errorMessage, e);
+    }
+    catch (InstantiationException e) {
+      Log.error(errorMessage, e);
+    }
+    catch (IllegalAccessException e) {
+      Log.error(errorMessage, e);
+    }
+    catch (UnsupportedLookAndFeelException e) {
+      Log.error(errorMessage, e);
+    }
+  }
+
   private void prepareGui() {
+    setTheme();
+
     mainFrame = new JFrame("SearchLive Control Panel");
     mainFrame.setSize(200, 250);
     mainFrame.setLayout(new FlowLayout());
