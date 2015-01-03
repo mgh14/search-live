@@ -121,7 +121,11 @@ public class ControlPanel {
     pauseResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         controller.pauseResourceCycle();
-        setStatusLabel("Paused cycle");
+
+        // Note: this setText method is used instead of the setStatusLabel
+        // method because the pause text should stay in the label until
+        // cycling resumes
+        statusLabel.setText("Paused cycle");
       }
     });
 
