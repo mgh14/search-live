@@ -93,13 +93,13 @@ public class ResourceCycler {
       public void run() {
         while (true) {
         long startTime = System.currentTimeMillis();
-        while (queue.isEmpty()) {
-          if (System.currentTimeMillis() - startTime > SECONDS_TO_TIMEOUT * 1000) {
-            Log.info("Waited {} seconds, queue is still empty...exiting",
-              SECONDS_TO_TIMEOUT);
-            System.exit(0);
+          while (queue.isEmpty()) {
+            if (System.currentTimeMillis() - startTime > SECONDS_TO_TIMEOUT * 1000) {
+              Log.info("Waited {} seconds, queue is still empty...exiting",
+                SECONDS_TO_TIMEOUT);
+              System.exit(0);
+            }
           }
-        }
 
           if (isCycleActive.get()) {
             String filename = queue.poll();
