@@ -86,6 +86,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
     allResourceUris.addAll(pageResources);
     Log.info("Retrieved {} URI's from document with search string \"{}\"",
       pageResources.size(), searchString);
+
     // prepare search url for next page of results
     prepareSearchStringForPagination();
 
