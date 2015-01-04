@@ -40,13 +40,6 @@ public class QueueLoader {
   @Autowired
   private ImageSaver imageSaver;
 
-  public String getRelativeResourceFilename(String resourceStr, int downloadNumber) {
-    // construct (local) filename
-    final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
-    return ROOT_DIR + "rsrc" + downloadNumber + "-" +
-      System.currentTimeMillis() + filetype;
-  }
-
   public void startResourceDownloads() {
     executorService.execute(new Runnable() {
       public void run() {
@@ -76,6 +69,13 @@ public class QueueLoader {
         }
       }
     });
+  }
+
+  private String getRelativeResourceFilename(String resourceStr, int downloadNumber) {
+    // construct (local) filename
+    final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
+    return ROOT_DIR + "rsrc" + downloadNumber + "-" +
+      System.currentTimeMillis() + filetype;
   }
 
   private String downloadResource(String resourceStr, String filename) {
