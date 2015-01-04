@@ -80,27 +80,18 @@ public class ResourceCycler {
     searchStringFolder = searchString.replace(" ", "-") + DIRECTORY_TIME_APPENDER
       + System.currentTimeMillis() + "\\";
 
-    queueLoader.startResourceDownloads();
-
     // run resource cycle
     runCycle();
   }
 
   private void runCycle() {
     Log.debug("Starting wallpaper cycle...");
+    queueLoader.startResourceDownloads();
+
     new Thread(new Runnable() {
       @Override
       public void run() {
         while (true) {
-        long startTime = System.currentTimeMillis();
-          while (queue.isEmpty()) {
-            if (System.currentTimeMillis() - startTime > SECONDS_TO_TIMEOUT * 1000) {
-              Log.info("Waited {} seconds, queue is still empty...exiting",
-                SECONDS_TO_TIMEOUT);
-              System.exit(0);
-            }
-          }
-
           if (isCycleActive.get()) {
             String filename = queue.poll();
             if (canOpenImage(filename)) {
@@ -112,15 +103,7 @@ public class ResourceCycler {
 
               // sleep for x milliseconds (enjoy the background!)
               final long secondsToSleepInMillis = secondsToSleep * 1000;
-              final long sleepStartTime = System.currentTimeMillis();
-              while (!(getNextResource.get()) &&
-                (System.currentTimeMillis() - sleepStartTime) <
-                  secondsToSleepInMillis) {
-              }
-              if (getNextResource.get()) {
-                Log.info("Skipping to next resource...");
-                setGetNextResource(false);
-              }
+              sleep(System.currentTimeMillis(), secondsToSleepInMillis);
             }
             else {
               Log.error("Couldn't open file: [{}]. " +
@@ -131,6 +114,17 @@ public class ResourceCycler {
         }
       }
     }).start();
+  }
+
+  private void sleep(final long sleepStartTime, long secondsToSleepInMillis) {
+    while (!getNextResource.get() &&
+      (System.currentTimeMillis() - sleepStartTime) <
+        secondsToSleepInMillis) {
+    }
+    if (getNextResource.get()) {
+      Log.info("Skipping to next resource...");
+      setGetNextResource(false);
+    }
   }
 
   public void pauseCycle() {
