@@ -37,6 +37,9 @@ public class QueueLoader {
   @Autowired
   private ExecutorService executorService;
 
+  @Autowired
+  private ImageSaver imageSaver;
+
   public String getRelativeResourceFilename(String resourceStr, int downloadNumber) {
     // construct (local) filename
     final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
@@ -47,8 +50,6 @@ public class QueueLoader {
   public void startResourceDownloads() {
     executorService.execute(new Runnable() {
       public void run() {
-        ImageSaver imageSaver = new ImageSaver();
-
         int downloadCounter = 0;
         List<URI> resourceUris = getShuffledResources(resourceUrlGetter);
         for (URI resource : resourceUris) {
@@ -57,22 +58,10 @@ public class QueueLoader {
           final String filename = getRelativeResourceFilename(resourceStr, ++downloadCounter);
 
           // download image
-          String finalFilename = null;
-          try {
-            if (!urlsToFilenames.containsKey(resourceStr)) {
-              finalFilename = imageSaver.saveImage(resourceStr, ROOT_DIR, filename);
-              if (!(finalFilename == null || finalFilename.trim().isEmpty())) {
-                makeFileReadableAndWriteable(finalFilename);
-                resourceQueue.add(finalFilename);
-              }
-            }
-          }
-          catch (IOException e) {
-            continue;
-          }
-
-          if(finalFilename != null)
+          String finalFilename = downloadResource(resourceStr, filename);
+          if(finalFilename != null) {
             urlsToFilenames.put(resourceStr, finalFilename);
+          }
         }
 
         // refresh resource URI's if limit reached
@@ -87,6 +76,24 @@ public class QueueLoader {
         }
       }
     });
+  }
+
+  private String downloadResource(String resourceStr, String filename) {
+    String finalFilename = null;
+    try {
+      if (!urlsToFilenames.containsKey(resourceStr)) {
+        finalFilename = imageSaver.saveImage(resourceStr, ROOT_DIR, filename);
+        if (!(finalFilename == null || finalFilename.trim().isEmpty())) {
+          makeFileReadableAndWriteable(finalFilename);
+          resourceQueue.add(finalFilename);
+        }
+      }
+    }
+    catch (IOException e) {
+      return null;
+    }
+
+    return finalFilename;
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
