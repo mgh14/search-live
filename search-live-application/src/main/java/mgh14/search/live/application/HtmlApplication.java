@@ -71,8 +71,6 @@ public class HtmlApplication {
     application.validateNumResults(numResults,
       Integer.parseInt((String) application.getProperty("max-num-results")));
     context.getBean(BingHtmlResourceUrlGetter.class).setNumResultsToGet(numResults);
-    context.getBean(ResourceCycler.class).setNumResultsToRetrieve(numResults);
-
 
     // validate secondsToSleep
     final int secondsToSleep = (line.hasOption("sleepTime")) ?

@@ -49,9 +49,6 @@ public class ResourceCycler {
   private String searchStringFolder;
   private int secondsToSleep;
 
-  // TODO: this field is for debugging. Will be removed later
-  private int numResultsToRetrieve;
-
   private AtomicBoolean isCycleActive;
   private AtomicBoolean getNextResource;
 
@@ -65,10 +62,6 @@ public class ResourceCycler {
     setCycleActive(true);
     getNextResource = new AtomicBoolean();
     setGetNextResource(false);
-  }
-
-  public void setNumResultsToRetrieve(int numResultsToRetrieve) {
-    this.numResultsToRetrieve = numResultsToRetrieve;
   }
 
   public void setSecondsToSleep(int secondsToSleep) {
