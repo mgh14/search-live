@@ -1,19 +1,16 @@
 package mgh14.search.live.service;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.imageio.ImageIO;
 
 import mgh14.search.live.model.wallpaper.WallpaperDeleter;
 import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
+import mgh14.search.live.model.web.ImageUtils;
 import mgh14.search.live.model.web.QueueLoader;
 import mgh14.search.live.model.web.ResourceUrlGetter;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,6 @@ public class ResourceCycler {
 
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
   private static final int SECONDS_TO_TIMEOUT = 30;
-  private static final String BASE_SAVE_DIRECTORY = "C:\\Users\\mgh14\\Pictures\\";
   private static final String DIRECTORY_TIME_APPENDER = "-time";
 
   @Autowired
@@ -46,6 +42,9 @@ public class ResourceCycler {
 
   @Autowired
   private WallpaperDeleter deleter;
+
+  @Autowired
+  private ImageUtils imageUtils;
 
   private List<String> filenames = new LinkedList<String>();
   private String absoluteCurrentFilename;
@@ -113,7 +112,7 @@ public class ResourceCycler {
               queueLoader.startResourceDownloads();
             }
 
-            if (canOpenImage(filename)) {
+            if (imageUtils.canOpenImage(filename)) {
               filenames.add(filename);
               absoluteCurrentFilename = filename;
 
@@ -133,17 +132,6 @@ public class ResourceCycler {
         }
       }
     }).start();
-  }
-
-  private void sleep(final long sleepStartTime, long secondsToSleepInMillis) {
-    while (!getNextResource.get() &&
-      (System.currentTimeMillis() - sleepStartTime) <
-        secondsToSleepInMillis) {
-    }
-    if (getNextResource.get()) {
-      Log.debug("Skipping to next resource...");
-      setGetNextResource(false);
-    }
   }
 
   public void pauseCycle() {
@@ -167,33 +155,7 @@ public class ResourceCycler {
   }
 
   public String saveCurrentImage() {
-    final String filename = absoluteCurrentFilename.substring(
-      absoluteCurrentFilename.lastIndexOf("\\"));
-
-    try {
-      FileUtils.copyFile(new File(absoluteCurrentFilename),
-        new File(BASE_SAVE_DIRECTORY + searchStringFolder + filename));
-    }
-    catch (IOException e) {
-      Log.error("IOException copying file: {}", absoluteCurrentFilename, e);
-      return null;
-    }
-
-    return absoluteCurrentFilename;
-  }
-
-  private boolean canOpenImage(String absoluteFilepath) {
-    BufferedImage image;
-    try {
-      image = ImageIO.read(new File(absoluteFilepath));
-    }
-    catch (Exception e) {
-      return false;
-    }
-
-    final int pixelTolerance = 5;
-    return (image != null && image.getWidth() > pixelTolerance
-      && image.getHeight() > pixelTolerance);
+    return imageUtils.saveImage(searchStringFolder, absoluteCurrentFilename);
   }
 
   private void setCycleActive(boolean cycleActive) {
@@ -202,6 +164,17 @@ public class ResourceCycler {
 
   private void setGetNextResource(boolean newGetNextResource) {
     getNextResource.set(newGetNextResource);
+  }
+
+  private void sleep(final long sleepStartTime, long secondsToSleepInMillis) {
+    while (!getNextResource.get() &&
+      (System.currentTimeMillis() - sleepStartTime) <
+        secondsToSleepInMillis) {
+    }
+    if (getNextResource.get()) {
+      Log.debug("Skipping to next resource...");
+      setGetNextResource(false);
+    }
   }
 
   private int getResourceNumFromFilename(String filename) {

@@ -1,5 +1,7 @@
 package mgh14.search.live.model.web;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +9,10 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.FileUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +24,43 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImageUtils {
 
+  public static final String BASE_SAVE_DIRECTORY = "C:\\Users\\mgh14\\Pictures\\";
+
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
+
   private Map<String, String> downloadedResources = new HashMap<String, String>();
 
-  public String saveImage(String resourceUrl, String ROOT_DIR,
+  public String saveImage(String searchStringFolder, String absoluteCurrentFilename) {
+    final String filename = absoluteCurrentFilename.substring(
+      absoluteCurrentFilename.lastIndexOf("\\"));
+
+    try {
+      FileUtils.copyFile(new File(absoluteCurrentFilename),
+        new File(BASE_SAVE_DIRECTORY + searchStringFolder + filename));
+    }
+    catch (IOException e) {
+      Log.error("IOException copying file: {}", absoluteCurrentFilename, e);
+      return null;
+    }
+
+    return absoluteCurrentFilename;
+  }
+
+  public boolean canOpenImage(String absoluteFilepath) {
+    BufferedImage image;
+    try {
+      image = ImageIO.read(new File(absoluteFilepath));
+    }
+    catch (Exception e) {
+      return false;
+    }
+
+    final int pixelTolerance = 5;
+    return (image != null && image.getWidth() > pixelTolerance
+      && image.getHeight() > pixelTolerance);
+  }
+
+  public String downloadImage(String resourceUrl, String ROOT_DIR,
     String localFilename) throws IOException {
 
     if (downloadedResources.keySet().contains(resourceUrl)) {

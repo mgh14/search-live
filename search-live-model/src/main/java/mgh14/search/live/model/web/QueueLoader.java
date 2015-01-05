@@ -86,7 +86,7 @@ public class QueueLoader {
     String finalFilename = null;
     try {
       if (!urlsToFilenames.containsKey(resourceStr)) {
-        finalFilename = imageUtils.saveImage(resourceStr, ROOT_DIR, filename);
+        finalFilename = imageUtils.downloadImage(resourceStr, ROOT_DIR, filename);
         if (!(finalFilename == null || finalFilename.trim().isEmpty())) {
           makeFileReadableAndWriteable(finalFilename);
           resourceQueue.add(finalFilename);
