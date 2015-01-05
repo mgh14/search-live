@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import mgh14.search.live.model.wallpaper.WallpaperDeleter;
@@ -28,6 +29,8 @@ public class ResourceCycler {
   private static final int SECONDS_TO_TIMEOUT = 30;
   private static final String DIRECTORY_TIME_APPENDER = "-time";
 
+  @Autowired
+  private ExecutorService executorService;
   @Autowired
   private ResourceUrlGetter resourceUrlGetter;
   @Autowired
@@ -89,7 +92,7 @@ public class ResourceCycler {
     Log.debug("Starting wallpaper cycle...");
     queueLoader.startResourceDownloads();
 
-    new Thread(new Runnable() {
+    executorService.execute(new Runnable() {
       @Override
       public void run() {
         while (true) {
@@ -128,7 +131,7 @@ public class ResourceCycler {
           }
         }
       }
-    }).start();
+    });
   }
 
   public void pauseCycle() {
