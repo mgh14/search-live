@@ -12,6 +12,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class QueueLoader {
   private Map<String, String> urlsToFilenames = new HashMap<String, String>();
   private Queue<URI> currentResourceUris = new ConcurrentLinkedQueue<URI>();
   private int numPagesToRetrieve = 3;
-  private int downloadCounter = 0;
+  private AtomicInteger downloadCounter = new AtomicInteger(0);
 
   private AtomicBoolean downloadsInProgress = new AtomicBoolean(false);
 
@@ -103,7 +104,7 @@ public class QueueLoader {
   private String getRelativeResourceFilename(String resourceStr) {
     // construct (local) filename
     final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
-    return ROOT_DIR + RESOURCE_FILENAME_PREPEND + ++downloadCounter +
+    return ROOT_DIR + RESOURCE_FILENAME_PREPEND + downloadCounter.incrementAndGet() +
       RESOURCE_FILENAME_TIMESTAMP_SEPARATOR + System.currentTimeMillis() +
       filetype;
   }
