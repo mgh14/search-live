@@ -44,6 +44,7 @@ public class QueueLoader {
   private Map<String, String> urlsToFilenames = new HashMap<String, String>();
   private Queue<URI> currentResourceUris = new ConcurrentLinkedQueue<URI>();
   private int numPagesToRetrieve = 3;
+  private int downloadCounter = 0;
 
   private AtomicBoolean downloadsInProgress = new AtomicBoolean(false);
 
@@ -53,14 +54,13 @@ public class QueueLoader {
     downloadsInProgress.set(true);
     executorService.execute(new Runnable() {
       public void run() {
-        int downloadCounter = 0;
         List<URI> resourceUris = getSetOfResourceUris();
 
         Log.info("Downloading {} resources...", resourceUris.size());
         for (URI resource : resourceUris) {
           // construct (local) filename
           final String resourceStr = resource.toString();
-          final String filename = getRelativeResourceFilename(resourceStr, ++downloadCounter);
+          final String filename = getRelativeResourceFilename(resourceStr);
 
           // download image
           String finalFilename = downloadResource(resourceStr, filename);
@@ -100,10 +100,10 @@ public class QueueLoader {
     return setOfResourceUris;
   }
 
-  private String getRelativeResourceFilename(String resourceStr, int downloadNumber) {
+  private String getRelativeResourceFilename(String resourceStr) {
     // construct (local) filename
     final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
-    return ROOT_DIR + RESOURCE_FILENAME_PREPEND + downloadNumber +
+    return ROOT_DIR + RESOURCE_FILENAME_PREPEND + ++downloadCounter +
       RESOURCE_FILENAME_TIMESTAMP_SEPARATOR + System.currentTimeMillis() +
       filetype;
   }

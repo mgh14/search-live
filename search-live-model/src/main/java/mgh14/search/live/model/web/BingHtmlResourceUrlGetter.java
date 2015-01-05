@@ -68,7 +68,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
   @Override
   public List<URI> getResources() {
-    // fetch the resource URL's
+    // fetch the resource URI's
     final List<URI> pageResources = new LinkedList<URI>();
     final Document doc = getSearchDocument(searchString);
     if (doc != null) {
