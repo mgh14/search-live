@@ -1,4 +1,4 @@
-package mgh14.search.live.gui;
+package mgh14.search.live.gui.controller;
 
 import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.messaging.CycleAction;

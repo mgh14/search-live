@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import mgh14.search.live.gui.controller.GuiController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +29,15 @@ public class ControlPanel {
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
   private static final int SECONDS_BEFORE_LABEL_CLEAR = 15;
 
-  private JFrame mainFrame;
-  private JLabel statusLabel;
-  private JPanel controlPanel;
-
   @Autowired
   private GuiController controller;
 
   @Autowired
   private ExecutorService executorService;
+
+  private JFrame mainFrame;
+  private JLabel statusLabel;
+  private JPanel controlPanel;
 
   public ControlPanel() {
     this.controller = null;
