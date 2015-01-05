@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * Class for downloading an image from the internet
+ * Class for downloading an image via a network
  */
 @Component
-public class ImageSaver {
+public class ImageUtils {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
   private Map<String, String> downloadedResources = new HashMap<String, String>();
