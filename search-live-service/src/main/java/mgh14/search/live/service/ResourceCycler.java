@@ -96,19 +96,17 @@ public class ResourceCycler {
       @Override
       public void run() {
         while (true) {
-          while (resourcesQueue.isEmpty()) {}
+          while (resourcesQueue.isEmpty()) {
+            if (!queueLoader.isDownloading()) {
+              queueLoader.startResourceDownloads();
+            }
+          }
 
           if (isCycleActive.get()) {
             // check that filename from queue is valid
             String filename = resourcesQueue.poll();
             if (filename == null) {
               continue;
-            }
-
-            // Check if more resources need to be downloaded
-            final int resourceNum = getResourceNumFromFilename(filename);
-            if (resourceNum % (numResultsToRetrieve - 1) == 0) {
-              queueLoader.startResourceDownloads();
             }
 
             // Set image to desktop and sleep

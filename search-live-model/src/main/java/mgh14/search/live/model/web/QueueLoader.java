@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +41,16 @@ public class QueueLoader {
   private Map<String, String> urlsToFilenames = new HashMap<String, String>();
   private int numPagesToRetrieve = 3;
 
+  private AtomicBoolean downloadsInProgress = new AtomicBoolean(false);
+
   public void startResourceDownloads() {
+    Log.debug("Download resources command invoked. Downloading...");
+    downloadsInProgress.set(true);
     executorService.execute(new Runnable() {
       public void run() {
         int downloadCounter = 0;
         List<URI> resourceUris = getShuffledResources(resourceUrlGetter);
+        Log.info("Downloading {} resources...", resourceUris.size());
         for (URI resource : resourceUris) {
           // construct (local) filename
           final String resourceStr = resource.toString();
@@ -56,6 +62,8 @@ public class QueueLoader {
             urlsToFilenames.put(resourceStr, finalFilename);
           }
         }
+
+        downloadsInProgress.set(false);
 
         /*// refresh resource URI's if limit reached
         if (resourceUrlGetter.getNumPagesRetrieved() < numPagesToRetrieve) {
@@ -69,6 +77,10 @@ public class QueueLoader {
         }*/
       }
     });
+  }
+
+  public boolean isDownloading() {
+    return downloadsInProgress.get();
   }
 
   private String getRelativeResourceFilename(String resourceStr, int downloadNumber) {
