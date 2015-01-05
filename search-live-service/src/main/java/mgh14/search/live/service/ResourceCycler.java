@@ -52,6 +52,9 @@ public class ResourceCycler {
   private String searchStringFolder;
   private int secondsToSleep;
 
+  // TODO: this field is for debugging. Will be removed later
+  private int numResultsToRetrieve;
+
   private AtomicBoolean isCycleActive;
   private AtomicBoolean getNextResource;
 
@@ -65,6 +68,10 @@ public class ResourceCycler {
     setCycleActive(true);
     getNextResource = new AtomicBoolean();
     setGetNextResource(false);
+  }
+
+  public void setNumResultsToRetrieve(int numResultsToRetrieve) {
+    this.numResultsToRetrieve = numResultsToRetrieve;
   }
 
   public void setSecondsToSleep(int secondsToSleep) {
@@ -92,8 +99,20 @@ public class ResourceCycler {
       @Override
       public void run() {
         while (true) {
+          while (queue.isEmpty()) {}
+
           if (isCycleActive.get()) {
             String filename = queue.poll();
+            if (filename == null) {
+              continue;
+            }
+
+            // Check if more resources need to be downloaded
+            final int resourceNum = getResourceNumFromFilename(filename);
+            if (resourceNum % numResultsToRetrieve == 0) {
+              queueLoader.startResourceDownloads();
+            }
+
             if (canOpenImage(filename)) {
               filenames.add(filename);
               absoluteCurrentFilename = filename;
@@ -122,7 +141,7 @@ public class ResourceCycler {
         secondsToSleepInMillis) {
     }
     if (getNextResource.get()) {
-      Log.info("Skipping to next resource...");
+      Log.debug("Skipping to next resource...");
       setGetNextResource(false);
     }
   }
@@ -183,6 +202,17 @@ public class ResourceCycler {
 
   private void setGetNextResource(boolean newGetNextResource) {
     getNextResource.set(newGetNextResource);
+  }
+
+  private int getResourceNumFromFilename(String filename) {
+    if (filename == null || filename.isEmpty()) {
+      return -1;
+    }
+
+    return Integer.parseInt(filename.substring(
+      filename.indexOf(QueueLoader.RESOURCE_FILENAME_PREPEND) +
+        QueueLoader.RESOURCE_FILENAME_PREPEND.length(),
+      filename.lastIndexOf(QueueLoader.RESOURCE_FILENAME_TIMESTAMP_SEPARATOR)));
   }
 
 }

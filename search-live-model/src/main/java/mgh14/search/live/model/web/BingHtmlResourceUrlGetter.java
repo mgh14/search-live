@@ -88,7 +88,9 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
       pageResources.size(), searchString);
 
     // prepare search url for next page of results
-    prepareSearchStringForPagination();
+    if (pageResources.size() > 0) {
+      prepareSearchStringForPagination();
+    }
 
     return pageResources;
   }

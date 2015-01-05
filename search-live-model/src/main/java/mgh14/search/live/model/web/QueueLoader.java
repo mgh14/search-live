@@ -22,6 +22,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueueLoader {
 
+  public static final String RESOURCE_FILENAME_PREPEND = "rsrc";
+  public static final String RESOURCE_FILENAME_TIMESTAMP_SEPARATOR = "-";
+
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
   private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
 
@@ -38,7 +41,7 @@ public class QueueLoader {
   private ExecutorService executorService;
 
   @Autowired
-  private ImageSaver imageSaver;
+  private ImageUtils imageUtils;
 
   public void startResourceDownloads() {
     executorService.execute(new Runnable() {
@@ -57,7 +60,7 @@ public class QueueLoader {
           }
         }
 
-        // refresh resource URI's if limit reached
+        /*// refresh resource URI's if limit reached
         if (resourceUrlGetter.getNumPagesRetrieved() < numPagesToRetrieve) {
           System.out.println("Reached end of resource list for " +
             "page. Refreshing list...");
@@ -66,7 +69,7 @@ public class QueueLoader {
         else {
           Log.info("Finished downloads. Loaded [{}] resource URI's into resource list.",
             urlsToFilenames.size());
-        }
+        }*/
       }
     });
   }
@@ -74,15 +77,16 @@ public class QueueLoader {
   private String getRelativeResourceFilename(String resourceStr, int downloadNumber) {
     // construct (local) filename
     final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
-    return ROOT_DIR + "rsrc" + downloadNumber + "-" +
-      System.currentTimeMillis() + filetype;
+    return ROOT_DIR + RESOURCE_FILENAME_PREPEND + downloadNumber +
+      RESOURCE_FILENAME_TIMESTAMP_SEPARATOR + System.currentTimeMillis() +
+      filetype;
   }
 
   private String downloadResource(String resourceStr, String filename) {
     String finalFilename = null;
     try {
       if (!urlsToFilenames.containsKey(resourceStr)) {
-        finalFilename = imageSaver.saveImage(resourceStr, ROOT_DIR, filename);
+        finalFilename = imageUtils.saveImage(resourceStr, ROOT_DIR, filename);
         if (!(finalFilename == null || finalFilename.trim().isEmpty())) {
           makeFileReadableAndWriteable(finalFilename);
           resourceQueue.add(finalFilename);
