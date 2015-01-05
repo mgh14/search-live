@@ -18,10 +18,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class WallpaperDeleter {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
-
   public static final File resourceFolder =
     new File("C:\\Users\\mgh14\\Pictures\\screen-temp\\");
+
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   public void deleteFile(Path filepath) {
     if(filepath == null) {

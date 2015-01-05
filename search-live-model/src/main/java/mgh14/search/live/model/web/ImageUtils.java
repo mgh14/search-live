@@ -27,7 +27,6 @@ public class ImageUtils {
   public static final String BASE_SAVE_DIRECTORY = "C:\\Users\\mgh14\\Pictures\\";
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
-
   private Map<String, String> downloadedResources = new HashMap<String, String>();
 
   public String saveImage(String searchStringFolder, String absoluteCurrentFilename) {

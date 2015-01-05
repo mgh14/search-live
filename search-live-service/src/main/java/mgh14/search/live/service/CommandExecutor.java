@@ -23,9 +23,9 @@ public class CommandExecutor {
 
   @Autowired
   private ExecutorService executorService;
-
   @Autowired
   private ResourceCycler resourceCycler;
+
   private Queue<CycleCommand> commandQueue;
 
   public CommandExecutor() {

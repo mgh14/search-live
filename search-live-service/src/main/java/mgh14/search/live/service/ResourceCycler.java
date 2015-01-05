@@ -30,19 +30,14 @@ public class ResourceCycler {
 
   @Autowired
   private ResourceUrlGetter resourceUrlGetter;
-
   @Autowired
-  private ConcurrentLinkedQueue<String> queue;
-
+  private ConcurrentLinkedQueue<String> resourcesQueue;
   @Autowired
   private QueueLoader queueLoader;
-
   @Autowired
   private WindowsWallpaperSetter setter;
-
   @Autowired
   private WallpaperDeleter deleter;
-
   @Autowired
   private ImageUtils imageUtils;
 
@@ -98,10 +93,11 @@ public class ResourceCycler {
       @Override
       public void run() {
         while (true) {
-          while (queue.isEmpty()) {}
+          while (resourcesQueue.isEmpty()) {}
 
           if (isCycleActive.get()) {
-            String filename = queue.poll();
+            // check that filename from queue is valid
+            String filename = resourcesQueue.poll();
             if (filename == null) {
               continue;
             }
@@ -112,6 +108,7 @@ public class ResourceCycler {
               queueLoader.startResourceDownloads();
             }
 
+            // Set image to desktop and sleep
             if (imageUtils.canOpenImage(filename)) {
               filenames.add(filename);
               absoluteCurrentFilename = filename;

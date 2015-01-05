@@ -28,20 +28,17 @@ public class QueueLoader {
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
   private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
 
-  private Map<String, String> urlsToFilenames = new HashMap<String, String>();
-  private int numPagesToRetrieve = 3;
-
   @Autowired
   private ResourceUrlGetter resourceUrlGetter;
-
   @Autowired
   private ConcurrentLinkedQueue<String> resourceQueue;
-
   @Autowired
   private ExecutorService executorService;
-
   @Autowired
   private ImageUtils imageUtils;
+
+  private Map<String, String> urlsToFilenames = new HashMap<String, String>();
+  private int numPagesToRetrieve = 3;
 
   public void startResourceDownloads() {
     executorService.execute(new Runnable() {
