@@ -107,7 +107,7 @@ public class ResourceCycler {
 
             // Check if more resources need to be downloaded
             final int resourceNum = getResourceNumFromFilename(filename);
-            if (resourceNum % numResultsToRetrieve == 0) {
+            if (resourceNum % (numResultsToRetrieve - 1) == 0) {
               queueLoader.startResourceDownloads();
             }
 
