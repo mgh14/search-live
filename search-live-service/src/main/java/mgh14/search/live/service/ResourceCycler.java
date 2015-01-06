@@ -85,6 +85,7 @@ public class ResourceCycler {
     Log.debug("Starting wallpaper cycle...");
     queueLoader.startResourceDownloads();
 
+    final long secondsToSleepInMillis = secondsToSleep * 1000;
     executorService.execute(new Runnable() {
       @Override
       public void run() {
@@ -111,7 +112,6 @@ public class ResourceCycler {
               setter.setDesktopWallpaper(filename);
 
               // sleep for x milliseconds (enjoy the background!)
-              final long secondsToSleepInMillis = secondsToSleep * 1000;
               sleep(System.currentTimeMillis(), secondsToSleepInMillis);
             }
             else {
@@ -123,6 +123,10 @@ public class ResourceCycler {
         }
       }
     });
+  }
+
+  public String saveCurrentImage() {
+    return imageUtils.saveImage(searchStringFolder, absoluteCurrentFilename);
   }
 
   public void pauseCycle() {
@@ -145,10 +149,6 @@ public class ResourceCycler {
     deleter.deleteAllResources();
   }
 
-  public String saveCurrentImage() {
-    return imageUtils.saveImage(searchStringFolder, absoluteCurrentFilename);
-  }
-
   private void setCycleActive(boolean cycleActive) {
     isCycleActive.set(cycleActive);
   }
@@ -166,17 +166,6 @@ public class ResourceCycler {
       Log.debug("Skipping to next resource...");
       setGetNextResource(false);
     }
-  }
-
-  private int getResourceNumFromFilename(String filename) {
-    if (filename == null || filename.isEmpty()) {
-      return -1;
-    }
-
-    return Integer.parseInt(filename.substring(
-      filename.indexOf(QueueLoader.RESOURCE_FILENAME_PREPEND) +
-        QueueLoader.RESOURCE_FILENAME_PREPEND.length(),
-      filename.lastIndexOf(QueueLoader.RESOURCE_FILENAME_TIMESTAMP_SEPARATOR)));
   }
 
 }
