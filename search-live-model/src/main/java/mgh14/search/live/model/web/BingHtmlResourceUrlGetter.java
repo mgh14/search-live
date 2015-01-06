@@ -1,16 +1,12 @@
 package mgh14.search.live.model.web;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,6 +23,9 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   private static final String SEARCH_PATH = "/search?q=";
   private static final String PAGE_PARAM = " page ";
   private static final int FIRST_PAGE_TO_GET = 1;
+
+  @Autowired
+  private DocumentParser docParser;
 
   private List<URI> allResourceUris;
   private String resourceType;
@@ -69,20 +68,9 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   @Override
   public List<URI> getResources() {
     // fetch the resource URI's
-    final List<URI> pageResources = new LinkedList<URI>();
-    final Document doc = getSearchDocument(searchString);
-    if (doc != null) {
-      final Elements resourcesDetails = doc.select("a[m]");
-      for (Element link : resourcesDetails) {
-        if (pageResources.size() >= numResultsToGet) {
-          Log.info("Reached result limit of {}. Not adding more resources",
-            numResultsToGet);
-          break;
-        }
-
-        pageResources.add(parseResource(link.attr("abs:m")));
-      }
-    }
+    final List<URI> pageResources = docParser.getResourcesFromDoc(
+      URI.create(HOST + resourceType + SEARCH_PATH +
+        searchString.replaceAll(" ", "+")), numResultsToGet);
     allResourceUris.addAll(pageResources);
     Log.info("Retrieved {} URI's from document with search string \"{}\"",
       pageResources.size(), searchString);
@@ -111,31 +99,4 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
     Log.debug("Next (paginated) search string assigned: [{}]", searchString);
   }
 
-  private Document getSearchDocument(String searchString) {
-    if(searchString == null || searchString.isEmpty()) {
-        return null;
-      }
-
-    final URI searchUri = URI.create(HOST + resourceType + SEARCH_PATH +
-      searchString.replaceAll(" ", "+"));
-    Document doc;
-    try {
-      doc = Jsoup.connect(searchUri.toString()).followRedirects(true).get();
-    }
-    catch (IOException e) {
-      Log.error("IOException (is the network connected?): ", e);
-      doc = null;
-    }
-
-    return doc;
-  }
-
-  private URI parseResource(String resourceAttr) {
-    final String resourceAttributeName = "imgurl:";
-    final int imgUrlStart = resourceAttr.indexOf(resourceAttributeName) +
-      resourceAttributeName.length();
-    String url = resourceAttr.substring(imgUrlStart,
-      resourceAttr.indexOf(",", imgUrlStart)).replace("\"", "");
-    return URI.create(url);
-  }
 }
