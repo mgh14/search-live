@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import mgh14.search.live.model.wallpaper.WallpaperDeleter;
 import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
 import mgh14.search.live.model.web.ImageUtils;
-import mgh14.search.live.model.web.QueueLoader;
+import mgh14.search.live.model.wallpaper.QueueLoader;
 import mgh14.search.live.model.web.ResourceUrlGetter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

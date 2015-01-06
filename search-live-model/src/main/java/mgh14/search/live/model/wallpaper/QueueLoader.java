@@ -1,4 +1,4 @@
-package mgh14.search.live.model.web;
+package mgh14.search.live.model.wallpaper;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import mgh14.search.live.model.web.ImageUtils;
+import mgh14.search.live.model.web.ResourceUrlGetter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

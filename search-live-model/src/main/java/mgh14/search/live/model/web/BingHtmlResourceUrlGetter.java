@@ -25,7 +25,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   private static final int FIRST_PAGE_TO_GET = 1;
 
   @Autowired
-  private DocumentParser docParser;
+  private ResourceHtmlDocumentParser docParser;
 
   private List<URI> allResourceUris;
   private String resourceType;

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  * the web with Jsoup.
  */
 @Component
-public class DocumentParser {
+public class ResourceHtmlDocumentParser {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
