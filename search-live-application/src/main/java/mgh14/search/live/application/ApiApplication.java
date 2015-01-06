@@ -1,5 +1,6 @@
 package mgh14.search.live.application;
 
+import mgh14.search.live.model.web.util.ConfigProperties;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,8 @@ public class ApiApplication {
 
   static ConfigProperties props;
   static {
-    props = new ConfigProperties("C:\\Users\\mgh14\\search-live\\" +
+    props = new ConfigProperties();
+    props.setConfigFileLocation("C:\\Users\\mgh14\\search-live\\" +
       "search-live-application\\src\\main\\resources\\");
   }
 

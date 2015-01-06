@@ -1,4 +1,4 @@
-package mgh14.search.live.application;
+package mgh14.search.live.model.web.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,9 +19,11 @@ public class ConfigProperties {
 
   private Properties properties;
 
-  public ConfigProperties(String dirLocation) {
+  public ConfigProperties() {
     properties = new Properties();
+  }
 
+  public void setConfigFileLocation(String dirLocation) {
     try {
       loadPropertyValues(dirLocation);
     }
@@ -37,6 +39,10 @@ public class ConfigProperties {
 
   public Object getProperty(String propertyName) {
     return properties.get(propertyName);
+  }
+
+  public void setProperty(String propertyName, String value) {
+    properties.put(propertyName, value);
   }
 
   private void loadPropertyValues(String dirLocation) throws IOException {

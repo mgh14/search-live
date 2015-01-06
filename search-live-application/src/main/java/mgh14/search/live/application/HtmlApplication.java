@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import mgh14.search.live.model.web.resource.getter.BingHtmlResourceUrlGetter;
+import mgh14.search.live.model.web.util.ConfigProperties;
 import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.ResourceCycler;
 import mgh14.search.live.service.messaging.CycleAction;
@@ -12,6 +13,7 @@ import mgh14.search.live.service.messaging.CycleCommand;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -41,11 +43,18 @@ public class HtmlApplication {
     return Executors.newFixedThreadPool(10);
   }
 
+  @Bean
+  public ConfigProperties configProperties() {
+    final ConfigProperties props = new ConfigProperties();
+    props.setConfigFileLocation("C:\\Users\\mgh14\\search-live\\" +
+      "search-live-application\\src\\main\\resources\\");
+    return props;
+  }
+
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
 
-  private ConfigProperties props = new ConfigProperties(
-    "C:\\Users\\mgh14\\search-live\\" +
-      "search-live-application\\src\\main\\resources\\");
+  @Autowired
+  private ConfigProperties configProperties;
 
   // arg -query: the search query
   // arg -numResults: the number of results to return for each page
@@ -89,7 +98,7 @@ public class HtmlApplication {
   }
 
   Object getProperty(String propName) {
-    return props.getProperty(propName);
+    return configProperties.getProperty(propName);
   }
 
   CommandLine parseArgs(String[] args) {
