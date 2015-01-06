@@ -4,16 +4,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -83,22 +81,14 @@ public class ImageUtils {
   }
 
   private void downloadImageToFile(String imageUrl, String ROOT_DIR,
-    String destinationFile) throws IOException {
+      String destinationFile) throws IOException {
 
-    URL url = new URL(imageUrl);
-    InputStream is = url.openStream();
+    final String absoluteFilename = getAbsolutePath(ROOT_DIR, destinationFile);
 
-    String absoluteFilename = getAbsolutePath(ROOT_DIR, destinationFile);
-    OutputStream os = new FileOutputStream(absoluteFilename);
-
-    byte[] b = new byte[2048];
-    int length;
-    while ((length = is.read(b)) != -1) {
-      os.write(b, 0, length);
-    }
-
-    is.close();
-    os.close();
+    final URL website = new URL(imageUrl);
+    final ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+    final FileOutputStream fileOutputStream = new FileOutputStream(absoluteFilename);
+    fileOutputStream.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
   }
 
   private String getAbsolutePath(String ROOT_DIR, String destination) {
