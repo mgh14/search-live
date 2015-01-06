@@ -41,10 +41,11 @@ public class DocumentParser {
     return pageResources;
   }
 
-  public Document getSearchDocument(URI searchUri) {
+  private Document getSearchDocument(URI searchUri) {
     Document doc;
     try {
-      doc = Jsoup.connect(searchUri.toString()).followRedirects(true).get();
+      doc = Jsoup.connect(searchUri.toString()).followRedirects(true)
+        .userAgent("").get();
     }
     catch (IOException e) {
       Log.error("IOException (is the network connected?): ", e);
