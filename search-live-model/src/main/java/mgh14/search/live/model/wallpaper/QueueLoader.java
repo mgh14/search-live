@@ -14,8 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import mgh14.search.live.model.web.ImageUtils;
-import mgh14.search.live.model.web.ResourceUrlGetter;
+import mgh14.search.live.model.web.util.ImageUtils;
+import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

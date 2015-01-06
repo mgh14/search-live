@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import mgh14.search.live.model.web.BingHtmlResourceUrlGetter;
+import mgh14.search.live.model.web.resource.getter.BingHtmlResourceUrlGetter;
 import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.ResourceCycler;
 import mgh14.search.live.service.messaging.CycleAction;

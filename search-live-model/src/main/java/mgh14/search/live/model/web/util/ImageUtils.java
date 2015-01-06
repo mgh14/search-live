@@ -1,4 +1,4 @@
-package mgh14.search.live.model.web;
+package mgh14.search.live.model.web.util;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

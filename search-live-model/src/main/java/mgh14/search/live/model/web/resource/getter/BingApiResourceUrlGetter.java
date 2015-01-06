@@ -1,4 +1,4 @@
-package mgh14.search.live.model.web;
+package mgh14.search.live.model.web.resource.getter;
 
 import java.net.URI;
 import java.util.LinkedList;

@@ -1,9 +1,10 @@
-package mgh14.search.live.model.web;
+package mgh14.search.live.model.web.resource.getter;
 
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
+import mgh14.search.live.model.web.util.ResourceHtmlDocumentParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -9,9 +9,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import mgh14.search.live.model.wallpaper.WallpaperDeleter;
 import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
-import mgh14.search.live.model.web.ImageUtils;
+import mgh14.search.live.model.web.util.ImageUtils;
 import mgh14.search.live.model.wallpaper.QueueLoader;
-import mgh14.search.live.model.web.ResourceUrlGetter;
+import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
