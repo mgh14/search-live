@@ -22,7 +22,9 @@ public class DocumentParser {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
-  public List<URI> getResourcesFromDoc(URI searchUri, int numResultsToGet) {
+  public List<URI> getResourceUrisFromRetrievedResultsDoc(URI searchUri,
+      int numResultsToGet) {
+
     final List<URI> pageResources = new LinkedList<URI>();
     final Document doc = getSearchDocument(searchUri);
     if (doc != null) {

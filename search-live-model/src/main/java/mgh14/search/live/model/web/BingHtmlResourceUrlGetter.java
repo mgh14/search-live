@@ -68,7 +68,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   @Override
   public List<URI> getResources() {
     // fetch the resource URI's
-    final List<URI> pageResources = docParser.getResourcesFromDoc(
+    final List<URI> pageResources = docParser.getResourceUrisFromRetrievedResultsDoc(
       URI.create(HOST + resourceType + SEARCH_PATH +
         searchString.replaceAll(" ", "+")), numResultsToGet);
     allResourceUris.addAll(pageResources);
