@@ -8,11 +8,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import mgh14.search.live.model.wallpaper.ExpiredResourcesDeleter;
-import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
-import mgh14.search.live.model.web.util.ImageUtils;
+import mgh14.search.live.model.FileUtils;
 import mgh14.search.live.model.wallpaper.QueueLoader;
+import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
+import mgh14.search.live.model.web.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ResourceCycler {
+
+  public static final File resourceFolder =
+    new File("C:\\Users\\mgh14\\Pictures\\screen-temp\\");
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
@@ -41,7 +44,7 @@ public class ResourceCycler {
   @Autowired
   private WindowsWallpaperSetter setter;
   @Autowired
-  private ExpiredResourcesDeleter deleter;
+  private FileUtils fileUtils;
   @Autowired
   private ImageUtils imageUtils;
 
@@ -119,7 +122,7 @@ public class ResourceCycler {
             else {
               Log.error("Couldn't open file: [{}]. " +
                 "Deleting and moving to next resource...", filename);
-              deleter.deleteFile(new File(filename).toPath());
+              fileUtils.deleteFile(new File(filename).toPath());
             }
           }
         }
@@ -148,7 +151,7 @@ public class ResourceCycler {
 
   public void deleteAllResources() {
     Log.debug("Deleting all resources...");
-    deleter.deleteAllResources();
+    fileUtils.deleteAllFiles(resourceFolder);
   }
 
   private void setCycleActive(boolean cycleActive) {

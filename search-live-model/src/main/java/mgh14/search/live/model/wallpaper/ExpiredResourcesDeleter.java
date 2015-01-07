@@ -1,15 +1,11 @@
 package mgh14.search.live.model.wallpaper;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 
-import org.apache.commons.io.FileUtils;
+import mgh14.search.live.model.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,30 +15,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExpiredResourcesDeleter {
 
-  public static final File resourceFolder =
-    new File("C:\\Users\\mgh14\\Pictures\\screen-temp\\");
-
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
-  public void deleteFile(Path filepath) {
-    if(filepath == null) {
-      return;
-    }
-
-    Log.info("Deleting file: [{}]...", filepath);
-
-    try {
-      Files.delete(filepath);
-      Log.debug("File deletion finished for [{}].", filepath);
-    } catch (NoSuchFileException x) {
-      Log.info("No such file or directory: [{}]", filepath);
-    } catch (DirectoryNotEmptyException x) {
-      Log.info("Directory not empty: [{}]", filepath);
-    } catch (IOException x) {
-      x.printStackTrace();
-    }
-
-  }
+  @Autowired
+  private FileUtils fileUtils;
 
   public void deleteExpiredFiles(final File folder) {
     final long currentTime = System.currentTimeMillis();
@@ -62,35 +38,12 @@ public class ExpiredResourcesDeleter {
           filename.lastIndexOf("."));
         final long timestamp = Long.parseLong(timestampStr);
         if ((currentTime - timestamp) >= expiryPeriod) {
-          deleteExpiredFile(fileEntry.toPath());
+          fileUtils.deleteFile(fileEntry.toPath());
         }
       }
     }
 
     Log.info("Finished deleting expired pictures for timestamp {}", currentTime);
-  }
-
-  public void deleteAllResources() {
-    Log.info("Deleting all resources...");
-    if(resourceFolder.listFiles() != null) {
-      for (final File fileEntry : resourceFolder.listFiles()) {
-        if (fileEntry.isDirectory()) {
-          try {
-            FileUtils.deleteDirectory(fileEntry);
-          }
-          catch (IOException e) {
-            Log.error("Error deleting directory: ", e);
-          }
-        }
-        else {
-          fileEntry.delete();
-        }
-      }
-    }
-  }
-
-  private void deleteExpiredFile(Path filepath) {
-    deleteFile(filepath);
   }
 
 }
