@@ -49,7 +49,7 @@ public class ResourceCycler {
   private ImageUtils imageUtils;
 
   private List<String> filenames = new LinkedList<String>();
-  private String absoluteCurrentFilename;
+  private String currentAbsoluteFilename;
   private String searchStringFolder;
   private AtomicInteger secondsToSleep;
 
@@ -57,7 +57,7 @@ public class ResourceCycler {
   private AtomicBoolean getNextResource;
 
   public ResourceCycler() {
-    absoluteCurrentFilename = null;
+    currentAbsoluteFilename = null;
     searchStringFolder = null;
 
     secondsToSleep = new AtomicInteger();
@@ -111,7 +111,7 @@ public class ResourceCycler {
             // Set image to desktop and sleep
             if (imageUtils.canOpenImage(filename)) {
               filenames.add(filename);
-              absoluteCurrentFilename = filename;
+              currentAbsoluteFilename = filename;
 
               // set image to desktop
               setter.setDesktopWallpaper(filename);
@@ -131,7 +131,7 @@ public class ResourceCycler {
   }
 
   public String saveCurrentImage() {
-    return imageUtils.saveImage(searchStringFolder, absoluteCurrentFilename);
+    return imageUtils.saveImage(searchStringFolder, currentAbsoluteFilename);
   }
 
   public void pauseCycle() {
