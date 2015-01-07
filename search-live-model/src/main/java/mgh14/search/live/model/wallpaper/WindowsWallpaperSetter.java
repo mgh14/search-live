@@ -33,15 +33,18 @@ public class WindowsWallpaperSetter {
   }
 
   private void copyAndSetWallpaper(String path) {
+    Log.debug("Copying image to bitmap: [{}]", path);
     // copy image to bitmap type (.bmp)
     String newPath = null;
     try {
       newPath = imageUtils.copyFileToBitmap(path);
     }
     catch (IOException e) {
-      Log.error("IOError converting to bitmap: \n", e);
+      Log.error("IOError converting image to bitmap: \n", e);
+      return;
     }
 
+    Log.debug("Setting bitmap image as background: [{}]", newPath);
     // If image is copied successfully, set it as the desktop wallpaper
     if (newPath != null) {
       final Runtime runtime = Runtime.getRuntime();
