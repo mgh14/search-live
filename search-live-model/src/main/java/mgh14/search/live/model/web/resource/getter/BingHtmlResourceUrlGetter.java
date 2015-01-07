@@ -3,6 +3,7 @@ package mgh14.search.live.model.web.resource.getter;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import mgh14.search.live.model.web.util.ResourceHtmlDocumentParser;
 import org.slf4j.Logger;
@@ -31,14 +32,18 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   private List<URI> allResourceUris;
   private String resourceType;
   private String searchString;
-  private int numResultsToGet;
-  private int pageToGet;
+  private AtomicInteger numResultsToGet;
+  private AtomicInteger pageToGet;
 
   public BingHtmlResourceUrlGetter() {
     allResourceUris = new LinkedList<URI>();
     setResourceType(null);
     setSearchString(null);
+
+    numResultsToGet = new AtomicInteger();
     setNumResultsToGet(0);
+
+    pageToGet = new AtomicInteger();
     setPageToGet(FIRST_PAGE_TO_GET);
   }
 
@@ -51,19 +56,19 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   }
 
   public void setNumResultsToGet(int numResultsToGet) {
-    this.numResultsToGet = numResultsToGet;
+    this.numResultsToGet.set(numResultsToGet);
   }
 
   @Override
   public int getNumPagesRetrieved() {
-    return pageToGet - 1;
+    return pageToGet.get() - 1;
   }
 
   private void setPageToGet(int pageToGet) {
     if (pageToGet < 1) {
       throw new IllegalArgumentException("Can't get a page less than one.");
     }
-    this.pageToGet = pageToGet;
+    this.pageToGet.set(pageToGet);
   }
 
   @Override
@@ -71,7 +76,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
     // fetch the resource URI's
     final List<URI> pageResources = docParser.getResourceUrisFromRetrievedResultsDoc(
       URI.create(HOST + resourceType + SEARCH_PATH +
-        searchString.replaceAll(" ", "+")), numResultsToGet);
+        searchString.replaceAll(" ", "+")), numResultsToGet.get());
     allResourceUris.addAll(pageResources);
     Log.info("Retrieved {} URI's from document with search string \"{}\"",
       pageResources.size(), searchString);
@@ -85,17 +90,17 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   }
 
   private void prepareSearchStringForPagination() {
-    if (pageToGet != FIRST_PAGE_TO_GET) {
+    if (pageToGet.get() != FIRST_PAGE_TO_GET) {
       String newSearchString =  searchString.substring(0,
         searchString.lastIndexOf(PAGE_PARAM));
-      newSearchString += PAGE_PARAM + (pageToGet + 1);
+      newSearchString += PAGE_PARAM + (pageToGet.get() + 1);
       searchString = newSearchString;
     }
     else {
       // add 'page <x>' to query string for further pagination
       searchString += PAGE_PARAM + (FIRST_PAGE_TO_GET + 1);
     }
-    pageToGet++;
+    pageToGet.incrementAndGet();  // result not needed
 
     Log.debug("Next (paginated) search string assigned: [{}]", searchString);
   }
