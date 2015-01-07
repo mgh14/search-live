@@ -118,7 +118,7 @@ public class ImageUtils {
 
     final URL website = new URL(imageUrl);
     final InputStream webStream = website.openStream();
-    final ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+    final ReadableByteChannel rbc = Channels.newChannel(webStream);
     final FileOutputStream fileOutputStream = new FileOutputStream(absoluteFilename);
 
     long amountTransferred = fileOutputStream.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -131,6 +131,7 @@ public class ImageUtils {
     }
 
     webStream.close();
+    rbc.close();
     fileOutputStream.close();
   }
 
