@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import mgh14.search.live.model.wallpaper.WallpaperDeleter;
+import mgh14.search.live.model.wallpaper.ExpiredResourcesDeleter;
 import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
 import mgh14.search.live.model.web.util.ImageUtils;
 import mgh14.search.live.model.wallpaper.QueueLoader;
@@ -41,7 +41,7 @@ public class ResourceCycler {
   @Autowired
   private WindowsWallpaperSetter setter;
   @Autowired
-  private WallpaperDeleter deleter;
+  private ExpiredResourcesDeleter deleter;
   @Autowired
   private ImageUtils imageUtils;
 

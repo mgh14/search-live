@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component;
  * have been downloaded for past wallpaper cycles.
  */
 @Component
-public class WallpaperDeleter {
+public class ExpiredResourcesDeleter {
 
   public static final File resourceFolder =
     new File("C:\\Users\\mgh14\\Pictures\\screen-temp\\");
@@ -73,7 +74,17 @@ public class WallpaperDeleter {
     Log.info("Deleting all resources...");
     if(resourceFolder.listFiles() != null) {
       for (final File fileEntry : resourceFolder.listFiles()) {
-        fileEntry.delete();
+        if (fileEntry.isDirectory()) {
+          try {
+            FileUtils.deleteDirectory(fileEntry);
+          }
+          catch (IOException e) {
+            Log.error("Error deleting directory: ", e);
+          }
+        }
+        else {
+          fileEntry.delete();
+        }
       }
     }
   }
