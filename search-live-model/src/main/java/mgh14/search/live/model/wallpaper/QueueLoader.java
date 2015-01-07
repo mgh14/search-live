@@ -3,6 +3,9 @@ package mgh14.search.live.model.wallpaper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,9 +16,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.annotation.PostConstruct;
 
-import mgh14.search.live.model.web.util.ImageUtils;
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
+import mgh14.search.live.model.web.util.ImageUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +55,20 @@ public class QueueLoader {
   private AtomicInteger downloadCounter = new AtomicInteger(0);
 
   private AtomicBoolean downloadsInProgress = new AtomicBoolean(false);
+
+  @PostConstruct
+  public void deleteExistingBitmapDirectory() {
+    final Path bitmapDir = Paths.get(ROOT_DIR + "bmp");
+    Log.debug("Deleting bitmap folder...");
+    try {
+      if (Files.exists(bitmapDir)) {
+        FileUtils.deleteDirectory(bitmapDir.toFile());
+      }
+    }
+    catch (IOException e) {
+      Log.error("Error deleting bitmap folder: ", e);
+    }
+  }
 
   public void startResourceDownloads() {
     Log.debug("Download resources cycle invoked. Downloading...");
