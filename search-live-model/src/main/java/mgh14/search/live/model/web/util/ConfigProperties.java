@@ -49,6 +49,8 @@ public class ConfigProperties {
     final String fullFilepath = dirLocation + "config.properties";
     final InputStream inputStream = new FileInputStream(new File(fullFilepath));
     properties.load(inputStream);
+
+    inputStream.close();
   }
 
 }
