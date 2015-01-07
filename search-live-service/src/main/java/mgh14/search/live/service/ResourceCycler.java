@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import mgh14.search.live.model.wallpaper.WallpaperDeleter;
 import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
@@ -47,7 +48,7 @@ public class ResourceCycler {
   private List<String> filenames = new LinkedList<String>();
   private String absoluteCurrentFilename;
   private String searchStringFolder;
-  private int secondsToSleep;
+  private AtomicInteger secondsToSleep;
 
   private AtomicBoolean isCycleActive;
   private AtomicBoolean getNextResource;
@@ -56,6 +57,7 @@ public class ResourceCycler {
     absoluteCurrentFilename = null;
     searchStringFolder = null;
 
+    secondsToSleep = new AtomicInteger();
     setSecondsToSleep(DEFAULT_SECONDS_TO_SLEEP);
 
     isCycleActive = new AtomicBoolean();
@@ -65,7 +67,7 @@ public class ResourceCycler {
   }
 
   public void setSecondsToSleep(int secondsToSleep) {
-    this.secondsToSleep = secondsToSleep;
+    this.secondsToSleep.set(secondsToSleep);
   }
 
   public void startCycle(final String searchString) {
@@ -85,7 +87,7 @@ public class ResourceCycler {
     Log.debug("Starting wallpaper cycle...");
     queueLoader.startResourceDownloads();
 
-    final long secondsToSleepInMillis = secondsToSleep * 1000;
+    final long secondsToSleepInMillis = secondsToSleep.get() * 1000;
     executorService.execute(new Runnable() {
       @Override
       public void run() {
