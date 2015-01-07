@@ -7,8 +7,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
@@ -25,7 +26,8 @@ public class ImageUtils {
   public static final String BASE_SAVE_DIRECTORY = "C:\\Users\\mgh14\\Pictures\\";
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
-  private Map<String, String> downloadedResources = new HashMap<String, String>();
+  private ConcurrentHashMap<String, String> downloadedResources =
+    new ConcurrentHashMap<String, String>();
 
   public String saveImage(String searchStringFolder, String absoluteCurrentFilename) {
     final String filename = absoluteCurrentFilename.substring(
@@ -78,6 +80,26 @@ public class ImageUtils {
 
     downloadedResources.put(resourceUrl, localFilename);
     return localFilename;
+  }
+
+  public String copyFileToBitmap(String path) throws IOException {
+    if (path == null || path.isEmpty()) {
+      throw new IllegalArgumentException("Can't convert image with null " +
+        "or empty file path");
+    }
+
+    // Parse filename and change to .bmp filename
+    final Path filepath = Paths.get(path);
+    final String fullFilename = filepath.getFileName().toString();
+    final String nameOfFile = fullFilename.substring(0,
+      fullFilename.lastIndexOf(".")) + ".bmp";
+    final String newFullFilename = path.replace(fullFilename, "\\bmp\\" + nameOfFile);
+
+    //Write the image to the destination as a BMP
+    ImageIO.write(ImageIO.read(new File(path)), "bmp",
+      new File(newFullFilename));
+
+    return newFullFilename;
   }
 
   private void downloadImageToFile(String imageUrl, String ROOT_DIR,
