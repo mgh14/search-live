@@ -4,9 +4,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,6 +53,7 @@ public class ImageUtils {
       image = ImageIO.read(new File(absoluteFilepath));
     }
     catch (Exception e) {
+      Log.error("Open image error: ", e);
       return false;
     }
 
@@ -88,12 +91,18 @@ public class ImageUtils {
         "or empty file path");
     }
 
+    // create bitmap directory if it doesn't yet exist
+    final Path bitmapDir = Paths.get(BASE_SAVE_DIRECTORY + "screen-temp\\bmp");
+    if (!Files.exists(bitmapDir)) {
+      Files.createDirectory(bitmapDir);
+    }
+
     // Parse filename and change to .bmp filename
     final Path filepath = Paths.get(path);
     final String fullFilename = filepath.getFileName().toString();
     final String nameOfFile = fullFilename.substring(0,
       fullFilename.lastIndexOf(".")) + ".bmp";
-    final String newFullFilename = path.replace(fullFilename, "\\bmp\\" + nameOfFile);
+    final String newFullFilename = path.replace(fullFilename, "bmp\\" + nameOfFile);
 
     //Write the image to the destination as a BMP
     ImageIO.write(ImageIO.read(new File(path)), "bmp",
@@ -108,9 +117,21 @@ public class ImageUtils {
     final String absoluteFilename = getAbsolutePath(ROOT_DIR, destinationFile);
 
     final URL website = new URL(imageUrl);
+    final InputStream webStream = website.openStream();
     final ReadableByteChannel rbc = Channels.newChannel(website.openStream());
     final FileOutputStream fileOutputStream = new FileOutputStream(absoluteFilename);
-    fileOutputStream.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+
+    long amountTransferred = fileOutputStream.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+    if (amountTransferred < 1) {
+      Log.error("Amount transferred for [{}] is {}", absoluteFilename, amountTransferred);
+    }
+    else {
+      Log.debug("Finished downloading image to file: [{}] to [{}]",
+        imageUrl, absoluteFilename);
+    }
+
+    webStream.close();
+    fileOutputStream.close();
   }
 
   private String getAbsolutePath(String ROOT_DIR, String destination) {
