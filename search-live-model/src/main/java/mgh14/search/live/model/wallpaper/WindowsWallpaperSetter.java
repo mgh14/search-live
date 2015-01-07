@@ -1,11 +1,11 @@
 package mgh14.search.live.model.wallpaper;
 
-import java.util.HashMap;
-import com.sun.jna.Native;
-import com.sun.jna.platform.win32.WinDef.UINT_PTR;
-import com.sun.jna.win32.*;
+import java.io.IOException;
+
+import mgh14.search.live.model.web.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,6 +18,9 @@ public class WindowsWallpaperSetter {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
+  @Autowired
+  private ImageUtils imageUtils;
+
   public void setDesktopWallpaper(String path) {
     if (path == null || path.isEmpty()) {
       Log.error("Invalid null/empty file name");
@@ -26,32 +29,33 @@ public class WindowsWallpaperSetter {
 
     Log.info("Setting image: [{}]...", path);
 
-    SPI.INSTANCE.SystemParametersInfo(
-      new UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
-      new UINT_PTR(0),
-      path,
-      new UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));
+    copyAndSetWallpaper(path);
   }
 
-  private interface SPI extends StdCallLibrary {
+  private void copyAndSetWallpaper(String path) {
+    // copy image to bitmap type (.bmp)
+    String newPath = null;
+    try {
+      newPath = imageUtils.copyFileToBitmap(path);
+    }
+    catch (IOException e) {
+      Log.error("IOError converting to bitmap: \n", e);
+    }
 
-    //from MSDN article
-    long SPI_SETDESKWALLPAPER = 20;
-    long SPIF_UPDATEINIFILE = 0x01;
-    long SPIF_SENDWININICHANGE = 0x02;
-
-    SPI INSTANCE = (SPI) Native.loadLibrary("user32", SPI.class, new HashMap<Object, Object>() {
-      {
-        put(OPTION_TYPE_MAPPER, W32APITypeMapper.UNICODE);
-        put(OPTION_FUNCTION_MAPPER, W32APIFunctionMapper.UNICODE);
+    // If image is copied successfully, set it as the desktop wallpaper
+    if (newPath != null) {
+      final Runtime runtime = Runtime.getRuntime();
+      try {
+        runtime.exec("reg add \"HKCU\\Control Panel\\Desktop\" /v Wallpaper " +
+          "/t REG_SZ /d \"" + newPath +"\" /f");
+        runtime.exec("reg add \"HKCU\\Control Panel\\Desktop\" /v WallpaperStyle " +
+          "/t REG_SZ /d 2 /f");
+        runtime.exec("RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters");
       }
-    });
-
-    boolean SystemParametersInfo(
-      UINT_PTR uiAction,
-      UINT_PTR uiParam,
-      String pvParam,
-      UINT_PTR fWinIni
-    );
+      catch (IOException e) {
+        Log.error("IOError setting file [{}] to desktop: ", path, e);
+      }
+    }
   }
+
 }
