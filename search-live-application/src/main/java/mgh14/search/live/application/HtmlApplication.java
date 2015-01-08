@@ -29,26 +29,30 @@ import org.springframework.stereotype.Component;
  * an authorization header but also a lack of pagination ability.
  */
 @Component
-@Configuration
 @ComponentScan("mgh14.search.live")
 public class HtmlApplication {
 
-  @Bean
-  public ConcurrentLinkedQueue<String> resourceQueue() {
-    return new ConcurrentLinkedQueue<String>();
-  }
+  @Configuration
+  public static class BeanConfiguration {
 
-  @Bean
-  public ExecutorService executorService() {
-    return Executors.newFixedThreadPool(10);
-  }
+    @Bean
+    public ConcurrentLinkedQueue<String> resourceQueue() {
+      return new ConcurrentLinkedQueue<String>();
+    }
 
-  @Bean
-  public ConfigProperties configProperties() {
-    final ConfigProperties props = new ConfigProperties();
-    props.setConfigFileLocation("C:\\Users\\mgh14\\search-live\\" +
-      "search-live-application\\src\\main\\resources\\");
-    return props;
+    @Bean
+    public ExecutorService executorService() {
+      return Executors.newFixedThreadPool(10);
+    }
+
+    @Bean
+    public ConfigProperties configProperties() {
+      final ConfigProperties props = new ConfigProperties();
+      props.setConfigFileLocation("C:\\Users\\mgh14\\search-live\\" +
+        "search-live-application\\src\\main\\resources\\");
+      return props;
+    }
+
   }
 
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
