@@ -19,7 +19,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 /**
  * Application class for starting the background image cycle. This
@@ -28,11 +27,10 @@ import org.springframework.stereotype.Component;
  * The implications of using a simple GET request include no need for
  * an authorization header but also a lack of pagination ability.
  */
-@Component
-@ComponentScan("mgh14.search.live")
 public class HtmlApplication {
 
   @Configuration
+  @ComponentScan("mgh14.search.live")
   public static class BeanConfiguration {
 
     @Bean
@@ -65,7 +63,7 @@ public class HtmlApplication {
   // arg -sleepTime: the number of seconds for each resource to be viewed
   public static void main(String[] args) {
     final ApplicationContext context =
-      new AnnotationConfigApplicationContext(HtmlApplication.class);
+      new AnnotationConfigApplicationContext(BeanConfiguration.class);
 
     final HtmlApplication application = context.getBean(HtmlApplication.class);
     context.getBean(BingHtmlResourceUrlGetter.class).setResourceType("images");
