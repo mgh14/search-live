@@ -28,15 +28,24 @@ public class FileUtils {
 
     try {
       Files.delete(filepath);
-      Log.debug("File deletion finished for [{}].", filepath);
-    } catch (NoSuchFileException x) {
-      Log.info("No such file or directory: [{}]", filepath);
-    } catch (DirectoryNotEmptyException x) {
-      Log.info("Directory not empty: [{}]", filepath);
+    } catch (NoSuchFileException e) {
+      Log.error("No such file or directory: [{}]", filepath);
+    } catch (DirectoryNotEmptyException e) {
+        deleteDirectory(filepath);
     } catch (IOException x) {
-      x.printStackTrace();
+      Log.error("IOException deleting file: ", x);
     }
 
+    Log.debug("File deletion finished for [{}].", filepath);
+  }
+
+  public void deleteDirectory(Path directory) {
+    try {
+      org.apache.commons.io.FileUtils.deleteDirectory(directory.toFile());
+    }
+    catch (IOException e) {
+      Log.error("Error deleting directory: ", e);
+    }
   }
 
   public void deleteAllFiles(File resourceFolder) {
@@ -45,17 +54,7 @@ public class FileUtils {
     final File[] folderFiles = resourceFolder.listFiles();
     if(folderFiles != null) {
       for (final File fileEntry : folderFiles) {
-        if (fileEntry.isDirectory()) {
-          try {
-            org.apache.commons.io.FileUtils.deleteDirectory(fileEntry);
-          }
-          catch (IOException e) {
-            Log.error("Error deleting directory: ", e);
-          }
-        }
-        else {
-          fileEntry.delete();
-        }
+        deleteFile(fileEntry.toPath());
       }
     }
   }
