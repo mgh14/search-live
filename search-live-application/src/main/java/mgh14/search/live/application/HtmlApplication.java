@@ -19,6 +19,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * Application class for starting the background image cycle. This
@@ -27,6 +28,7 @@ import org.springframework.context.annotation.Configuration;
  * The implications of using a simple GET request include no need for
  * an authorization header but also a lack of pagination ability.
  */
+@Component
 public class HtmlApplication {
 
   @Configuration
