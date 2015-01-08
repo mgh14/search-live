@@ -1,8 +1,6 @@
 package mgh14.search.live.model.web.resource.getter;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,12 +18,12 @@ public class DummyResourceUrlGetter implements ResourceUrlGetter {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
-  private static final File DUMMY_RESOURCE_DIR = new File("file:///C:\\Users\\mgh14\\Pictures\\dummy-resources\\");
+  private static final File DUMMY_RESOURCE_DIR = new File("C:\\Users\\mgh14\\Pictures\\dummy-resources\\");
 
-  private List<URI> dummyResourceUris;
+  private List<String> dummyResourceUris;
 
   public DummyResourceUrlGetter() {
-    dummyResourceUris = new LinkedList<URI>();
+    dummyResourceUris = new LinkedList<String>();
     loadDummyResources();
   }
 
@@ -33,7 +31,7 @@ public class DummyResourceUrlGetter implements ResourceUrlGetter {
   public void setSearchString(String searchString) {}
 
   @Override
-  public List<URI> getResources() {
+  public List<String> getResources() {
     Log.info("Getting dummy resources...");
     return dummyResourceUris;
   }
@@ -47,16 +45,7 @@ public class DummyResourceUrlGetter implements ResourceUrlGetter {
     final File[] folderFiles = DUMMY_RESOURCE_DIR.listFiles();
     if(folderFiles != null) {
       for (final File fileEntry : folderFiles) {
-        final URI fileEntryUri;
-        try {
-          fileEntryUri = new URI(fileEntry.getAbsolutePath());
-        }
-        catch (URISyntaxException e) {
-          Log.error("URI creation error: ", e);
-          continue;
-        }
-
-        dummyResourceUris.add(fileEntryUri);
+        dummyResourceUris.add(fileEntry.getAbsolutePath());
       }
     }
   }

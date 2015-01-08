@@ -1,6 +1,5 @@
 package mgh14.search.live.model.web.resource.getter;
 
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -10,7 +9,7 @@ public interface ResourceUrlGetter {
 
   void setSearchString(String searchString);
 
-  List<URI> getResources();
+  List<String> getResources();
 
   int getNumPagesRetrieved();
 }

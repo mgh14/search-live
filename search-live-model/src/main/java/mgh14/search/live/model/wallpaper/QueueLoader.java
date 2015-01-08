@@ -2,7 +2,6 @@ package mgh14.search.live.model.wallpaper;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,7 +50,7 @@ public class QueueLoader {
   private ImageUtils imageUtils;
 
   private Map<String, String> urlsToFilenames = new HashMap<String, String>();
-  private Queue<URI> currentResourceUris = new ConcurrentLinkedQueue<URI>();
+  private Queue<String> currentResourceLocations = new ConcurrentLinkedQueue<String>();
   private int numPagesToRetrieve = 3;
   private AtomicInteger downloadCounter = new AtomicInteger(0);
 
@@ -77,18 +76,17 @@ public class QueueLoader {
     downloadsInProgress.set(true);
     executorService.execute(new Runnable() {
       public void run() {
-        List<URI> resourceUris = getSetOfResourceUris();
+        List<String> resourceUris = getSetOfResourceLocations();
 
         Log.info("Downloading {} resources...", resourceUris.size());
-        for (URI resource : resourceUris) {
+        for (String resource : resourceUris) {
           // construct (local) filename
-          final String resourceStr = resource.toString();
-          final String filename = getRelativeResourceFilename(resourceStr);
+          final String filename = getRelativeResourceFilename(resource);
 
           // download image
-          String finalFilename = downloadResource(resourceStr, filename);
+          String finalFilename = downloadResource("file:///" + resource, filename);
           if(finalFilename != null) {
-            urlsToFilenames.put(resourceStr, finalFilename);
+            urlsToFilenames.put(resource, finalFilename);
           }
         }
 
@@ -101,26 +99,26 @@ public class QueueLoader {
     return downloadsInProgress.get();
   }
 
-  private List<URI> getSetOfResourceUris() {
-    final List<URI> setOfResourceUris = new LinkedList<URI>();
+  private List<String> getSetOfResourceLocations() {
+    final List<String> setOfResourceLocations = new LinkedList<String>();
     for (int i=0; i<NUM_DOWNLOADS_PER_REQUEST; i++) {
-      if (currentResourceUris.isEmpty()) {
+      if (currentResourceLocations.isEmpty()) {
         Log.debug("Queued resources from getter class is empty. " +
           "Retrieving next page of resources...");
-        currentResourceUris = getShuffledResources(resourceUrlGetter);
-        if (currentResourceUris.isEmpty()) {
+        currentResourceLocations = getShuffledResources(resourceUrlGetter);
+        if (currentResourceLocations.isEmpty()) {
           Log.debug("Getter has no more resources to retrieve.");
           // There are no more results to retrieve
           // from the network. Return the list with any
           // remaining items and don't add any more.
-          return setOfResourceUris;
+          return setOfResourceLocations;
         }
       }
 
-      setOfResourceUris.add(currentResourceUris.poll());
+      setOfResourceLocations.add(currentResourceLocations.poll());
     }
 
-    return setOfResourceUris;
+    return setOfResourceLocations;
   }
 
   private String getRelativeResourceFilename(String resourceStr) {
@@ -156,12 +154,12 @@ public class QueueLoader {
     file.setWritable(true);
   }
 
-  private Queue<URI> getShuffledResources(ResourceUrlGetter getter) {
-    List<URI> resourceUris = getter.getResources();
+  private Queue<String> getShuffledResources(ResourceUrlGetter getter) {
+    List<String> resourceUris = getter.getResources();
     Collections.shuffle(resourceUris);
 
-    final Queue<URI> resourceUrisForQueue = new ConcurrentLinkedQueue<URI>();
-    for (URI resourceUri : resourceUris) {
+    final Queue<String> resourceUrisForQueue = new ConcurrentLinkedQueue<String>();
+    for (String resourceUri : resourceUris) {
       resourceUrisForQueue.add(resourceUri);
     }
     return resourceUrisForQueue;

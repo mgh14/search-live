@@ -72,7 +72,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   }
 
   @Override
-  public List<URI> getResources() {
+  public List<String> getResources() {
     // fetch the resource URI's
     final List<URI> pageResources = docParser.getResourceUrisFromRetrievedResultsDoc(
       URI.create(HOST + resourceType + SEARCH_PATH +
@@ -86,7 +86,12 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
       prepareSearchStringForPagination();
     }
 
-    return pageResources;
+    // convert URI's to strings
+    final List<String> pageResourceStrs = new LinkedList<String>();
+    for (URI resource : pageResources) {
+      pageResourceStrs.add(resource.toString());
+    }
+    return pageResourceStrs;
   }
 
   private void prepareSearchStringForPagination() {

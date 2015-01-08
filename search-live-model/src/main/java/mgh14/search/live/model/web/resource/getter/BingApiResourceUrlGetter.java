@@ -55,8 +55,8 @@ public class BingApiResourceUrlGetter implements ResourceUrlGetter {
     return pageToGet - 1;
   }
 
-  public List<URI> getResources() {
-    final List<URI> pagedUris = new LinkedList<URI>();
+  public List<String> getResources() {
+    final List<String> pagedUris = new LinkedList<String>();
     final JSONArray array = getMediaUrlArray(searchString, pageToGet++);
     if (array != null) {
       for (int i = 0; i < array.length(); i++) {
@@ -64,7 +64,7 @@ public class BingApiResourceUrlGetter implements ResourceUrlGetter {
         final URI mediaUrl = URI.create(entry.get("MediaUrl").toString());
         Log.info("Procured MediaUrl: [{}]", mediaUrl);
 
-        pagedUris.add(mediaUrl);
+        pagedUris.add(mediaUrl.toString());
         allResourceUris.add(mediaUrl);
       }
     }
