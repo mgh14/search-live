@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.ImageUtils;
@@ -40,7 +41,7 @@ public class QueueLoader {
   private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
   private static final int NUM_DOWNLOADS_PER_REQUEST = 5;
 
-  @Autowired
+  @Resource(name="dummyResourceUrlGetter")
   private ResourceUrlGetter resourceUrlGetter;
   @Autowired
   private ConcurrentLinkedQueue<String> resourceQueue;
