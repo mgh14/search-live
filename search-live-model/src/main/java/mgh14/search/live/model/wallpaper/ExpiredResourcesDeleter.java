@@ -24,10 +24,11 @@ public class ExpiredResourcesDeleter {
     final long currentTime = System.currentTimeMillis();
     Log.info("Deleting expired pictures for timestamp {}...", currentTime);
 
-    if(folder != null && folder.listFiles() != null) {
+    final File[] files = (folder != null) ? folder.listFiles() : null;
+    if(files != null) {
       long expiryPeriod = 5 * 24 * 60 * 60 * 1000;   // 5 days (in milliseconds)
 
-      for (final File fileEntry : folder.listFiles()) {
+      for (final File fileEntry : files) {
         if (fileEntry.isDirectory()) {
           deleteExpiredFiles(fileEntry);
           continue;
