@@ -93,6 +93,9 @@ public class HtmlApplication {
       setUpApplicationContext(springProfiles);
 
     final HtmlApplication application = context.getBean(HtmlApplication.class);
+    if (application.springProfileIsEnabled(context, DEFAULT_PROFILE)) {
+      application.setProperty("append-file-protocol", "true");
+    }
 
     // validate numResults
     final int numResults = (line.hasOption("numResults")) ?
@@ -126,6 +129,10 @@ public class HtmlApplication {
 
   Object getProperty(String propName) {
     return configProperties.getProperty(propName);
+  }
+
+  void setProperty(String propName, String propValue) {
+    configProperties.setProperty(propName, propValue);
   }
 
   void validateNumResults(int numResults, int maxResults) {

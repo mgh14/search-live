@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
+import mgh14.search.live.model.web.util.ConfigProperties;
 import mgh14.search.live.model.web.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,8 @@ public class QueueLoader {
   private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
   private static final int NUM_DOWNLOADS_PER_REQUEST = 5;
 
+  @Autowired
+  private ConfigProperties configProperties;
   @Autowired
   private ResourceUrlGetter resourceUrlGetter;
   @Autowired
@@ -64,7 +67,10 @@ public class QueueLoader {
           final String filename = getRelativeResourceFilename(resource);
 
           // download image
-          String finalFilename = downloadResource("file:///" + resource, filename);
+          if ("true".equals(configProperties.getProperty("append-file-protocol"))) {
+            resource = "file:///" + resource;
+          }
+          String finalFilename = downloadResource(resource, filename);
           if(finalFilename != null) {
             urlsToFilenames.put(resource, finalFilename);
           }
