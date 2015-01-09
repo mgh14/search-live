@@ -60,30 +60,40 @@ public class HtmlApplication {
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
 
   private static final String DEFAULT_PROFILE = "DummyResources";
+  private static final String PRODUCTION_PROFILE = "Production";
 
   @Autowired
   private ConfigProperties configProperties;
 
+  /**
+   * arg -query: the search query
+   * arg -numResults: the number of results to return for each page
+   * arg -sleepTime: the number of seconds for each resource to be viewed
+   * arg -springProfiles: comma-separated list (no spaces) of spring
+   *      profiles to activate
+   */
   // arg -query: the search query
   // arg -numResults: the number of results to return for each page
   // arg -sleepTime: the number of seconds for each resource to be viewed
+  // arg -springProfiles: comma-separated list (no spaces) of
   public static void main(String[] args) {
 
-    // setup application context
-    final AnnotationConfigApplicationContext context =
-      new AnnotationConfigApplicationContext();
-    context.getEnvironment().setActiveProfiles(DEFAULT_PROFILE);
-    context.register(BeanConfiguration.class);
-    context.refresh();
-
-    final HtmlApplication application = context.getBean(HtmlApplication.class);
-
     // parse the command line arguments
-    final CommandLine line = application.parseArgs(args);
+    final CommandLine line = CommandLineHelper.parseArgs(
+      CommandLineHelper.getHtmlResourceOptions(), args);
     if (line == null) {
-      Log.error("Error parsing args");
+      Log.error("Error parsing command line arguments");
       System.exit(-1);
     }
+
+    // set relevant spring profile(s)
+    String[] springProfiles = (line.hasOption("springProfiles")) ?
+      line.getOptionValue("springProfiles").split(",") :
+      new String[]{DEFAULT_PROFILE};
+    final AnnotationConfigApplicationContext context =
+      setUpApplicationContext(springProfiles);
+
+    final HtmlApplication application = context.getBean(HtmlApplication.class);
 
     // validate numResults
     final int numResults = (line.hasOption("numResults")) ?
@@ -106,7 +116,7 @@ public class HtmlApplication {
     commandExecutor.addCommandToQueue(startCommand);
 
     // set production properties (if profile is enabled)
-    if (application.springProfileIsEnabled(context, "production")) {
+    if (application.springProfileIsEnabled(context, PRODUCTION_PROFILE)) {
       application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
     }
 
@@ -116,10 +126,6 @@ public class HtmlApplication {
 
   Object getProperty(String propName) {
     return configProperties.getProperty(propName);
-  }
-
-  CommandLine parseArgs(String[] args) {
-    return CommandLineHelper.parseArgs(CommandLineHelper.getHtmlResourceOptions(), args);
   }
 
   void validateNumResults(int numResults, int maxResults) {
@@ -135,6 +141,16 @@ public class HtmlApplication {
       getEnvironment().getActiveProfiles());
 
     return profiles.contains(profile);
+  }
+
+  static AnnotationConfigApplicationContext setUpApplicationContext(String... springProfiles) {
+    final AnnotationConfigApplicationContext context =
+      new AnnotationConfigApplicationContext();
+    context.getEnvironment().setActiveProfiles(springProfiles);
+    context.register(BeanConfiguration.class);
+    context.refresh();
+
+    return context;
   }
 
   private void setUpBingHtmlResourceUrlGetter(ApplicationContext context,

@@ -60,6 +60,9 @@ public class CommandLineHelper {
 
   static Options getHtmlResourceOptions() {
     Options options = new Options();
+    options.addOption(OptionBuilder.hasArg()
+      .withDescription("Spring profiles to activate")
+      .create("springProfiles"));
     options.addOption(OptionBuilder.isRequired()
       .hasArg()
       .withDescription("Seed resource query (e.g. wallpaper HD)")
