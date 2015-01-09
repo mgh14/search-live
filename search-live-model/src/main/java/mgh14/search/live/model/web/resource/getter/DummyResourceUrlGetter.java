@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -14,6 +15,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * images from the network whenever developing functionality.
  */
 @Component
+@Profile("DummyResources")
 public class DummyResourceUrlGetter implements ResourceUrlGetter {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());

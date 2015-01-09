@@ -1,5 +1,7 @@
 package mgh14.search.live.application;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,6 +59,8 @@ public class HtmlApplication {
 
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
 
+  private static final String DEFAULT_PROFILE = "DummyResources";
+
   @Autowired
   private ConfigProperties configProperties;
 
@@ -64,14 +68,18 @@ public class HtmlApplication {
   // arg -numResults: the number of results to return for each page
   // arg -sleepTime: the number of seconds for each resource to be viewed
   public static void main(String[] args) {
-    final ApplicationContext context =
-      new AnnotationConfigApplicationContext(BeanConfiguration.class);
+
+    // setup application context
+    final AnnotationConfigApplicationContext context =
+      new AnnotationConfigApplicationContext();
+    context.getEnvironment().setActiveProfiles(DEFAULT_PROFILE);
+    context.register(BeanConfiguration.class);
+    context.refresh();
 
     final HtmlApplication application = context.getBean(HtmlApplication.class);
-    context.getBean(BingHtmlResourceUrlGetter.class).setResourceType("images");
 
     // parse the command line arguments
-    CommandLine line = application.parseArgs(args);
+    final CommandLine line = application.parseArgs(args);
     if (line == null) {
       Log.error("Error parsing args");
       System.exit(-1);
@@ -83,7 +91,6 @@ public class HtmlApplication {
       Integer.parseInt((String) application.getProperty("default-num-results"));
     application.validateNumResults(numResults,
       Integer.parseInt((String) application.getProperty("max-num-results")));
-    context.getBean(BingHtmlResourceUrlGetter.class).setNumResultsToGet(numResults);
 
     // validate secondsToSleep
     final int secondsToSleep = (line.hasOption("sleepTime")) ?
@@ -92,10 +99,16 @@ public class HtmlApplication {
     application.validateSecondsToSleep(secondsToSleep);
     context.getBean(ResourceCycler.class).setSecondsToSleep(secondsToSleep);
 
-    final CycleCommand startCommand = new CycleCommand(CycleAction.START_SERVICE, "searchString:" +
+    final CycleCommand startCommand = new CycleCommand(
+      CycleAction.START_SERVICE, "searchString:" +
       line.getOptionValue("query") + ";");
     final CommandExecutor commandExecutor = context.getBean(CommandExecutor.class);
     commandExecutor.addCommandToQueue(startCommand);
+
+    // set production properties (if profile is enabled)
+    if (application.springProfileIsEnabled(context, "production")) {
+      application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
+    }
 
     // begin executor commands
     commandExecutor.run();
@@ -115,6 +128,20 @@ public class HtmlApplication {
 
   void validateSecondsToSleep(int secondsToSleep) {
     CommandLineHelper.validateSecondsToSleep(secondsToSleep);
+  }
+
+  boolean springProfileIsEnabled(ApplicationContext context, String profile) {
+    final List<String> profiles = Arrays.asList(context.
+      getEnvironment().getActiveProfiles());
+
+    return profiles.contains(profile);
+  }
+
+  private void setUpBingHtmlResourceUrlGetter(ApplicationContext context,
+      String resourceType, int numResults) {
+
+    context.getBean(BingHtmlResourceUrlGetter.class).setResourceType(resourceType);
+    context.getBean(BingHtmlResourceUrlGetter.class).setNumResultsToGet(numResults);
   }
 
 }

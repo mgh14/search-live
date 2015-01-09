@@ -9,6 +9,7 @@ import mgh14.search.live.model.web.util.ResourceHtmlDocumentParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
  * regular GET request--no authorization is needed)
  */
 @Component
+@Profile("production")
 public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());

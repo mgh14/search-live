@@ -8,8 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Resource;
-
 import mgh14.search.live.model.FileUtils;
 import mgh14.search.live.model.wallpaper.QueueLoader;
 import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
@@ -37,7 +35,7 @@ public class ResourceCycler {
 
   @Autowired
   private ExecutorService executorService;
-  @Resource(name="dummyResourceUrlGetter")
+  @Autowired
   private ResourceUrlGetter resourceUrlGetter;
   @Autowired
   private ConcurrentLinkedQueue<String> resourcesQueue;
