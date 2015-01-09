@@ -8,9 +8,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.imageio.ImageIO;
 
@@ -83,32 +80,6 @@ public class ImageUtils {
 
     downloadedResources.put(resourceUrl, localFilename);
     return localFilename;
-  }
-
-  public String copyFileToBitmap(String path) throws IOException {
-    if (path == null || path.isEmpty()) {
-      throw new IllegalArgumentException("Can't convert image with null " +
-        "or empty file path");
-    }
-
-    // create bitmap directory if it doesn't yet exist
-    final Path bitmapDir = Paths.get(BASE_SAVE_DIRECTORY + "screen-temp\\bmp");
-    if (!Files.exists(bitmapDir)) {
-      Files.createDirectory(bitmapDir);
-    }
-
-    // Parse filename and change to .bmp filename
-    final Path filepath = Paths.get(path);
-    final String fullFilename = filepath.getFileName().toString();
-    final String nameOfFile = fullFilename.substring(0,
-      fullFilename.lastIndexOf(".")) + ".bmp";
-    final String newFullFilename = path.replace(fullFilename, "bmp\\" + nameOfFile);
-
-    //Write the image to the destination as a BMP
-    ImageIO.write(ImageIO.read(new File(path)), "bmp",
-      new File(newFullFilename));
-
-    return newFullFilename;
   }
 
   private void downloadImageToFile(String imageUrl, String ROOT_DIR,
