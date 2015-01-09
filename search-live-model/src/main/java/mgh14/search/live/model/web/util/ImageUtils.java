@@ -2,6 +2,8 @@ package mgh14.search.live.model.web.util;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,15 +47,38 @@ public class ImageUtils {
   }
 
   public boolean canOpenImage(String absoluteFilepath) {
+    // create file input stream (so we can close it later)
+    FileInputStream inputStream;
+    try {
+      inputStream = new FileInputStream(absoluteFilepath);
+    }
+    catch (FileNotFoundException e) {
+      e.printStackTrace();
+      return false;
+    }
+
+    // read in the file to a buffered image
     BufferedImage image;
     try {
-      image = ImageIO.read(new File(absoluteFilepath));
+      image = ImageIO.read(inputStream);
     }
     catch (Exception e) {
       Log.error("Open image error: ", e);
       return false;
     }
+    finally {
+      try {
+        inputStream.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+        return false;
+      }
+    }
 
+    // make sure the image is actually an image (instead
+    // of the weird 2x1 image files that are sometimes
+    // downloaded)
     final int pixelTolerance = 5;
     return (image != null && image.getWidth() > pixelTolerance
       && image.getHeight() > pixelTolerance);
