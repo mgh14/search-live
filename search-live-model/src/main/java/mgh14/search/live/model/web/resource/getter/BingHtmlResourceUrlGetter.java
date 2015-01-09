@@ -27,7 +27,6 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
   private static final String HOST = "https://www.bing.com/";
   private static final String SEARCH_PATH = "/search?q=";
-  private static final String PAGE_PARAM = " page ";
   private static final int FIRST_PAGE_TO_GET = 1;
 
   @Autowired
@@ -78,7 +77,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   @Override
   public List<String> getResources() {
     // fetch the resource URI's
-    final List<URI> pageResources = docParser.getResourceUrisFromRetrievedResultsDoc(
+    final List<URI> pageResources = docParser.getResourceUrisFromSource(
       URI.create(HOST + resourceType + SEARCH_PATH +
         searchString.replaceAll(" ", "+")), numResultsToGet.get());
     allResourceUris.addAll(pageResources);
@@ -87,7 +86,7 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
     // prepare search url for next page of results
     if (pageResources.size() > 0) {
-      prepareSearchStringForPagination();
+      prepareSearchStringForRandomPagination(docParser.getNextSearchQuery());
     }
 
     // convert URI's to strings
@@ -98,18 +97,9 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
     return pageResourceStrs;
   }
 
-  private void prepareSearchStringForPagination() {
-    if (pageToGet.get() != FIRST_PAGE_TO_GET) {
-      String newSearchString =  searchString.substring(0,
-        searchString.lastIndexOf(PAGE_PARAM));
-      newSearchString += PAGE_PARAM + (pageToGet.get() + 1);
-      searchString = newSearchString;
-    }
-    else {
-      // add 'page <x>' to query string for further pagination
-      searchString += PAGE_PARAM + (FIRST_PAGE_TO_GET + 1);
-    }
-    pageToGet.incrementAndGet();  // result not needed
+  private void prepareSearchStringForRandomPagination(String newSearchString) {
+    searchString = newSearchString.replace("+", " ");
+    pageToGet.incrementAndGet();
 
     Log.debug("Next (paginated) search string assigned: [{}]", searchString);
   }
