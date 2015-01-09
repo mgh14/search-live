@@ -60,7 +60,6 @@ public class HtmlApplication {
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
 
   private static final String DEFAULT_PROFILE = "DummyResources";
-  private static final String PRODUCTION_PROFILE = "Production";
 
   @Autowired
   private ConfigProperties configProperties;
@@ -116,7 +115,8 @@ public class HtmlApplication {
     commandExecutor.addCommandToQueue(startCommand);
 
     // set production properties (if profile is enabled)
-    if (application.springProfileIsEnabled(context, PRODUCTION_PROFILE)) {
+    if (application.springProfileIsEnabled(context,
+        BingHtmlResourceUrlGetter.PRODUCTION_PROFILE)) {
       application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
     }
 

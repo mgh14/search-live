@@ -18,10 +18,12 @@ import org.springframework.stereotype.Component;
  * regular GET request--no authorization is needed)
  */
 @Component
-@Profile("production")
+@Profile("Production")
 public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
+
+  public static final String PRODUCTION_PROFILE = "Production";
 
   private static final String HOST = "https://www.bing.com/";
   private static final String SEARCH_PATH = "/search?q=";
