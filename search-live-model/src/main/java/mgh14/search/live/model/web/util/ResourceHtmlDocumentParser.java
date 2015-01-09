@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,20 +16,26 @@ import org.springframework.stereotype.Component;
 
 /**
  * Class for parsing HTML documents retrieved from
- * the web with Jsoup.
+ * the web.
  */
 @Component
 public class ResourceHtmlDocumentParser {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
-  public List<URI> getResourceUrisFromRetrievedResultsDoc(URI searchUri,
+  private static final String IMG_RESOURCE_ATTRIBUTE_NAME = "imgurl:";
+  private static final int RANDOM_ANCHOR_INDEX_LIMIT = 5;
+
+  private Document currentDoc = null;
+  private String nextSearchQuery = null;
+
+  public List<URI> getResourceUrisFromSource(URI searchUri,
       int numResultsToGet) {
 
     final List<URI> pageResources = new LinkedList<URI>();
-    final Document doc = getSearchDocument(searchUri);
-    if (doc != null) {
-      final Elements resourcesDetails = doc.select("a[m]");
+    retrieveSearchDocument(searchUri);
+    if (currentDoc != null) {
+      final Elements resourcesDetails = currentDoc.select("a[m]");
       for (Element link : resourcesDetails) {
         if (pageResources.size() >= numResultsToGet) {
           Log.info("Reached result limit of {}. Not adding more resources",
@@ -38,29 +45,48 @@ public class ResourceHtmlDocumentParser {
 
         pageResources.add(parseResourceFromLink(link.attr("abs:m")));
       }
+
+      nextSearchQuery = parseNextSearchQuery();
     }
 
     return pageResources;
   }
 
-  private Document getSearchDocument(URI searchUri) {
-    Document doc;
+  public String getNextSearchQuery() {
+    return nextSearchQuery;
+  }
+
+  private String parseNextSearchQuery() {
+    if (currentDoc == null) {
+      Log.error("Current document has not been retrieved! " +
+        "Cannot retrieve URI of the next search.");
+      return null;
+    }
+
+    final Elements newSearchQueries = currentDoc.select("a[title*=Search For");
+
+    final int randomAnchorIndex = (newSearchQueries.size() >= RANDOM_ANCHOR_INDEX_LIMIT) ?
+      new Random().nextInt(RANDOM_ANCHOR_INDEX_LIMIT) :
+      new Random().nextInt(newSearchQueries.size());
+
+    final String href = newSearchQueries.get(randomAnchorIndex).attr("abs:href");
+    final int locOfQueryParam = href.lastIndexOf("q=") + 2;
+    return href.substring(locOfQueryParam, href.indexOf("&", locOfQueryParam));
+  }
+
+  private void retrieveSearchDocument(URI searchUri) {
     try {
-      doc = Jsoup.connect(searchUri.toString()).followRedirects(true)
+      currentDoc = Jsoup.connect(searchUri.toString()).followRedirects(true)
         .userAgent("").get();
     }
     catch (IOException e) {
       Log.error("IOException (is the network connected?): ", e);
-      doc = null;
     }
-
-    return doc;
   }
 
   private URI parseResourceFromLink(String resourceAttr) {
-    final String resourceAttributeName = "imgurl:";
-    final int imgUrlStart = resourceAttr.indexOf(resourceAttributeName) +
-      resourceAttributeName.length();
+    final int imgUrlStart = resourceAttr.indexOf(IMG_RESOURCE_ATTRIBUTE_NAME) +
+      IMG_RESOURCE_ATTRIBUTE_NAME.length();
     String url = resourceAttr.substring(imgUrlStart,
       resourceAttr.indexOf(",", imgUrlStart)).replace("\"", "");
     return URI.create(url);
