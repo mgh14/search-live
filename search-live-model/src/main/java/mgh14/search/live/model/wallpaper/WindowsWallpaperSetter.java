@@ -1,7 +1,13 @@
 package mgh14.search.live.model.wallpaper;
 
 import java.io.IOException;
+import java.util.HashMap;
 
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.win32.StdCallLibrary;
+import com.sun.jna.win32.W32APIFunctionMapper;
+import com.sun.jna.win32.W32APITypeMapper;
 import mgh14.search.live.model.web.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +41,7 @@ public class WindowsWallpaperSetter {
   private void copyAndSetWallpaper(String path) {
     Log.debug("Copying image to bitmap: [{}]", path);
     // copy image to bitmap type (.bmp)
-    String newPath = null;
+    String newPath;
     try {
       newPath = imageUtils.copyFileToBitmap(path);
     }
@@ -47,18 +53,34 @@ public class WindowsWallpaperSetter {
     Log.debug("Setting bitmap image as background: [{}]", newPath);
     // If image is copied successfully, set it as the desktop wallpaper
     if (newPath != null) {
-      final Runtime runtime = Runtime.getRuntime();
-      try {
-        runtime.exec("reg add \"HKCU\\Control Panel\\Desktop\" /v Wallpaper " +
-          "/t REG_SZ /d \"" + newPath +"\" /f");
-        runtime.exec("reg add \"HKCU\\Control Panel\\Desktop\" /v WallpaperStyle " +
-          "/t REG_SZ /d 2 /f");
-        runtime.exec("RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters");
-      }
-      catch (IOException e) {
-        Log.error("IOError setting file [{}] to desktop: ", path, e);
-      }
+      SPI.INSTANCE.SystemParametersInfo(
+        new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
+        new WinDef.UINT_PTR(0),
+        path,
+        new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));
     }
+
   }
 
+  private interface SPI extends StdCallLibrary {
+
+    //from MSDN article
+    long SPI_SETDESKWALLPAPER = 20;
+    long SPIF_UPDATEINIFILE = 0x01;
+    long SPIF_SENDWININICHANGE = 0x02;
+
+    SPI INSTANCE = (SPI) Native.loadLibrary("user32", SPI.class, new HashMap<Object, Object>() {
+      {
+        put(OPTION_TYPE_MAPPER, W32APITypeMapper.UNICODE);
+        put(OPTION_FUNCTION_MAPPER, W32APIFunctionMapper.UNICODE);
+      }
+    });
+
+    boolean SystemParametersInfo(
+      WinDef.UINT_PTR uiAction,
+      WinDef.UINT_PTR uiParam,
+      String pvParam,
+      WinDef.UINT_PTR fWinIni
+    );
+  }
 }
