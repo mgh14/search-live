@@ -71,10 +71,6 @@ public class HtmlApplication {
    * arg -springProfiles: comma-separated list (no spaces) of spring
    *      profiles to activate
    */
-  // arg -query: the search query
-  // arg -numResults: the number of results to return for each page
-  // arg -sleepTime: the number of seconds for each resource to be viewed
-  // arg -springProfiles: comma-separated list (no spaces) of
   public static void main(String[] args) {
 
     // parse the command line arguments
