@@ -24,9 +24,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResourceCycler {
 
-  public static final File resourceFolder =
-    new File("C:\\Users\\mgh14\\Pictures\\screen-temp\\");
-
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
@@ -151,7 +148,7 @@ public class ResourceCycler {
 
   public void deleteAllResources() {
     Log.debug("Deleting all resources...");
-    fileUtils.deleteAllFiles(resourceFolder);
+    fileUtils.deleteAllFiles(fileUtils.getResourceFolder());
   }
 
   private void setCycleActive(boolean cycleActive) {

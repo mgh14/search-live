@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,22 @@ public class FileUtils {
 
   public static final String FILE_SEPARATOR =
     (String) System.getProperties().get("file.separator");
+
+  private File resourceFolder;
+
+  public FileUtils() {
+    resourceFolder = null;
+  }
+
+  @PostConstruct
+  public void constructTemporaryResourceFolder() {
+    resourceFolder = new File(constructFilepathWithSeparator(
+      "C:", "Users", "mgh14", "Pictures", "screen-temp"));
+  }
+
+  public File getResourceFolder() {
+    return new File(resourceFolder.toString());
+  }
 
   public String constructFilepathWithSeparator(String... dirs) {
     String filepath = "";
