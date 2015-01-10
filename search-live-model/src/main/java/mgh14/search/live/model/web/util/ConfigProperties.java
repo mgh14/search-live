@@ -7,29 +7,53 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
+import mgh14.search.live.model.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Class for loading configuration properties
  */
+@Component
 public class ConfigProperties {
+
+  public static final String APP_HOME_PARAM = "SEARCH_LIVE_HOME";
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
+  @Autowired
+  private FileUtils fileUtils;
+
+  private String configDir;
   private Properties properties;
 
   public ConfigProperties() {
+    configDir = null;
     properties = new Properties();
   }
 
-  public void setConfigFileLocation(String dirLocation) {
+  @PostConstruct
+  public void loadConfig() {
+    final String appHome = System.getenv().get(APP_HOME_PARAM);
+    if (appHome == null || appHome.isEmpty()) {
+      Log.error("Error: System application home variable " +
+        APP_HOME_PARAM + "is not set; cannot locate config. " +
+        "Exiting...");
+      System.exit(-1);
+    }
+    configDir = fileUtils.constructFilepathWithSeparator(
+      "search-live-application", "src", "main", "resources");
+
     try {
-      loadPropertyValues(dirLocation);
+      loadPropertyValues(configDir);
     }
     catch (IOException e) {
       Log.warn("Warning: Couldn\'t load properties file " +
-        "in dir [{}]. Continuing...", dirLocation);
+        "in dir [{}]. Continuing...", configDir);
     }
   }
 

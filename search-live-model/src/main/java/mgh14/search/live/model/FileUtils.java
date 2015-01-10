@@ -19,6 +19,18 @@ public class FileUtils {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
+  public static final String FILE_SEPARATOR =
+    (String) System.getProperties().get("file.separator");
+
+  public String constructFilepathWithSeparator(String... dirs) {
+    String filepath = "";
+    for (String dir : dirs) {
+      filepath += dir + FILE_SEPARATOR;
+    }
+
+    return filepath;
+  }
+
   public void deleteFile(Path filepath) {
     if(filepath == null) {
       return;

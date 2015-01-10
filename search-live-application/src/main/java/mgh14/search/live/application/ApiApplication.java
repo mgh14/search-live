@@ -20,8 +20,8 @@ public class ApiApplication {
   static ConfigProperties props;
   static {
     props = new ConfigProperties();
-    props.setConfigFileLocation("C:\\Users\\mgh14\\search-live\\" +
-      "search-live-application\\src\\main\\resources\\");
+    /*props.setConfigFileLocation("C:\\Users\\mgh14\\search-live\\" +
+      "search-live-application\\src\\main\\resources\\");*/
   }
 
   // arg -authKey: the Bing API access key

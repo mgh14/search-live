@@ -37,8 +37,6 @@ public class HtmlApplication {
   @ComponentScan("mgh14.search.live")
   public static class BeanConfiguration {
 
-    public static final String APP_HOME_PARAM = "SEARCH_LIVE_HOME";
-
     @Bean
     public ConcurrentLinkedQueue<String> resourceQueue() {
       return new ConcurrentLinkedQueue<String>();
@@ -47,22 +45,6 @@ public class HtmlApplication {
     @Bean
     public ExecutorService executorService() {
       return Executors.newFixedThreadPool(10);
-    }
-
-    @Bean
-    public ConfigProperties configProperties() {
-      final String appHome = System.getenv().get(APP_HOME_PARAM);
-      if (appHome == null || appHome.isEmpty()) {
-        Log.error("Error: System application home variable " +
-          APP_HOME_PARAM + "is not set; cannot locate config. " +
-          "Exiting...");
-        System.exit(-1);
-      }
-
-      final ConfigProperties props = new ConfigProperties();
-      props.setConfigFileLocation(System.getenv().get(APP_HOME_PARAM) +
-        "search-live-application\\src\\main\\resources\\");
-      return props;
     }
 
   }
