@@ -65,11 +65,6 @@ public class HtmlApplication {
       return props;
     }
 
-    /*@Bean
-    public String installDir() {
-      System.getenv().put
-    }*/
-
   }
 
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
