@@ -11,11 +11,13 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,11 +26,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImageUtils {
 
-  public static final String BASE_SAVE_DIRECTORY = "C:\\Users\\mgh14\\Pictures\\";
+  @Autowired
+  private mgh14.search.live.model.FileUtils fileUtils;
+  private String savedPicsDir = null;
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
   private ConcurrentHashMap<String, String> downloadedResources =
     new ConcurrentHashMap<String, String>();
+
+  @PostConstruct
+  public void setBaseSaveDirectory() {
+    savedPicsDir = fileUtils.constructFilepathWithSeparator(
+      "C:", "Users", "mgh14", "Pictures", "Search-live-saves");
+  }
 
   public String saveImage(String searchStringFolder, String absoluteCurrentFilename) {
     final String filename = absoluteCurrentFilename.substring(
@@ -36,7 +46,7 @@ public class ImageUtils {
 
     try {
       FileUtils.copyFile(new File(absoluteCurrentFilename),
-        new File(BASE_SAVE_DIRECTORY + searchStringFolder + filename));
+        new File(savedPicsDir + searchStringFolder + filename));
     }
     catch (IOException e) {
       Log.error("IOException copying file: {}", absoluteCurrentFilename, e);

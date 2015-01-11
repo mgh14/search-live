@@ -128,7 +128,8 @@ public class ResourceCycler {
   }
 
   public String saveCurrentImage() {
-    return imageUtils.saveImage(searchStringFolder, currentAbsoluteFilename);
+    return imageUtils.saveImage(searchStringFolder,
+      currentAbsoluteFilename);
   }
 
   public void pauseCycle() {
@@ -148,7 +149,7 @@ public class ResourceCycler {
 
   public void deleteAllResources() {
     Log.debug("Deleting all resources...");
-    fileUtils.deleteAllFiles(fileUtils.getResourceFolder());
+    fileUtils.deleteAllFiles(new File(fileUtils.getResourceFolder()));
   }
 
   private void setCycleActive(boolean cycleActive) {

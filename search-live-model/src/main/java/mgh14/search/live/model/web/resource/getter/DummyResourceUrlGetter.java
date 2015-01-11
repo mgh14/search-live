@@ -3,9 +3,12 @@ package mgh14.search.live.model.web.resource.getter;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
+import mgh14.search.live.model.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -20,12 +23,19 @@ public class DummyResourceUrlGetter implements ResourceUrlGetter {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
-  private static final File DUMMY_RESOURCE_DIR = new File("C:\\Users\\mgh14\\Pictures\\dummy-resources\\");
-
+  @Autowired
+  private FileUtils fileUtils;
+  private String dummyResourceDir = null;
   private List<String> dummyResourceUris;
 
   public DummyResourceUrlGetter() {
     dummyResourceUris = new LinkedList<String>();
+  }
+
+  @PostConstruct
+  public void setDummyResourceDirectory() {
+    dummyResourceDir = fileUtils.constructFilepathWithSeparator(
+      "C:", "Users", "mgh14", "Pictures", "dummy-resources");
     loadDummyResources();
   }
 
@@ -44,7 +54,7 @@ public class DummyResourceUrlGetter implements ResourceUrlGetter {
   }
 
   private void loadDummyResources() {
-    final File[] folderFiles = DUMMY_RESOURCE_DIR.listFiles();
+    final File[] folderFiles = new File(dummyResourceDir).listFiles();
     if(folderFiles != null) {
       for (final File fileEntry : folderFiles) {
         dummyResourceUris.add(fileEntry.getAbsolutePath());

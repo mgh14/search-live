@@ -24,7 +24,7 @@ public class FileUtils {
   public static final String FILE_SEPARATOR =
     (String) System.getProperties().get("file.separator");
 
-  private File resourceFolder;
+  private String resourceFolder;
 
   public FileUtils() {
     resourceFolder = null;
@@ -32,12 +32,12 @@ public class FileUtils {
 
   @PostConstruct
   public void constructTemporaryResourceFolder() {
-    resourceFolder = new File(constructFilepathWithSeparator(
-      "C:", "Users", "mgh14", "Pictures", "screen-temp"));
+    resourceFolder = constructFilepathWithSeparator(
+      "C:", "Users", "mgh14", "Pictures", "screen-temp");
   }
 
-  public File getResourceFolder() {
-    return new File(resourceFolder.toString());
+  public String getResourceFolder() {
+    return resourceFolder;
   }
 
   public String constructFilepathWithSeparator(String... dirs) {
@@ -45,7 +45,6 @@ public class FileUtils {
     for (String dir : dirs) {
       filepath += dir + FILE_SEPARATOR;
     }
-
     return filepath;
   }
 

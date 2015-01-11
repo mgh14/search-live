@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import mgh14.search.live.model.FileUtils;
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.ConfigProperties;
 import mgh14.search.live.model.web.util.ImageUtils;
@@ -32,7 +33,6 @@ public class QueueLoader {
   public static final String RESOURCE_FILENAME_TIMESTAMP_SEPARATOR = "-";
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
-  private static final String ROOT_DIR = "C:\\Users\\mgh14\\Pictures\\screen-temp\\";
   private static final int NUM_DOWNLOADS_PER_REQUEST = 5;
 
   @Autowired
@@ -45,6 +45,8 @@ public class QueueLoader {
   private ExecutorService executorService;
   @Autowired
   private ImageUtils imageUtils;
+  @Autowired
+  private FileUtils fileUtils;
 
   private Map<String, String> urlsToFilenames = new HashMap<String, String>();
   private Queue<String> currentResourceLocations = new ConcurrentLinkedQueue<String>();
@@ -110,16 +112,17 @@ public class QueueLoader {
   private String getRelativeResourceFilename(String resourceStr) {
     // construct (local) filename
     final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
-    return ROOT_DIR + RESOURCE_FILENAME_PREPEND + downloadCounter.incrementAndGet() +
-      RESOURCE_FILENAME_TIMESTAMP_SEPARATOR + System.currentTimeMillis() +
-      filetype;
+    return fileUtils.getResourceFolder() + RESOURCE_FILENAME_PREPEND +
+      downloadCounter.incrementAndGet() + RESOURCE_FILENAME_TIMESTAMP_SEPARATOR +
+      System.currentTimeMillis() + filetype;
   }
 
   private String downloadResource(String resourceStr, String filename) {
     String finalFilename = null;
     try {
       if (!urlsToFilenames.containsKey(resourceStr)) {
-        finalFilename = imageUtils.downloadImage(resourceStr, ROOT_DIR, filename);
+        finalFilename = imageUtils.downloadImage(resourceStr,
+          fileUtils.getResourceFolder(), filename);
         if (!(finalFilename == null || finalFilename.trim().isEmpty())) {
           makeFileReadableAndWriteable(finalFilename);
           resourceQueue.add(finalFilename);
