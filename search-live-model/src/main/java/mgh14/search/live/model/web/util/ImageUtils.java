@@ -76,15 +76,16 @@ public class ImageUtils {
       Log.error("Open image error: ", e);
       return false;
     }
-    finally {
-      try {
+
+    // close the image stream
+    try {
         inputStream.close();
-      }
-      catch (IOException e) {
-        Log.error("IOException: ", e);
-        return false;
-      }
     }
+    catch (IOException e) {
+      Log.error("IOException: ", e);
+      return false;
+    }
+
 
     // make sure the image is actually an image (instead
     // of the weird 2x1 image files that are sometimes
