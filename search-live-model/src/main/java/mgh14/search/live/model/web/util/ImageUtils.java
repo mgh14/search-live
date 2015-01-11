@@ -63,7 +63,7 @@ public class ImageUtils {
       inputStream = new FileInputStream(absoluteFilepath);
     }
     catch (FileNotFoundException e) {
-      e.printStackTrace();
+      Log.error("File not found: ", e);
       return false;
     }
 
@@ -81,7 +81,7 @@ public class ImageUtils {
         inputStream.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        Log.error("IOException: ", e);
         return false;
       }
     }
