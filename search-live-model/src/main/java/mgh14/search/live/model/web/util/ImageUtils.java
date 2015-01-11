@@ -88,7 +88,7 @@ public class ImageUtils {
 
     // make sure the image is actually an image (instead
     // of the weird 2x1 image files that are sometimes
-    // downloaded)
+    // "downloaded")
     final int pixelTolerance = 5;
     return (image != null && image.getWidth() > pixelTolerance
       && image.getHeight() > pixelTolerance);
