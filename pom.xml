@@ -30,6 +30,12 @@
     <slf4j-api.version>1.7.5</slf4j-api.version>
     <logback-classic.version>1.0.13</logback-classic.version>
     <spring.version>4.1.4.RELEASE</spring.version>
+    <jgoodies-forms.version>1.7.2</jgoodies-forms.version>
+    <jgoodies-validation.version>2.5.0</jgoodies-validation.version>
+    <jgoodies-looks.version>2.5.3</jgoodies-looks.version>
+    <jgoodies-common.version>1.7.0</jgoodies-common.version>
+    <jgoodies-binding.version>2.10.0</jgoodies-binding.version>
+    <seaglass.version>0.2</seaglass.version>
   </properties>
 
   <dependencyManagement>
@@ -114,6 +120,47 @@
         <artifactId>logback-classic</artifactId>
         <version>${logback-classic.version}</version>
       </dependency>
+      <!-- END Logging -->
+
+      <!-- JGoodies GUI Utils-->
+      <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>jgoodies-forms</artifactId>
+        <version>${jgoodies-forms.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>jgoodies-validation</artifactId>
+        <version>${jgoodies-validation.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>jgoodies-looks</artifactId>
+        <version>${jgoodies-looks.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>jgoodies-common</artifactId>
+        <version>${jgoodies-common.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>jgoodies-binding</artifactId>
+        <version>${jgoodies-binding.version}</version>
+      </dependency>
+      <!-- END JGoodies GUI Utils-->
+
+      <!-- SeaGlass Look and Feel -->
+      <dependency>
+        <groupId>com.seaglasslookandfeel</groupId>
+        <artifactId>seaglasslookandfeel</artifactId>
+        <version>${seaglass.version}</version>
+      </dependency>
+      <!-- END SeaGlass Look and Feel -->
 
     </dependencies>
   </dependencyManagement>

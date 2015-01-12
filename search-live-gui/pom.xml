@@ -11,6 +11,7 @@
 
   <artifactId>search-live-gui</artifactId>
 
+  <!-- Internal Dependencies -->
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -23,12 +24,14 @@
       <artifactId>search-live-service</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- END Internal Dependencies -->
 
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
     </dependency>
 
+    <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -38,6 +41,41 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency>
+    <!-- END Logging -->
+
+    <!-- JGoodies GUI Utils-->
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>jgoodies-forms</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>jgoodies-validation</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>jgoodies-looks</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>jgoodies-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>jgoodies-binding</artifactId>
+    </dependency>
+    <!-- END JGoodies GUI Utils-->
+
+    <!-- SeaGlass Look and Feel -->
+    <dependency>
+      <groupId>com.seaglasslookandfeel</groupId>
+      <artifactId>seaglasslookandfeel</artifactId>
+    </dependency>
+    <!-- END SeaGlass Look and Feel -->
 
   </dependencies>
 
