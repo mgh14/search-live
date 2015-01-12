@@ -78,6 +78,11 @@ public class CommandLineUtils {
     OptionBuilder.withDescription("Number of seconds to sleep between wallpaper changes");
     options.addOption(OptionBuilder.create("sleepTime"));
 
+    OptionBuilder.hasArg(false);
+    OptionBuilder.withDescription("Whether or not to immediately start the resource cycle. " +
+      "Requires that the query argument is set.");
+    options.addOption(OptionBuilder.create("startCycle"));
+
     return options;
   }
 
