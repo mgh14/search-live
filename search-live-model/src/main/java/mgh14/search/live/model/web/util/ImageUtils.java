@@ -73,7 +73,7 @@ public class ImageUtils {
       image = ImageIO.read(inputStream);
     }
     catch (Exception e) {
-      Log.error("Open image error: ", e);
+      Log.error("Image read error: ", e);
       return false;
     }
 
@@ -85,7 +85,6 @@ public class ImageUtils {
       Log.error("IOException: ", e);
       return false;
     }
-
 
     // make sure the image is actually an image (instead
     // of the weird 2x1 image files that are sometimes

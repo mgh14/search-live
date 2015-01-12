@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
  * Class offering helpful methods for parsing command
  * line options.
  */
-public class CommandLineHelper {
+public class CommandLineUtils {
 
-  private static final Logger Log = LoggerFactory.getLogger(CommandLineHelper.class);
+  private static final Logger Log = LoggerFactory.getLogger(CommandLineUtils.class);
 
   static CommandLine parseArgs(Options options, String[] args) {
     // create the parser

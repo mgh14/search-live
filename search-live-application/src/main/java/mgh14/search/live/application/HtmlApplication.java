@@ -66,8 +66,8 @@ public class HtmlApplication {
   public static void main(String[] args) {
 
     // parse the command line arguments
-    final CommandLine line = CommandLineHelper.parseArgs(
-      CommandLineHelper.getHtmlResourceOptions(), args);
+    final CommandLine line = CommandLineUtils.parseArgs(
+      CommandLineUtils.getHtmlResourceOptions(), args);
     if (line == null) {
       Log.error("Error parsing command line arguments");
       System.exit(-1);
@@ -124,11 +124,11 @@ public class HtmlApplication {
   }
 
   void validateNumResults(int numResults, int maxResults) {
-    CommandLineHelper.validateNumResults(numResults, maxResults);
+    CommandLineUtils.validateNumResults(numResults, maxResults);
   }
 
   void validateSecondsToSleep(int secondsToSleep) {
-    CommandLineHelper.validateSecondsToSleep(secondsToSleep);
+    CommandLineUtils.validateSecondsToSleep(secondsToSleep);
   }
 
   boolean springProfileIsEnabled(ApplicationContext context, String profile) {

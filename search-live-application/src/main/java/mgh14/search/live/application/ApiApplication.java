@@ -63,18 +63,18 @@ public class ApiApplication {
   }
 
   CommandLine parseArgs(String[] args) {
-    return CommandLineHelper.parseArgs(CommandLineHelper.getApiResourceOptions(), args);
+    return CommandLineUtils.parseArgs(CommandLineUtils.getApiResourceOptions(), args);
   }
 
   void validateAuthKey(String authKey) {
-    CommandLineHelper.validateAuthKey(authKey);
+    CommandLineUtils.validateAuthKey(authKey);
   }
 
   void validateNumResults(int numResults, int maxResults) {
-    CommandLineHelper.validateNumResults(numResults, maxResults);
+    CommandLineUtils.validateNumResults(numResults, maxResults);
   }
 
   void validateSecondsToSleep(int secondsToSleep) {
-    CommandLineHelper.validateSecondsToSleep(secondsToSleep);
+    CommandLineUtils.validateSecondsToSleep(secondsToSleep);
   }
 }
