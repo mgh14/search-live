@@ -16,6 +16,11 @@ public class GuiController {
   @Autowired
   private CommandExecutor executor;
 
+  public void startResourceCycle(String query) {
+    executor.addCommandToQueue(new CycleCommand(CycleAction.START_SERVICE,
+      "searchString:" + query));
+  }
+
   public void pauseResourceCycle() {
     executor.addCommandToQueue(new CycleCommand(CycleAction.PAUSE));
   }
