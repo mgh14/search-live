@@ -71,9 +71,6 @@ public class CommandExecutor {
       if (CycleAction.SHUTDOWN.equals(action)) {
         processShutdown();
       }
-      if (CycleAction.NOP.equals(action)) {
-        continue; // do nothing
-      }
     }
   }
 
