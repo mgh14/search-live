@@ -6,12 +6,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.model.web.resource.getter.BingHtmlResourceUrlGetter;
 import mgh14.search.live.model.web.util.ConfigProperties;
 import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.ResourceCycler;
-import mgh14.search.live.service.messaging.CycleAction;
-import mgh14.search.live.service.messaging.CycleCommand;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,19 +98,19 @@ public class HtmlApplication {
     application.validateSecondsToSleep(secondsToSleep);
     context.getBean(ResourceCycler.class).setSecondsToSleep(secondsToSleep);
 
-    final CycleCommand startCommand = new CycleCommand(
-      CycleAction.START_SERVICE, "searchString:" +
-      line.getOptionValue("query") + ";");
-    final CommandExecutor commandExecutor = context.getBean(CommandExecutor.class);
-    commandExecutor.addCommandToQueue(startCommand);
-
     // set production properties (if profile is enabled)
     if (application.springProfileIsEnabled(context,
         BingHtmlResourceUrlGetter.PRODUCTION_PROFILE)) {
       application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
     }
 
+    // set search string in control panel (if present on command line)
+    final ControlPanel controlPanel = context.getBean(ControlPanel.class);
+    final String query = line.getOptionValue("query");
+    controlPanel.setSearchString((query != null) ? query : "");
+
     // begin executor commands
+    final CommandExecutor commandExecutor = context.getBean(CommandExecutor.class);
     commandExecutor.run();
   }
 
