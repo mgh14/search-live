@@ -12,6 +12,7 @@
   <artifactId>search-live-application</artifactId>
 
   <dependencies>
+    <!-- Internal Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>search-live-model</artifactId>
@@ -29,6 +30,7 @@
       <artifactId>search-live-gui</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- END Internal Dependencies -->
 
     <dependency>
       <groupId>commons-cli</groupId>
@@ -40,6 +42,7 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
+    <!-- Logging -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
@@ -49,6 +52,7 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
     </dependency>
+    <!-- END Logging -->
 
   </dependencies>
 

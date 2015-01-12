@@ -22,7 +22,7 @@
       <artifactId>jna-platform</artifactId>
     </dependency>
 
-    <!-- Web dependencies -->
+    <!-- Web Dependencies -->
     <dependency>
       <groupId>com.mashape.unirest</groupId>
       <artifactId>unirest-java</artifactId>
@@ -54,6 +54,7 @@
       <artifactId>jsoup</artifactId>
       <version>${jsoup.version}</version>
     </dependency>
+    <!-- END Web Dependencies -->
 
     <dependency>
       <groupId>org.springframework</groupId>
@@ -65,6 +66,7 @@
       <artifactId>commons-io</artifactId>
     </dependency>
 
+    <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -74,6 +76,7 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency>
+    <!-- END Logging -->
 
   </dependencies>
 
