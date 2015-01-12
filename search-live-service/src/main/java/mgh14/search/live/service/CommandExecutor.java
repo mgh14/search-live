@@ -39,6 +39,7 @@ public class CommandExecutor {
   }
 
   public void run() {
+    Log.info("Starting command queue...");
     while (true) {
       if (commandQueue.isEmpty()) {
         continue;
