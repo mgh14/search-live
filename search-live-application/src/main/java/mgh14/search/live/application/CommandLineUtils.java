@@ -60,29 +60,33 @@ public class CommandLineUtils {
 
   static Options getHtmlResourceOptions() {
     Options options = new Options();
-    options.addOption(OptionBuilder.hasArg()
-      .withDescription("Spring profiles to activate")
-      .create("springProfiles"));
-    options.addOption(OptionBuilder.isRequired()
-      .hasArg()
-      .withDescription("Seed resource query (e.g. wallpaper HD)")
-      .create("query"));
-    options.addOption(OptionBuilder.hasArg()
-      .withDescription("Number of results to return for each resource query")
-      .create("numResults"));
-    options.addOption(OptionBuilder.hasArg()
-      .withDescription("Number of seconds to sleep between wallpaper changes")
-      .create("sleepTime"));
+
+    OptionBuilder.hasArg();
+    OptionBuilder.withDescription("Spring profiles to activate");
+    options.addOption(OptionBuilder.create("springProfiles"));
+
+    OptionBuilder.isRequired();
+    OptionBuilder.hasArg();
+    OptionBuilder.withDescription("Seed resource query (e.g. wallpaper HD)");
+    options.addOption(OptionBuilder.create("query"));
+
+    OptionBuilder.hasArg();
+    OptionBuilder.withDescription("Number of seconds to sleep between wallpaper changes");
+    options.addOption(OptionBuilder.create("numResults"));
+
+    OptionBuilder.hasArg();
+    OptionBuilder.withDescription("Number of seconds to sleep between wallpaper changes");
+    options.addOption(OptionBuilder.create("sleepTime"));
 
     return options;
   }
 
   static Options getApiResourceOptions() {
     final Options options = getHtmlResourceOptions();
-    options.addOption(OptionBuilder.isRequired()
-      .hasArg()
-      .withDescription("Authorization key for access to Bing API")
-      .create("authKey"));
+
+    OptionBuilder.hasArg();
+    OptionBuilder.withDescription("Authorization key for access to Bing API");
+    options.addOption(OptionBuilder.create("authKey"));
 
     return options;
   }
