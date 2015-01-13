@@ -42,6 +42,8 @@ public class ControlPanel {
     this.controller = null;
 
     prepareGui();
+
+    createStartButton();
     createSaveButton();
     createPauseButton();
     createResumeButton();
@@ -82,6 +84,19 @@ public class ControlPanel {
     mainFrame.add(controlPanel);
     mainFrame.add(statusLabel);
     mainFrame.setVisible(true);
+  }
+
+  private void createStartButton() {
+    JButton startResourceCycleButton = new JButton("Start Resource Cycle");
+
+    startResourceCycleButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        //controller.startResourceCycle(queryField.getText());
+        setStatusLabel("Resource cycle started");
+      }
+    });
+
+    controlPanel.add(startResourceCycleButton);
   }
 
   private void createSaveButton(){
