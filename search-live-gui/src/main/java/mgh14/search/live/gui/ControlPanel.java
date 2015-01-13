@@ -12,8 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
+import com.seaglasslookandfeel.SeaGlassLookAndFeel;
 import mgh14.search.live.gui.controller.GuiController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,6 @@ public class ControlPanel {
 
   @Autowired
   private GuiController controller;
-
   @Autowired
   private ExecutorService executorService;
 
@@ -51,36 +50,25 @@ public class ControlPanel {
     mainFrame.revalidate();
   }
 
-  private void setTheme() {
-    final String errorMessage = "Error setting user interface theme. " +
-      "Setting default Java theme...\nStack trace: ";
-
+  private void setLookFeelAndTheme() {
     try {
-      UIManager.setLookAndFeel(
-        UIManager.getSystemLookAndFeelClassName());
+      UIManager.setLookAndFeel(new SeaGlassLookAndFeel());
+    } catch (Exception e) {
+      Log.error("Error setting user interface theme. " +
+        "Setting default Java theme...\nStack trace: ", e);
     }
-    catch (ClassNotFoundException e) {
-      Log.error(errorMessage, e);
-    }
-    catch (InstantiationException e) {
-      Log.error(errorMessage, e);
-    }
-    catch (IllegalAccessException e) {
-      Log.error(errorMessage, e);
-    }
-    catch (UnsupportedLookAndFeelException e) {
-      Log.error(errorMessage, e);
-    }
+
+    // TODO: set theme
   }
 
   private void prepareGui() {
-    setTheme();
+    setLookFeelAndTheme();
 
     mainFrame = new JFrame("SearchLive Control Panel");
     mainFrame.setSize(200, 250);
     mainFrame.setLayout(new FlowLayout());
     mainFrame.addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent windowEvent){
+      public void windowClosing(WindowEvent windowEvent) {
         controller.shutdownApplication();
       }
     });
@@ -161,16 +149,16 @@ public class ControlPanel {
   }
 
   private void createDeleteAllResourcesButton() {
-    JButton deleteAllResources = new JButton("Delete All Resources");
+    JButton deleteAllResourcesButton = new JButton("Delete All Resources");
 
-    deleteAllResources.addActionListener(new ActionListener() {
+    deleteAllResourcesButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         controller.deleteAllResources();
         setStatusLabel("Resources deleted.");
       }
     });
 
-    controlPanel.add(deleteAllResources);
+    controlPanel.add(deleteAllResourcesButton);
   }
 
   private void setStatusLabel(String statusText) {
