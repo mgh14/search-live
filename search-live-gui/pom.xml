@@ -70,13 +70,6 @@
     </dependency>
     <!-- END JGoodies GUI Utils-->
 
-    <!-- SeaGlass Look and Feel -->
-    <dependency>
-      <groupId>com.seaglasslookandfeel</groupId>
-      <artifactId>seaglasslookandfeel</artifactId>
-    </dependency>
-    <!-- END SeaGlass Look and Feel -->
-
   </dependencies>
 
 

@@ -13,8 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-import com.seaglasslookandfeel.SeaGlassLookAndFeel;
 import mgh14.search.live.gui.controller.GuiController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class ControlPanel {
 
   private void setLookFeelAndTheme() {
     try {
-      UIManager.setLookAndFeel(new SeaGlassLookAndFeel());
+      UIManager.setLookAndFeel(new NimbusLookAndFeel());
     } catch (Exception e) {
       Log.error("Error setting user interface theme. " +
         "Setting default Java theme...\nStack trace: ", e);

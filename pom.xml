@@ -35,7 +35,6 @@
     <jgoodies-looks.version>2.5.3</jgoodies-looks.version>
     <jgoodies-common.version>1.7.0</jgoodies-common.version>
     <jgoodies-binding.version>2.10.0</jgoodies-binding.version>
-    <seaglass.version>0.2</seaglass.version>
   </properties>
 
   <dependencyManagement>
@@ -148,12 +147,6 @@
         <groupId>com.jgoodies</groupId>
         <artifactId>jgoodies-binding</artifactId>
         <version>${jgoodies-binding.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.seaglasslookandfeel</groupId>
-        <artifactId>seaglasslookandfeel</artifactId>
-        <version>${seaglass.version}</version>
       </dependency>
 
     </dependencies>
