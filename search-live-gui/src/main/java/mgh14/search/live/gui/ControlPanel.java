@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import com.seaglasslookandfeel.SeaGlassLookAndFeel;
@@ -37,6 +38,8 @@ public class ControlPanel {
   private JFrame mainFrame;
   private JLabel statusLabel;
   private JPanel controlPanel;
+
+  private JTextField queryText;
 
   public ControlPanel() {
     this.controller = null;
@@ -81,9 +84,17 @@ public class ControlPanel {
     controlPanel = new JPanel();
     controlPanel.setLayout(new GridLayout(0, 1));
 
+    queryText = new JTextField();
+    queryText.setSize(100, 20);
+
+    controlPanel.add(queryText);
     mainFrame.add(controlPanel);
     mainFrame.add(statusLabel);
     mainFrame.setVisible(true);
+  }
+
+  public void setSearchString(String searchString) {
+    queryText.setText(searchString);
   }
 
   private void createStartButton() {
@@ -116,6 +127,7 @@ public class ControlPanel {
         }*/
       }
     });
+    saveCurrentResourceButton.setEnabled(false);
 
     controlPanel.add(saveCurrentResourceButton);
   }
@@ -133,6 +145,7 @@ public class ControlPanel {
         statusLabel.setText("Paused cycle");
       }
     });
+    pauseResourceCycleButton.setEnabled(false);
 
     controlPanel.add(pauseResourceCycleButton);
   }
@@ -146,6 +159,7 @@ public class ControlPanel {
         setStatusLabel("Resumed cycle");
       }
     });
+    resumeResourceCycleButton.setEnabled(false);
 
     controlPanel.add(resumeResourceCycleButton);
   }
@@ -159,6 +173,7 @@ public class ControlPanel {
         setStatusLabel("Next resource retrieved.");
       }
     });
+    nextResourceButton.setEnabled(false);
 
     controlPanel.add(nextResourceButton);
   }
