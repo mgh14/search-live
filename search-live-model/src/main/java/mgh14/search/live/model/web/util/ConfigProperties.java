@@ -27,11 +27,15 @@ public class ConfigProperties {
   private FileUtils fileUtils;
 
   private String configDir;
-  private Properties properties;
+  private Properties configProperties;
+  private String prefsDir;
+  private Properties prefsProperties;
 
   public ConfigProperties() {
     configDir = null;
-    properties = new Properties();
+    configProperties = new Properties();
+    prefsDir = null;
+    prefsProperties = new Properties();
   }
 
   @PostConstruct
@@ -48,7 +52,7 @@ public class ConfigProperties {
       "config");
 
     try {
-      loadPropertyValues(configDir);
+      loadPropertyValues(configDir, "config.properties", configProperties);
     }
     catch (IOException e) {
       Log.warn("Warning: Couldn\'t load properties file " +
@@ -56,16 +60,37 @@ public class ConfigProperties {
     }
   }
 
+  @PostConstruct
+  public void loadPrefs() {
+    final String appHome = System.getenv().get(APP_HOME_PARAM);
+    if (appHome == null || appHome.isEmpty()) {
+      Log.warn("Error: System application home variable" +
+        APP_HOME_PARAM + "is not set; cannot locate prefs.");
+    }
+    prefsDir = fileUtils.constructFilepathWithSeparator(
+      "search-live-application", "src", "main", "resources",
+      "prefs");
+
+    try {
+      loadPropertyValues(prefsDir, "prefs.properties", prefsProperties);
+    } catch (IOException e) {
+      Log.warn("Warning: Couldn't load prefs properties file " +
+        "in dir [{}]. Continuing...", prefsDir);
+    }
+  }
+
   public Object getProperty(String propertyName) {
-    return properties.get(propertyName);
+    return configProperties.get(propertyName);
   }
 
   public void setProperty(String propertyName, String value) {
-    properties.put(propertyName, value);
+    configProperties.put(propertyName, value);
   }
 
-  private void loadPropertyValues(String dirLocation) throws IOException {
-    final String fullFilepath = dirLocation + "config.properties";
+  private void loadPropertyValues(String dirLocation, String filename,
+      Properties properties) throws IOException {
+
+    final String fullFilepath = dirLocation + filename;
     final InputStream inputStream = new FileInputStream(new File(fullFilepath));
     properties.load(inputStream);
 
