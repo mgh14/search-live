@@ -122,6 +122,8 @@ public class ControlPanel {
     builder.add(statusText, cellConstraints.xyw(9, 1, 4));
 
     mainFrame.setMinimumSize(new Dimension(500, 115));
+    mainFrame.setMaximumSize(new Dimension(500, 115));
+    mainFrame.setResizable(false);
     mainFrame.add(builder);
     mainFrame.setVisible(true);
   }
