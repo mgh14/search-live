@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import mgh14.search.live.model.FileUtils;
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
-import mgh14.search.live.model.web.util.ConfigProperties;
+import mgh14.search.live.model.web.util.ApplicationProperties;
 import mgh14.search.live.model.web.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class QueueLoader {
   private static final int NUM_DOWNLOADS_PER_REQUEST = 5;
 
   @Autowired
-  private ConfigProperties configProperties;
+  private ApplicationProperties applicationProperties;
   @Autowired
   private ResourceUrlGetter resourceUrlGetter;
   @Autowired
@@ -74,7 +74,7 @@ public class QueueLoader {
           final String filename = getRelativeResourceFilename(resource);
 
           // download image
-          if ("true".equals(configProperties.getProperty("append-file-protocol"))) {
+          if ("true".equals(applicationProperties.getConfigProperty("append-file-protocol"))) {
             resource = "file:///" + resource;
           }
           String finalFilename = downloadResource(resource, filename);

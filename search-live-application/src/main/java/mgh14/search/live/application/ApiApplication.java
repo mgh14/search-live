@@ -1,6 +1,6 @@
 package mgh14.search.live.application;
 
-import mgh14.search.live.model.web.util.ConfigProperties;
+import mgh14.search.live.model.web.util.ApplicationProperties;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +17,9 @@ public class ApiApplication {
 
   private static final Logger Log = LoggerFactory.getLogger(ApiApplication.class);
 
-  static ConfigProperties props;
+  static ApplicationProperties props;
   static {
-    props = new ConfigProperties();
+    props = new ApplicationProperties();
     /*props.setConfigFileLocation("C:\\Users\\mgh14\\search-live\\" +
       "search-live-application\\src\\main\\resources\\");*/
   }
@@ -47,14 +47,14 @@ public class ApiApplication {
     // validate numResults
     final int numResults = (line.hasOption("numResults")) ?
       Integer.parseInt(line.getOptionValue("numResults")) :
-      Integer.parseInt((String) props.getProperty("default-num-results"));
+      Integer.parseInt((String) props.getConfigProperty("default-num-results"));
     application.validateNumResults(numResults,
-      Integer.parseInt((String) props.getProperty("max-num-results")));
+      Integer.parseInt((String) props.getConfigProperty("max-num-results")));
 
     // validate secondsToSleep
     final int secondsToSleep = (line.hasOption("sleepTime")) ?
       Integer.parseInt(line.getOptionValue("sleepTime")) :
-      Integer.parseInt((String) props.getProperty("default-num-seconds-to-sleep"));
+      Integer.parseInt((String) props.getConfigProperty("default-num-seconds-to-sleep"));
     application.validateSecondsToSleep(secondsToSleep);
 
     /*ResourceCycler htmlApplication = new ResourceCycler(

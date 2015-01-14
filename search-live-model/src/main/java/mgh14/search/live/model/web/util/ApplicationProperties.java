@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * Class for loading configuration properties
  */
 @Component
-public class ConfigProperties {
+public class ApplicationProperties {
 
   public static final String APP_HOME_PARAM = "SEARCH_LIVE_HOME";
 
@@ -31,7 +31,7 @@ public class ConfigProperties {
   private String prefsDir;
   private Properties prefsProperties;
 
-  public ConfigProperties() {
+  public ApplicationProperties() {
     configDir = null;
     configProperties = new Properties();
     prefsDir = null;
@@ -79,12 +79,20 @@ public class ConfigProperties {
     }
   }
 
-  public Object getProperty(String propertyName) {
+  public Object getConfigProperty(String propertyName) {
     return configProperties.get(propertyName);
   }
 
-  public void setProperty(String propertyName, String value) {
+  public void setConfigProperty(String propertyName, String value) {
     configProperties.put(propertyName, value);
+  }
+
+  public Object getPrefsProperty(String propertyName) {
+    return prefsProperties.get(propertyName);
+  }
+
+  public void setPrefsProperty(String propertyName, String value) {
+    prefsProperties.put(propertyName, value);
   }
 
   private void loadPropertyValues(String dirLocation, String filename,

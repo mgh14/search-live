@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 
 import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.model.web.resource.getter.BingHtmlResourceUrlGetter;
-import mgh14.search.live.model.web.util.ConfigProperties;
+import mgh14.search.live.model.web.util.ApplicationProperties;
 import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.ResourceCycler;
 import org.apache.commons.cli.CommandLine;
@@ -52,7 +52,7 @@ public class HtmlApplication {
   private static final String DEFAULT_PROFILE = "DummyResources";
 
   @Autowired
-  private ConfigProperties configProperties;
+  private ApplicationProperties applicationProperties;
 
   /**
    * arg -query: the search query
@@ -120,11 +120,11 @@ public class HtmlApplication {
   }
 
   Object getProperty(String propName) {
-    return configProperties.getProperty(propName);
+    return applicationProperties.getConfigProperty(propName);
   }
 
   void setProperty(String propName, String propValue) {
-    configProperties.setProperty(propName, propValue);
+    applicationProperties.setConfigProperty(propName, propValue);
   }
 
   void validateNumResults(int numResults, int maxResults) {
