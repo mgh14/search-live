@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.Set;
-
 import javax.annotation.PostConstruct;
 
 import mgh14.search.live.model.FileUtils;
@@ -56,10 +54,6 @@ public class ConfigProperties {
       Log.warn("Warning: Couldn\'t load properties file " +
         "in dir [{}]. Continuing...", configDir);
     }
-  }
-
-  public Set<Object> getPropertyKeys() {
-    return properties.keySet();
   }
 
   public Object getProperty(String propertyName) {
