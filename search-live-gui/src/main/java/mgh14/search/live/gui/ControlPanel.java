@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -87,6 +88,19 @@ public class ControlPanel {
 
   public void setSearchString(String searchString) {
     queryText.setText(searchString);
+  }
+
+  public String setResourceSaveDirectory() {
+    final JFileChooser fileChooser = new JFileChooser(fileUtils.getResourceFolder());
+    fileChooser.setDialogTitle("Choose the directory for saved images");
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+    int returnValue = fileChooser.showOpenDialog(mainFrame);
+    if (returnValue == JFileChooser.APPROVE_OPTION) {
+      return fileChooser.getSelectedFile().getAbsolutePath();
+    }
+
+    return null;
   }
 
   public void setStatusText(String newStatusText) {

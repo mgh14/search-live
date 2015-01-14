@@ -49,7 +49,6 @@ public class HtmlApplication {
   }
 
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
-
   private static final String DEFAULT_PROFILE = "DummyResources";
 
   @Autowired
@@ -63,7 +62,6 @@ public class HtmlApplication {
    *      profiles to activate
    */
   public static void main(String[] args) {
-
     // parse the command line arguments
     final CommandLine line = CommandLineUtils.parseArgs(
       CommandLineUtils.getHtmlResourceOptions(), args);
@@ -104,8 +102,12 @@ public class HtmlApplication {
       application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
     }
 
-    // TODO: Set directory to save pictures to
-      //context.getBean(ControlPanel.class).setSaveDirectory()
+    final String resourceSaveDir = context.getBean(ControlPanel.class).setResourceSaveDirectory();
+    if (resourceSaveDir == null || resourceSaveDir.isEmpty()) {
+      Log.warn("No directory for saving resources has been chosen. " +
+        "Save function will not be available.");
+    }
+    application.setProperty("resource-save-dir", resourceSaveDir);
 
     // set search string in control panel (if present on command line)
     final ControlPanel controlPanel = context.getBean(ControlPanel.class);
