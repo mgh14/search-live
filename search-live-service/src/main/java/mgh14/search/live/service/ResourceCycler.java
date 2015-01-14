@@ -104,10 +104,12 @@ public class ResourceCycler {
           while (resourcesQueue.isEmpty()) {
             final long currentTimeMillis = System.currentTimeMillis();
             final long elapsedTimeMillis = currentTimeMillis - startTime;
+            // TODO: Implement retries here instead of queue timeout?
             if (elapsedTimeMillis > QUEUE_TIMEOUT_MILLISECONDS) {
-              Log.info("Empty queue timeout of {} seconds reached. Sending exit command...",
-                (QUEUE_TIMEOUT_SECONDS));
-              commandExecutor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN));
+                Log.info("Empty queue timeout of {} seconds reached. Sending exit command...",
+                  (QUEUE_TIMEOUT_SECONDS));
+                commandExecutor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN));
+                // TODO: thread terminate here
             }
             // TODO: else if ((elapsedTimeMillis % 6000 > 5000) && !queueLoader.isDownloading()) {
             else if (!queueLoader.isDownloading()) {

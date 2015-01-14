@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
@@ -26,6 +27,8 @@ public class CommandExecutor {
   @Autowired
   private ResourceCycler resourceCycler;
   private Queue<CycleCommand> commandQueue;
+
+  private AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
   public CommandExecutor() {
     commandQueue = new ConcurrentLinkedQueue<CycleCommand>();
@@ -69,9 +72,15 @@ public class CommandExecutor {
         processDeleteResourceCache();
       }
       if (CycleAction.SHUTDOWN.equals(action)) {
+        shuttingDown.set(true);
         processShutdown();
+        break;
       }
     }
+  }
+
+  public boolean isShuttingDown() {
+    return shuttingDown.get();
   }
 
   private void processStart(String commandBody) {
