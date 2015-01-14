@@ -64,6 +64,7 @@ public class QueueLoader {
         List<String> resourceUris = getSetOfResourceLocations();
         if (resourceUris.isEmpty()) {
           Log.info("Resource URI's is empty. Terminating download thread...");
+          downloadsInProgress.set(false);
           return;   // terminate thread
         }
 
