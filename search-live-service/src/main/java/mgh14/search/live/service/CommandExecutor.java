@@ -116,6 +116,13 @@ public class CommandExecutor {
 
     Log.debug("Shutting down executor service...");
     executorService.shutdown();
+    Log.debug("Waiting 10 seconds for threads to terminate...");
+    try {
+      Thread.sleep(10000);
+    }
+    catch (InterruptedException e) {
+      Log.error("Interrupt: ", e);
+    }
 
     Log.debug("Finished application shutdown.");
     System.exit(0);
