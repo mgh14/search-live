@@ -170,7 +170,7 @@ public class ControlPanel {
 
     startResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        //controller.startResourceCycle(queryText.getText());
+        controller.startResourceCycle(queryText.getText());
         setStatusText("Resource cycle started");
       }
     });
