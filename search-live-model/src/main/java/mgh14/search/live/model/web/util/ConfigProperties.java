@@ -46,7 +46,8 @@ public class ConfigProperties {
       System.exit(-1);
     }
     configDir = fileUtils.constructFilepathWithSeparator(
-      "search-live-application", "src", "main", "resources");
+      "search-live-application", "src", "main", "resources",
+      "config");
 
     try {
       loadPropertyValues(configDir);
