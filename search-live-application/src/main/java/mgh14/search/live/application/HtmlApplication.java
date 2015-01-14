@@ -98,7 +98,7 @@ public class HtmlApplication {
     application.validateSecondsToSleep(secondsToSleep);
     context.getBean(ResourceCycler.class).setSecondsToSleep(secondsToSleep);
 
-    // set production properties (if profile is enabled)
+    // set production properties (if production profile is enabled)
     if (application.springProfileIsEnabled(context,
         BingHtmlResourceUrlGetter.PRODUCTION_PROFILE)) {
       application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
