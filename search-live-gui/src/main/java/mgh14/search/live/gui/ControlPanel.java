@@ -88,6 +88,23 @@ public class ControlPanel {
   public void setSearchString(String searchString) {
     queryText.setText(searchString);
   }
+
+  public void setStatusText(String newStatusText) {
+    statusText.setText(newStatusText);
+    executorService.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          Thread.sleep(SECONDS_BEFORE_LABEL_CLEAR * 1000);
+        }
+        catch (InterruptedException e) {
+          Log.error("Interrupted exception: ", e);
+        }
+
+        statusText.setText("");
+      }
+    });
+  }
   
   private void prepareGui() {
     setLookFeelAndTheme();
@@ -272,23 +289,6 @@ public class ControlPanel {
     });
 
     builder.add(deleteAllResourcesButton, cellConstraints.xy(12, 3));
-  }
-
-  private void setStatusText(String newStatusText) {
-    statusText.setText(newStatusText);
-    executorService.execute(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          Thread.sleep(SECONDS_BEFORE_LABEL_CLEAR * 1000);
-        }
-        catch (InterruptedException e) {
-          Log.error("Interrupted exception: ", e);
-        }
-
-        statusText.setText("");
-      }
-    });
   }
 
 }

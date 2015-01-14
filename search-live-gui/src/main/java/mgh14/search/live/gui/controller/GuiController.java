@@ -1,8 +1,16 @@
 package mgh14.search.live.gui.controller;
 
+import java.util.Observable;
+import java.util.Observer;
+import javax.annotation.PostConstruct;
+
+import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.service.CommandExecutor;
+import mgh14.search.live.service.ResourceCycler;
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,10 +19,21 @@ import org.springframework.stereotype.Component;
  * command executor.
  */
 @Component
-public class GuiController {
+public class GuiController implements Observer {
+
+  private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
   private CommandExecutor executor;
+  @Autowired
+  private ResourceCycler resourceCycler;
+  @Autowired
+  private ControlPanel controlPanel;
+
+  @PostConstruct
+  public void registerWithResourceCycler() {
+    resourceCycler.addObserver(this);
+  }
 
   public void startResourceCycle(String query) {
     executor.addCommandToQueue(new CycleCommand(CycleAction.START_SERVICE,
@@ -43,5 +62,15 @@ public class GuiController {
 
   public void shutdownApplication() {
     executor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN));
+  }
+
+  @Override
+  public void update(Observable o, Object arg) {
+    // TODO: Implement(!)
+    Log.debug("Controller receiving notification from {} with " +
+      "arg [{}]", o, arg);
+    if (o instanceof ResourceCycler) {
+      controlPanel.setStatusText((String) arg);
+    }
   }
 }

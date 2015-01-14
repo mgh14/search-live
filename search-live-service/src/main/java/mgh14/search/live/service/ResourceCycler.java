@@ -3,6 +3,7 @@ package mgh14.search.live.service;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Component;
  * Class that cycles desktop wallpaper resources
  */
 @Component
-public class ResourceCycler {
+public class ResourceCycler extends Observable {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
@@ -188,6 +189,11 @@ public class ResourceCycler {
       Log.debug("Skipping to next resource...");
       setGetNextResource(false);
     }
+  }
+
+  private void notifyObserversWithMessage(String message) {
+    setChanged();
+    notifyObservers(message);
   }
 
 }
