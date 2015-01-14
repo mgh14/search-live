@@ -13,6 +13,8 @@ import mgh14.search.live.model.wallpaper.QueueLoader;
 import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.ImageUtils;
+import mgh14.search.live.service.messaging.CycleAction;
+import mgh14.search.live.service.messaging.CycleCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +29,11 @@ public class ResourceCycler {
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
-  private static final int SECONDS_TO_TIMEOUT = 30;
+  private static final int MILLISECONDS_TO_TIMEOUT = 30 * 1000;
   private static final String DIRECTORY_TIME_APPENDER = "-time";
 
+  @Autowired
+  private CommandExecutor commandExecutor;
   @Autowired
   private ExecutorService executorService;
   @Autowired
@@ -91,9 +95,20 @@ public class ResourceCycler {
     executorService.execute(new Runnable() {
       @Override
       public void run() {
+        queueLoader.startResourceDownloads();
+
         while (true) {
+          long startTime = System.currentTimeMillis();
           while (resourcesQueue.isEmpty()) {
-            if (!queueLoader.isDownloading()) {
+            final long currentTimeMillis = System.currentTimeMillis();
+            final long elapsedTimeMillis = currentTimeMillis - startTime;
+            if (elapsedTimeMillis > MILLISECONDS_TO_TIMEOUT) {
+              Log.info("Empty queue timeout of {} seconds reached. Sending exit command...",
+                (MILLISECONDS_TO_TIMEOUT / 1000));
+              commandExecutor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN));
+            }
+            // TODO: else if ((elapsedTimeMillis % 6000 > 5000) && !queueLoader.isDownloading()) {
+            else if (!queueLoader.isDownloading()) {
               queueLoader.startResourceDownloads();
             }
           }
