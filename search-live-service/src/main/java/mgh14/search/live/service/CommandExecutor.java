@@ -76,7 +76,7 @@ public class CommandExecutor {
 
   private void processStart(String commandBody) {
     Log.info("Starting resource cycle...");
-    final Map<String, String> properties = getPropsFromBody(commandBody);
+    final Map<String, String> properties = getPropertiesFromBody(commandBody);
 
     executorService.execute(new Runnable() {
       @Override
@@ -112,7 +112,7 @@ public class CommandExecutor {
     System.exit(0);
   }
 
-  private Map<String, String> getPropsFromBody(String body) {
+  private Map<String, String> getPropertiesFromBody(String body) {
     final Map<String, String> properties = new HashMap<String, String>();
 
     String[] rawProps = body.split(";");
