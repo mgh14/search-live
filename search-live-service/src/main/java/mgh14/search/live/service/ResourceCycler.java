@@ -110,7 +110,7 @@ public class ResourceCycler extends Observable {
                 Log.info("Empty queue timeout of {} seconds reached. Sending exit command...",
                   (QUEUE_TIMEOUT_SECONDS));
                 commandExecutor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN));
-                // TODO: thread terminate here
+                return;   // terminate thread
             }
             // TODO: else if ((elapsedTimeMillis % 6000 > 5000) && !queueLoader.isDownloading()) {
             else if (!queueLoader.isDownloading()) {

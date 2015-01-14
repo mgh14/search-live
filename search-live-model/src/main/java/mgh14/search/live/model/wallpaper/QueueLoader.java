@@ -62,7 +62,10 @@ public class QueueLoader {
     executorService.execute(new Runnable() {
       public void run() {
         List<String> resourceUris = getSetOfResourceLocations();
-        // TODO: Return if this list is empty
+        if (resourceUris.isEmpty()) {
+          Log.info("Resource URI's is empty. Terminating download thread...");
+          return;   // terminate thread
+        }
 
         Log.info("Downloading {} resources...", resourceUris.size());
         for (String resource : resourceUris) {
