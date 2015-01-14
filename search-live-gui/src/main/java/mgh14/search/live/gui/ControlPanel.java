@@ -149,7 +149,7 @@ public class ControlPanel {
       "<b>Status:</b></html>");
     builder.add(statusLabel, cellConstraints.xy(8, 1));
 
-    statusText = new JLabel("This is a very long esnetijasldjf", JLabel.CENTER);
+    statusText = new JLabel("", JLabel.CENTER);
     builder.add(statusText, cellConstraints.xyw(9, 1, 4));
 
     mainFrame.setMinimumSize(new Dimension(500, 115));
