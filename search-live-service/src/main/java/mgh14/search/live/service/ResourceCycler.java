@@ -29,7 +29,9 @@ public class ResourceCycler {
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
-  private static final int MILLISECONDS_TO_TIMEOUT = 30 * 1000;
+  private static final int QUEUE_TIMEOUT_SECONDS = 30;
+  private static final int QUEUE_TIMEOUT_MILLISECONDS =
+    QUEUE_TIMEOUT_SECONDS * 1000;
   private static final String DIRECTORY_TIME_APPENDER = "-time";
 
   @Autowired
@@ -102,9 +104,9 @@ public class ResourceCycler {
           while (resourcesQueue.isEmpty()) {
             final long currentTimeMillis = System.currentTimeMillis();
             final long elapsedTimeMillis = currentTimeMillis - startTime;
-            if (elapsedTimeMillis > MILLISECONDS_TO_TIMEOUT) {
+            if (elapsedTimeMillis > QUEUE_TIMEOUT_MILLISECONDS) {
               Log.info("Empty queue timeout of {} seconds reached. Sending exit command...",
-                (MILLISECONDS_TO_TIMEOUT / 1000));
+                (QUEUE_TIMEOUT_SECONDS));
               commandExecutor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN));
             }
             // TODO: else if ((elapsedTimeMillis % 6000 > 5000) && !queueLoader.isDownloading()) {
