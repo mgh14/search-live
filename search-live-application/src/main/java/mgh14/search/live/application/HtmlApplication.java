@@ -104,6 +104,8 @@ public class HtmlApplication {
       application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
     }
 
+    // TODO: Set directory to save pictures to
+
     // set search string in control panel (if present on command line)
     final ControlPanel controlPanel = context.getBean(ControlPanel.class);
     final String query = line.getOptionValue("query");
