@@ -30,6 +30,7 @@ public class ResourceCycler extends Observable {
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
+  private static final int RESOURCE_QUEUE_THRESHOLD = 2;
   private static final int NUM_RETRIES_BEFORE_STOP = 5;
   private static final String DIRECTORY_TIME_APPENDER = "-time";
 
@@ -164,7 +165,9 @@ public class ResourceCycler extends Observable {
         long timeOfLastRetry = System.currentTimeMillis();
 
         while (true) {
-          if (resourcesQueue.size() < 2 && !queueLoader.isDownloading()) {
+          if (resourcesQueue.size() < RESOURCE_QUEUE_THRESHOLD &&
+            !queueLoader.isDownloading()) {
+
             final long timeElapsed = System.currentTimeMillis() -
               timeOfLastRetry;
             if (retryCount < NUM_RETRIES_BEFORE_STOP && timeElapsed > 3000) {
@@ -181,7 +184,7 @@ public class ResourceCycler extends Observable {
               return;   // terminate thread
             }
           }
-          else if (resourcesQueue.size() >= 2) {
+          else if (resourcesQueue.size() >= RESOURCE_QUEUE_THRESHOLD) {
             retryCount = 0;
             timeOfLastRetry = System.currentTimeMillis();
           }
