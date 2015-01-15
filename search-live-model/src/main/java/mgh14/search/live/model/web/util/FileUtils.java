@@ -21,6 +21,8 @@ public class FileUtils {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
+  public static final String RESOURCE_FILENAME_PREPEND = "rsrc";
+  public static final String RESOURCE_FILENAME_TIMESTAMP_SEPARATOR = "-";
   public static final String FILE_SEPARATOR =
     (String) System.getProperties().get("file.separator");
 
@@ -46,6 +48,21 @@ public class FileUtils {
       filepath += dir + FILE_SEPARATOR;
     }
     return filepath;
+  }
+
+  public String getRelativeResourceFilename(String resourceStr, int downloadNum) {
+    // construct (local) filename
+    final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
+    return getResourceFolder() + RESOURCE_FILENAME_PREPEND +
+      downloadNum + RESOURCE_FILENAME_TIMESTAMP_SEPARATOR +
+      System.currentTimeMillis() + filetype;
+  }
+
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  public void makeFileReadableAndWriteable(String filename) {
+    final File file = new File(filename);
+    file.setReadable(true);
+    file.setWritable(true);
   }
 
   public void deleteFile(Path filepath) {

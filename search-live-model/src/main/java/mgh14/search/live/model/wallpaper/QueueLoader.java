@@ -1,6 +1,5 @@
 package mgh14.search.live.model.wallpaper;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,9 +12,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.ApplicationProperties;
+import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.web.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +27,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class QueueLoader {
-
-  public static final String RESOURCE_FILENAME_PREPEND = "rsrc";
-  public static final String RESOURCE_FILENAME_TIMESTAMP_SEPARATOR = "-";
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
   private static final int NUM_DOWNLOADS_PER_REQUEST = 5;
@@ -73,7 +69,8 @@ public class QueueLoader {
         Log.info("Downloading {} resources...", resourceUris.size());
         for (String resource : resourceUris) {
           // construct (local) filename
-          final String filename = getRelativeResourceFilename(resource);
+          final String filename = fileUtils.getRelativeResourceFilename(
+            resource, downloadCounter.incrementAndGet());
 
           // download image
           if ("true".equals(applicationProperties
@@ -117,14 +114,6 @@ public class QueueLoader {
     return setOfResourceLocations;
   }
 
-  private String getRelativeResourceFilename(String resourceStr) {
-    // construct (local) filename
-    final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
-    return fileUtils.getResourceFolder() + RESOURCE_FILENAME_PREPEND +
-      downloadCounter.incrementAndGet() + RESOURCE_FILENAME_TIMESTAMP_SEPARATOR +
-      System.currentTimeMillis() + filetype;
-  }
-
   private String downloadResource(String resourceStr, String filename) {
     String finalFilename = null;
     try {
@@ -132,7 +121,7 @@ public class QueueLoader {
         finalFilename = imageUtils.downloadImage(resourceStr,
           fileUtils.getResourceFolder(), filename);
         if (!(finalFilename == null || finalFilename.trim().isEmpty())) {
-          makeFileReadableAndWriteable(finalFilename);
+          fileUtils.makeFileReadableAndWriteable(finalFilename);
           resourceQueue.add(finalFilename);
         }
       }
@@ -142,13 +131,6 @@ public class QueueLoader {
     }
 
     return finalFilename;
-  }
-
-  @SuppressWarnings("ResultOfMethodCallIgnored")
-  private void makeFileReadableAndWriteable(String filename) {
-    final File file = new File(filename);
-    file.setReadable(true);
-    file.setWritable(true);
   }
 
   private Queue<String> getShuffledResources(ResourceUrlGetter getter) {
