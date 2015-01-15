@@ -52,7 +52,6 @@ public class QueueLoader {
   private Queue<String> currentResourceLocations = new ConcurrentLinkedQueue<String>();
   private int numPagesToRetrieve = 3;
   private AtomicInteger downloadCounter = new AtomicInteger(0);
-
   private AtomicBoolean downloadsInProgress = new AtomicBoolean(false);
 
   public void startResourceDownloads() {
