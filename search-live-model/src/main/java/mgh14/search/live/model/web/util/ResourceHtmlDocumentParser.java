@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResourceHtmlDocumentParser {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   private static final String IMG_RESOURCE_ATTRIBUTE_NAME = "imgurl:";
   private static final int RANDOM_ANCHOR_INDEX_LIMIT = 5;

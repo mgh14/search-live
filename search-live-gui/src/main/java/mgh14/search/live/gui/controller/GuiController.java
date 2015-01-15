@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class GuiController implements Observer {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   @Autowired
   private CommandExecutor executor;

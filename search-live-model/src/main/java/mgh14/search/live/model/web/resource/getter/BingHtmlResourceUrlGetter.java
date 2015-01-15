@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Profile("Production")
 public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   public static final String PRODUCTION_PROFILE = "Production";
 

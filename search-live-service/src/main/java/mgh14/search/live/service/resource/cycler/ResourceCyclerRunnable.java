@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Component
 class ResourceCyclerRunnable implements Runnable {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
 
   @Autowired

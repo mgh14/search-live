@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileUtils {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   public static final String RESOURCE_FILENAME_PREPEND = "rsrc";
   public static final String RESOURCE_FILENAME_TIMESTAMP_SEPARATOR = "-";

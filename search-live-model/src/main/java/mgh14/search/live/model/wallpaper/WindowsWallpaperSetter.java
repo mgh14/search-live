@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class WindowsWallpaperSetter {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   public void setDesktopWallpaper(String path) {
     if (path == null || path.isEmpty()) {

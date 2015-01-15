@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandExecutor {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final int NUM_SECONDS_TO_WAIT_FOR_SHUTDOWN = 5;
 
   @Autowired

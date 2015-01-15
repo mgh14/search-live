@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ControlPanel {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final int SECONDS_BEFORE_LABEL_CLEAR = 15;
   private static final String COL_LAYOUT = "5px, center:pref, 10px, center:pref, 10px, " +
     "center:pref, 10px, center:pref, 10px, center:pref, 10px, center:pref, 5px";

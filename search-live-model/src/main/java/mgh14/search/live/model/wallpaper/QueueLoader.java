@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueueLoader {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final int NUM_DOWNLOADS_PER_REQUEST = 5;
 
   @Autowired

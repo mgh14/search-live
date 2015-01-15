@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 class RetryTimerRunnable implements Runnable {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   private static final int NUM_RETRIES_BEFORE_STOP = 5;
   private static final int RESOURCE_QUEUE_THRESHOLD = 2;

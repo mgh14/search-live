@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BingApiResourceUrlGetter implements ResourceUrlGetter {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   private static final String HOST_PATH = "https://api.datamarket.azure.com/Bing/Search/v1/";
   private static final String QUERY_PARAMS = "?$format=json&Query=%27{}%27";

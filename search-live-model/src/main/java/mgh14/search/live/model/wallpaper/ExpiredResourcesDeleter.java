@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExpiredResourcesDeleter {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   @Autowired
   private FileUtils fileUtils;

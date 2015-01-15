@@ -20,7 +20,7 @@ public class ApplicationProperties {
 
   public static final String APP_HOME_PARAM = "SEARCH_LIVE_HOME";
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   @Autowired
   private FileUtils fileUtils;

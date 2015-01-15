@@ -21,7 +21,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 @Profile("DummyResources")
 public class DummyResourceUrlGetter implements ResourceUrlGetter {
 
-  private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   @Autowired
   private FileUtils fileUtils;
