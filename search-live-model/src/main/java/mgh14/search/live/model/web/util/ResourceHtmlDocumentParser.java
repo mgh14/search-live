@@ -77,7 +77,7 @@ public class ResourceHtmlDocumentParser {
   private void retrieveSearchDocument(URI searchUri) {
     try {
       currentDoc = Jsoup.connect(searchUri.toString()).followRedirects(true)
-        .userAgent("").get();
+        .userAgent("").timeout(2000).get();
     }
     catch (IOException e) {
       Log.error("IOException (is the network connected?): ", e);
