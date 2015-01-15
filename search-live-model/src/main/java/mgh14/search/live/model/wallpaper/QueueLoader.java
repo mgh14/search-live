@@ -78,7 +78,8 @@ public class QueueLoader {
           final String filename = getRelativeResourceFilename(resource);
 
           // download image
-          if ("true".equals(applicationProperties.getConfigProperty("append-file-protocol"))) {
+          if ("true".equals(applicationProperties
+              .getConfigProperty("append-file-protocol"))) {
             resource = "file:///" + resource;
           }
           String finalFilename = downloadResource(resource, filename);
