@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 
 import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.service.CommandExecutor;
-import mgh14.search.live.service.ResourceCycler;
+import mgh14.search.live.service.resource.cycler.CyclerService;
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
 import org.slf4j.Logger;
@@ -26,13 +26,13 @@ public class GuiController implements Observer {
   @Autowired
   private CommandExecutor executor;
   @Autowired
-  private ResourceCycler resourceCycler;
+  private CyclerService cyclerService;
   @Autowired
   private ControlPanel controlPanel;
 
   @PostConstruct
   public void registerWithResourceCycler() {
-    resourceCycler.addObserver(this);
+    cyclerService.addObserver(this);
   }
 
   public void startResourceCycle(String query) {
@@ -69,7 +69,7 @@ public class GuiController implements Observer {
     // TODO: Implement(!)
     Log.debug("Controller receiving notification from {} with " +
       "arg [{}]", o, arg);
-    if (o instanceof ResourceCycler) {
+    if (o instanceof CyclerService) {
       controlPanel.setStatusText((String) arg);
     }
   }

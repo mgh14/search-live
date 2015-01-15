@@ -10,7 +10,7 @@ import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.model.web.resource.getter.BingHtmlResourceUrlGetter;
 import mgh14.search.live.model.web.util.ApplicationProperties;
 import mgh14.search.live.service.CommandExecutor;
-import mgh14.search.live.service.ResourceCycler;
+import mgh14.search.live.service.resource.cycler.CyclerService;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +94,7 @@ public class HtmlApplication {
       Integer.parseInt(line.getOptionValue("sleepTime")) :
       Integer.parseInt((String) application.getProperty("default-num-seconds-to-sleep"));
     application.validateSecondsToSleep(secondsToSleep);
-    context.getBean(ResourceCycler.class).setSecondsToSleep(secondsToSleep);
+    context.getBean(CyclerService.class).setSecondsToSleep(secondsToSleep);
 
     // set production properties (if production profile is enabled)
     if (application.springProfileIsEnabled(context,

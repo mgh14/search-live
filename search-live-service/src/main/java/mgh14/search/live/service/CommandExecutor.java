@@ -8,13 +8,14 @@ import java.util.concurrent.ExecutorService;
 
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
+import mgh14.search.live.service.resource.cycler.CyclerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Class for executing commands on the resource cycler
+ * Class for executing commands on the resource resource.cycler
  */
 @Component
 public class CommandExecutor {
@@ -25,7 +26,7 @@ public class CommandExecutor {
   @Autowired
   private ExecutorService executorService;
   @Autowired
-  private ResourceCycler resourceCycler;
+  private CyclerService cyclerService;
   private Queue<CycleCommand> commandQueue;
 
   public CommandExecutor() {
@@ -54,11 +55,11 @@ public class CommandExecutor {
       }
       if (CycleAction.PAUSE.equals(action)) {
         Log.info("Pausing cycle...");
-        resourceCycler.pauseCycle();
+        cyclerService.pauseCycle();
       }
       if (CycleAction.RESUME.equals(action)) {
         Log.info("Resuming cycle...");
-        resourceCycler.resumeCycle();
+        cyclerService.resumeCycle();
       }
       if (CycleAction.NEXT.equals(action)) {
         processNext();
@@ -83,23 +84,23 @@ public class CommandExecutor {
     executorService.execute(new Runnable() {
       @Override
       public void run() {
-        resourceCycler.startCycle(properties.get("searchString"));
+        cyclerService.startCycle(properties.get("searchString"));
       }
     });
   }
 
   private void processNext() {
     Log.info("Getting next resource in the cycle...");
-    resourceCycler.getNextResource();
+    cyclerService.getNextResource();
   }
 
   private void processSave() {
-    Log.info("Image saved: [{}]", resourceCycler.saveCurrentImage());
+    Log.info("Image saved: [{}]", cyclerService.saveCurrentImage());
   }
 
   private void processDeleteResourceCache() {
     Log.info("Deleting resource cache...");
-    resourceCycler.deleteAllResources();
+    cyclerService.deleteAllResources();
   }
 
   private void processShutdown() {
