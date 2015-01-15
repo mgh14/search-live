@@ -56,9 +56,13 @@ public class QueueLoader {
   private AtomicBoolean downloadsInProgress = new AtomicBoolean(false);
 
   public void startResourceDownloads() {
-    Log.debug("Download resources cycle invoked. Downloading...");
+    if (downloadsInProgress.get()) {
+      return;
+    }
 
     downloadsInProgress.set(true);
+    Log.debug("Download resources cycle invoked. Starting download thread...");
+
     executorService.execute(new Runnable() {
       public void run() {
         List<String> resourceUris = getSetOfResourceLocations();
