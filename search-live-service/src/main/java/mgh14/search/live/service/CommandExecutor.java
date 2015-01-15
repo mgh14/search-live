@@ -109,7 +109,8 @@ public class CommandExecutor {
 
     Log.debug("Shutting down executor service...");
     executorService.shutdown();
-    Log.debug("Waiting 10 seconds for threads to terminate...");
+    Log.debug("Waiting {} seconds for threads to terminate...",
+      NUM_SECONDS_TO_WAIT_FOR_SHUTDOWN);
     try {
       Thread.sleep(NUM_SECONDS_TO_WAIT_FOR_SHUTDOWN * 1000);
     }
