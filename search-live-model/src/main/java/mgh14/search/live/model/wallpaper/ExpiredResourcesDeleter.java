@@ -2,7 +2,7 @@ package mgh14.search.live.model.wallpaper;
 
 import java.io.File;
 
-import mgh14.search.live.model.FileUtils;
+import mgh14.search.live.model.web.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

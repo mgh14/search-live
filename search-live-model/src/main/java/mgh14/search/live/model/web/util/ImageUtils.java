@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 public class ImageUtils {
 
   @Autowired
-  private mgh14.search.live.model.FileUtils fileUtils;
+  private mgh14.search.live.model.web.util.FileUtils fileUtils;
   private String savedPicsDir = null;
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());

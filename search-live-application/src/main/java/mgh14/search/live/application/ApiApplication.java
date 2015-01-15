@@ -59,7 +59,7 @@ public class ApiApplication {
 
     /*ResourceCycler htmlApplication = new ResourceCycler(
       new BingApiResourceUrlGetter(authKey, "Image", numResults));
-    htmlApplication.startCycle(line.getOptionValue("query"), secondsToSleep);*/
+    htmlApplication.startService(line.getOptionValue("query"), secondsToSleep);*/
   }
 
   CommandLine parseArgs(String[] args) {

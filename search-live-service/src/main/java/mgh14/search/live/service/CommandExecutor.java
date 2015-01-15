@@ -84,7 +84,7 @@ public class CommandExecutor {
     executorService.execute(new Runnable() {
       @Override
       public void run() {
-        cyclerService.startCycle(properties.get("searchString"));
+        cyclerService.startService(properties.get("searchString"));
       }
     });
   }

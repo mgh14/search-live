@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import mgh14.search.live.model.FileUtils;
+import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.ApplicationProperties;
 import mgh14.search.live.model.web.util.ImageUtils;
