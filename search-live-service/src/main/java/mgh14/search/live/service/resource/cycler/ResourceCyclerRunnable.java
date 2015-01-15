@@ -50,6 +50,18 @@ class ResourceCyclerRunnable implements Runnable {
     getNextResource = new AtomicBoolean(false);
   }
 
+  void setIsCycleActive(boolean isCycleActive) {
+    this.isCycleActive.set(isCycleActive);
+  }
+
+  void setSecondsToSleep(int secondsToSleep) {
+    this.secondsToSleep.set(secondsToSleep);
+  }
+
+  void setGetNextResource(boolean newGetNextResource) {
+    getNextResource.set(newGetNextResource);
+  }
+
   @Override
   public void run() {
     final long secondsToSleepInMillis = secondsToSleep.get() * 1000;
@@ -81,18 +93,6 @@ class ResourceCyclerRunnable implements Runnable {
         }
       }
     }
-  }
-
-  void setIsCycleActive(boolean isCycleActive) {
-    this.isCycleActive.set(isCycleActive);
-  }
-
-  void setSecondsToSleep(int secondsToSleep) {
-    this.secondsToSleep.set(secondsToSleep);
-  }
-
-  void setGetNextResource(boolean newGetNextResource) {
-    getNextResource.set(newGetNextResource);
   }
 
   String saveCurrentImage(String searchStringFolder) {
