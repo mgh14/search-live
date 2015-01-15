@@ -60,6 +60,8 @@ public class HtmlApplication {
    * arg -sleepTime: the number of seconds for each resource to be viewed
    * arg -springProfiles: comma-separated list (no spaces) of spring
    *      profiles to activate
+   * arg -startCycle: forces a cycle start without requiring the 'start'
+   *      button to be pushed in the GUI.
    */
   public static void main(String[] args) {
     // parse the command line arguments
@@ -102,6 +104,7 @@ public class HtmlApplication {
       application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
     }
 
+    // set directory to save resources to
     final String resourceSaveDir = context.getBean(ControlPanel.class).setResourceSaveDirectory();
     if (resourceSaveDir == null || resourceSaveDir.isEmpty()) {
       Log.warn("No directory for saving resources has been chosen. " +
