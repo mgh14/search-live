@@ -47,7 +47,7 @@ public class ApplicationProperties {
       System.exit(-1);
     }
     configDir = fileUtils.constructFilepathWithSeparator(
-      "search-live-application", "src", "main", "resources",
+      "search-live-model", "src", "main", "resources",
       "config");
 
     try {
@@ -67,7 +67,7 @@ public class ApplicationProperties {
         APP_HOME_PARAM + "is not set; cannot locate prefs.");
     }
     prefsDir = fileUtils.constructFilepathWithSeparator(
-      "search-live-application", "src", "main", "resources",
+      "search-live-model", "src", "main", "resources",
       "prefs");
 
     try {
