@@ -39,7 +39,7 @@ public class ApplicationProperties {
 
   @PostConstruct
   public void loadConfig() {
-    checkAppHomeVariableIsSet();
+    checkIfAppHomeVariableIsSet();
     configDir = fileUtils.constructFilepathWithSeparator(
       "search-live-model", "src", "main", "resources",
       "config");
@@ -55,7 +55,7 @@ public class ApplicationProperties {
 
   @PostConstruct
   public void loadPrefs() {
-    checkAppHomeVariableIsSet();
+    checkIfAppHomeVariableIsSet();
     prefsDir = fileUtils.constructFilepathWithSeparator(
       "search-live-model", "src", "main", "resources",
       "prefs");
@@ -84,7 +84,7 @@ public class ApplicationProperties {
     prefsProperties.put(propertyName, value);
   }
 
-  private void checkAppHomeVariableIsSet() {
+  private void checkIfAppHomeVariableIsSet() {
     final String appHome = System.getenv().get(APP_HOME_PARAM);
     if (appHome == null || appHome.isEmpty()) {
       Log.warn("Error: System application home variable" +
