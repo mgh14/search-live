@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Class for running the timer that periodically kicks
- * off downloads to fill the resource queue.
+ * off downloads to fill its resource queue.
  */
 @Component
 class RetryTimerRunnable implements Runnable {
