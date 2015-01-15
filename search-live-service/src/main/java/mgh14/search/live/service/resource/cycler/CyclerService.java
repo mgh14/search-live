@@ -1,80 +1,53 @@
 package mgh14.search.live.service.resource.cycler;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Observable;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import mgh14.search.live.model.FileUtils;
+import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.wallpaper.QueueLoader;
-import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
-import mgh14.search.live.model.web.util.ImageUtils;
-import mgh14.search.live.service.CommandExecutor;
-import mgh14.search.live.service.messaging.CycleAction;
-import mgh14.search.live.service.messaging.CycleCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Class that cycles desktop wallpaper resources
+ * Service responsible for running the runnable resource cycler
+ * code. This class serves as the service layer between the
+ * command executor and the remainder of the classes.
  */
 @Component
 public class CyclerService extends Observable {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
-  private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
   private static final String DIRECTORY_TIME_APPENDER = "-time";
 
   @Autowired
-  private CommandExecutor commandExecutor;
+  private ResourceCyclerRunnable resourceCyclerRunnable;
+  @Autowired
+  private RetryTimerRunnable retryTimerRunnable;
   @Autowired
   private ExecutorService executorService;
   @Autowired
   private ResourceUrlGetter resourceUrlGetter;
   @Autowired
-  private ConcurrentLinkedQueue<String> resourcesQueue;
-  @Autowired
   private QueueLoader queueLoader;
   @Autowired
-  private WindowsWallpaperSetter setter;
-  @Autowired
   private FileUtils fileUtils;
-  @Autowired  private ImageUtils imageUtils;
 
-  private List<String> filenames = new LinkedList<String>();
-  private String currentAbsoluteFilename;
   private String searchStringFolder;
-  private AtomicInteger secondsToSleep;
-
-  private AtomicBoolean isCycleActive;
-  private AtomicBoolean getNextResource;
 
   public CyclerService() {
-    currentAbsoluteFilename = null;
     searchStringFolder = null;
-
-    secondsToSleep = new AtomicInteger();
-    setSecondsToSleep(DEFAULT_SECONDS_TO_SLEEP);
-
-    isCycleActive = new AtomicBoolean();
-    setCycleActive(true);
-    getNextResource = new AtomicBoolean();
-    setGetNextResource(false);
   }
 
   public void setSecondsToSleep(int secondsToSleep) {
-    this.secondsToSleep.set(secondsToSleep);
+    resourceCyclerRunnable.setSecondsToSleep(secondsToSleep);
   }
 
-  public void startCycle(final String searchString) {
+  public void startService(final String searchString) {
     if (searchString == null || searchString.isEmpty()) {
       Log.error("Please enter a search query (e.g. \"desktop wallpaper\"");
       return;
@@ -84,72 +57,35 @@ public class CyclerService extends Observable {
       + System.currentTimeMillis() + "\\";
 
     // run resource cycle
-    runCycle();
+    runResourceCycle();
   }
 
-  private void runCycle() {
+  private void runResourceCycle() {
     Log.debug("Starting wallpaper cycle...");
     queueLoader.startResourceDownloads();
     runRetryTimer();
 
-    executorService.execute(new InnerResourceCycler());
-  }
-
-  class InnerResourceCycler implements Runnable {
-
-    @Override
-    public void run() {
-      final long secondsToSleepInMillis = secondsToSleep.get() * 1000;
-      queueLoader.startResourceDownloads();
-
-      while (true) {
-        if (isCycleActive.get() && !resourcesQueue.isEmpty()) {
-          // check that filename from queue is valid
-          String filename = resourcesQueue.poll();
-          if (filename == null) {
-            continue;
-          }
-
-          // Set image to desktop and sleep
-          if (imageUtils.canOpenImage(filename)) {
-            filenames.add(filename);
-            currentAbsoluteFilename = filename;
-
-            // set image to desktop
-            setter.setDesktopWallpaper(filename);
-
-            // sleep for x milliseconds (enjoy the background!)
-            sleep(System.currentTimeMillis(), secondsToSleepInMillis);
-          }
-          else {
-            Log.error("Couldn't open file: [{}]. " +
-              "Deleting and moving to next resource...", filename);
-            fileUtils.deleteFile(new File(filename).toPath());
-          }
-        }
-      }
-    }
-
+    executorService.execute(resourceCyclerRunnable);
   }
 
   public String saveCurrentImage() {
-    return imageUtils.saveImage(searchStringFolder,
-      currentAbsoluteFilename);
+    return resourceCyclerRunnable.saveCurrentImage(
+      searchStringFolder);
   }
 
   public void pauseCycle() {
     Log.debug("Pausing resource cycle...");
-    setCycleActive(false);
+    resourceCyclerRunnable.setIsCycleActive(false);
   }
 
   public void resumeCycle() {
     Log.debug("Resuming resource cycle...");
-    setCycleActive(true);
+    resourceCyclerRunnable.setIsCycleActive(true);
   }
 
   public void getNextResource() {
     Log.debug("Getting next resource...");
-    setGetNextResource(true);
+    resourceCyclerRunnable.setGetNextResource(true);
   }
 
   public void deleteAllResources() {
@@ -159,65 +95,7 @@ public class CyclerService extends Observable {
 
   private void runRetryTimer() {
     Log.debug("Starting retry timer...");
-    executorService.execute(new RetryTimer());
-  }
-
-  class RetryTimer implements Runnable {
-
-    private static final int NUM_RETRIES_BEFORE_STOP = 5;
-    private static final int RESOURCE_QUEUE_THRESHOLD = 2;
-
-    @Override
-    public void run() {
-      int retryCount = 0;
-      long timeOfLastRetry = System.currentTimeMillis();
-
-      while (true) {
-        if (resourcesQueue.size() < RESOURCE_QUEUE_THRESHOLD &&
-          !queueLoader.isDownloading()) {
-
-          final long timeElapsed = System.currentTimeMillis() -
-            timeOfLastRetry;
-          if (retryCount < NUM_RETRIES_BEFORE_STOP && timeElapsed > 3000) {
-            Log.debug("Timer kicking off retry {}...", (retryCount + 1));
-            queueLoader.startResourceDownloads();
-            retryCount++;
-            timeOfLastRetry = System.currentTimeMillis();
-          }
-          else if (retryCount >= NUM_RETRIES_BEFORE_STOP) {
-            Log.info("Retry count reached. Sending exit command...");
-            commandExecutor.addCommandToQueue(new CycleCommand(
-              CycleAction.SHUTDOWN));
-            notifyObserversWithMessage("Retry reached. Exiting...");
-            return;   // terminate thread
-          }
-        }
-        else if (resourcesQueue.size() >= RESOURCE_QUEUE_THRESHOLD) {
-          retryCount = 0;
-          timeOfLastRetry = System.currentTimeMillis();
-        }
-      }
-    }
-
-  }
-
-  private void setCycleActive(boolean cycleActive) {
-    isCycleActive.set(cycleActive);
-  }
-
-  private void setGetNextResource(boolean newGetNextResource) {
-    getNextResource.set(newGetNextResource);
-  }
-
-  private void sleep(final long sleepStartTime, long secondsToSleepInMillis) {
-    while (!getNextResource.get() &&
-      (System.currentTimeMillis() - sleepStartTime) <
-        secondsToSleepInMillis) {
-    }
-    if (getNextResource.get()) {
-      Log.debug("Skipping to next resource...");
-      setGetNextResource(false);
-    }
+    executorService.execute(retryTimerRunnable);
   }
 
   private void notifyObserversWithMessage(String message) {
