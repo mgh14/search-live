@@ -41,8 +41,7 @@ public class ControlPanel {
   private static final String COL_LAYOUT = "5px, center:pref, 10px, center:pref, 10px, " +
     "center:pref, 10px, center:pref, 10px, center:pref, 10px, center:pref, 5px";
   private static final String ROW_LAYOUT = "center:pref, 7px, center:pref";
-  private static final int BUTTON_HEIGHT = 40;
-  private static final int BUTTON_WIDTH = 70;
+  private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(70, 40);
 
   @Autowired
   private GuiController controller;
@@ -122,38 +121,44 @@ public class ControlPanel {
   private void prepareGui() {
     setLookFeelAndTheme();
 
+    // set up main frame
     mainFrame = new JFrame("SearchLive Control Panel");
+    final Dimension mainFrameDimension = new Dimension(500, 115);
+    mainFrame.setMinimumSize(mainFrameDimension);
+    mainFrame.setMaximumSize(mainFrameDimension);
+    mainFrame.setResizable(false);
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent) {
         controller.shutdownApplication();
       }
     });
 
+    // set up JGoodies builder and layout
     builder = new FormDebugPanel();
-
     final FormLayout layout = new FormLayout(COL_LAYOUT, ROW_LAYOUT);
     builder.setLayout(layout);
     layout.setColumnGroups(new int[][]{{2, 4, 6, 8, 10, 12}, {1, 13}, {3, 5, 7, 9, 11}});
-
     //PanelBuilder builder = new PanelBuilder(layout);
 
+    // build query text label
     final JLabel queryLabel = new JLabel("<html><font color=RED>" +
       "<b>Query:</b></font></html>");
     builder.add(queryLabel, cellConstraints.xy(2, 1));
 
+    // build query text field
     this.queryText = new JTextField();
     builder.add(queryText, cellConstraints.xyw(4, 1, 4));
 
+    // build status label
     final JLabel statusLabel = new JLabel("<html><font color=RED>" +
       "<b>Status:</b></html>");
     builder.add(statusLabel, cellConstraints.xy(8, 1));
 
+    // build status text label
     statusText = new JLabel("", JLabel.CENTER);
     builder.add(statusText, cellConstraints.xyw(9, 1, 4));
 
-    mainFrame.setMinimumSize(new Dimension(500, 115));
-    mainFrame.setMaximumSize(new Dimension(500, 115));
-    mainFrame.setResizable(false);
+    // show main frame
     mainFrame.add(builder);
     mainFrame.setVisible(true);
   }
@@ -192,9 +197,9 @@ public class ControlPanel {
 
   private void createStartButton() {
     startResourceCycleButton = new JButton("St");
-    startResourceCycleButton.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    startResourceCycleButton.setMinimumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    startResourceCycleButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+    startResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
+    startResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
+    startResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
 
     startResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -208,9 +213,9 @@ public class ControlPanel {
 
   private void createSaveButton(){
     saveCurrentResourceButton = new JButton("Sv");
-    saveCurrentResourceButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    saveCurrentResourceButton.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    saveCurrentResourceButton.setMinimumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+    saveCurrentResourceButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
+    saveCurrentResourceButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
+    saveCurrentResourceButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
 
     saveCurrentResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -233,9 +238,9 @@ public class ControlPanel {
 
   private void createPauseButton() {
     pauseResourceCycleButton = new JButton("Pa");
-    pauseResourceCycleButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    pauseResourceCycleButton.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    pauseResourceCycleButton.setMinimumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+    pauseResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
+    pauseResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
+    pauseResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
 
     pauseResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -254,9 +259,9 @@ public class ControlPanel {
 
   private void createResumeButton() {
     resumeResourceCycleButton = new JButton("Re");
-    resumeResourceCycleButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    resumeResourceCycleButton.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    resumeResourceCycleButton.setMinimumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+    resumeResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
+    resumeResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
+    resumeResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
 
     resumeResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -271,9 +276,9 @@ public class ControlPanel {
 
   private void createNextButton() {
     nextResourceButton = new JButton("Nx");
-    nextResourceButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    nextResourceButton.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    nextResourceButton.setMinimumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+    nextResourceButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
+    nextResourceButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
+    nextResourceButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
 
     nextResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -288,9 +293,9 @@ public class ControlPanel {
 
   private void createDeleteAllResourcesButton() {
     deleteAllResourcesButton = new JButton("Dl");
-    deleteAllResourcesButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    deleteAllResourcesButton.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    deleteAllResourcesButton.setMinimumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+    deleteAllResourcesButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
+    deleteAllResourcesButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
+    deleteAllResourcesButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
 
     deleteAllResourcesButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
