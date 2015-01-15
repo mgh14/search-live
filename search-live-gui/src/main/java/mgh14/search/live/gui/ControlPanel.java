@@ -53,7 +53,6 @@ public class ControlPanel {
 
   private JFrame mainFrame;
   private JLabel statusText;
-
   private JTextField queryText;
 
   // buttons

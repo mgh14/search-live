@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 public class CyclerService extends Observable {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
-
   private static final String DIRECTORY_TIME_APPENDER = "-time";
 
   @Autowired

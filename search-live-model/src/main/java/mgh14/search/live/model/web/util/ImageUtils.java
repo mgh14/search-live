@@ -26,11 +26,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImageUtils {
 
+  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
+
   @Autowired
   private mgh14.search.live.model.web.util.FileUtils fileUtils;
-  private String savedPicsDir = null;
 
-  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
+  private String savedPicsDir = null;
   private ConcurrentHashMap<String, String> downloadedResources =
     new ConcurrentHashMap<String, String>();
 

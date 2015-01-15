@@ -25,6 +25,7 @@ public class DummyResourceUrlGetter implements ResourceUrlGetter {
 
   @Autowired
   private FileUtils fileUtils;
+
   private String dummyResourceDir = null;
   private List<String> dummyResourceUris;
 

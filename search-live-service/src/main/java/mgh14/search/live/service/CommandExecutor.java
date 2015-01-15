@@ -27,6 +27,7 @@ public class CommandExecutor {
   private ExecutorService executorService;
   @Autowired
   private CyclerService cyclerService;
+
   private Queue<CycleCommand> commandQueue;
 
   public CommandExecutor() {
