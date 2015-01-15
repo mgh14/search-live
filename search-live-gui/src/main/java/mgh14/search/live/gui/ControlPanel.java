@@ -42,6 +42,7 @@ public class ControlPanel {
     "center:pref, 10px, center:pref, 10px, center:pref, 10px, center:pref, 5px";
   private static final String ROW_LAYOUT = "center:pref, 7px, center:pref";
   private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(70, 40);
+  private static final int CLICK_PROCESS_DISABLE_DURATION = 500;  // milliseconds
 
   @Autowired
   private GuiController controller;
@@ -203,6 +204,7 @@ public class ControlPanel {
 
     startResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        disableButtonsDuringButtonClickProcess();
         controller.startResourceCycle(queryText.getText());
         setStatusText("Resource cycle started");
       }
@@ -219,6 +221,7 @@ public class ControlPanel {
 
     saveCurrentResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        disableButtonsDuringButtonClickProcess();
         controller.saveCurrentImage();
         setStatusText("Image saved");
         /*final String fileSaved = controller.saveCurrentImage();
@@ -244,6 +247,7 @@ public class ControlPanel {
 
     pauseResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        disableButtonsDuringButtonClickProcess();
         controller.pauseResourceCycle();
 
         // Note: this setText method is used instead of the setStatusText
@@ -265,6 +269,7 @@ public class ControlPanel {
 
     resumeResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        disableButtonsDuringButtonClickProcess();
         controller.resumeResourceCycle();
         setStatusText("Resumed cycle");
       }
@@ -282,6 +287,7 @@ public class ControlPanel {
 
     nextResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        disableButtonsDuringButtonClickProcess();
         controller.cycleNextResource();
         setStatusText("Next resource retrieved.");
       }
@@ -299,12 +305,39 @@ public class ControlPanel {
 
     deleteAllResourcesButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        disableButtonsDuringButtonClickProcess();
         controller.deleteAllResources();
         setStatusText("Resources deleted.");
       }
     });
 
     builder.add(deleteAllResourcesButton, cellConstraints.xy(12, 3));
+  }
+
+  private void disableButtonsDuringButtonClickProcess() {
+    setEnabledForAllButtons(false);
+    executorService.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          Thread.sleep(CLICK_PROCESS_DISABLE_DURATION);
+        }
+        catch (InterruptedException e) {
+          Log.info("Interrupt:", e);
+        }
+
+        setEnabledForAllButtons(true);
+      }
+    });
+  }
+
+  private void setEnabledForAllButtons(boolean enabled) {
+    startResourceCycleButton.setEnabled(enabled);
+    saveCurrentResourceButton.setEnabled(enabled);
+    pauseResourceCycleButton.setEnabled(enabled);
+    resumeResourceCycleButton.setEnabled(enabled);
+    nextResourceButton.setEnabled(enabled);
+    deleteAllResourcesButton.setEnabled(enabled);
   }
 
 }
