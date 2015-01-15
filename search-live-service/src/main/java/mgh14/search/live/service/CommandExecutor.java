@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
@@ -21,14 +20,13 @@ import org.springframework.stereotype.Component;
 public class CommandExecutor {
 
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
+  private static final int NUM_SECONDS_TO_WAIT_FOR_SHUTDOWN = 5;
 
   @Autowired
   private ExecutorService executorService;
   @Autowired
   private ResourceCycler resourceCycler;
   private Queue<CycleCommand> commandQueue;
-
-  private AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
   public CommandExecutor() {
     commandQueue = new ConcurrentLinkedQueue<CycleCommand>();
@@ -72,15 +70,10 @@ public class CommandExecutor {
         processDeleteResourceCache();
       }
       if (CycleAction.SHUTDOWN.equals(action)) {
-        shuttingDown.set(true);
         processShutdown();
         break;
       }
     }
-  }
-
-  public boolean isShuttingDown() {
-    return shuttingDown.get();
   }
 
   private void processStart(String commandBody) {
@@ -118,7 +111,7 @@ public class CommandExecutor {
     executorService.shutdown();
     Log.debug("Waiting 10 seconds for threads to terminate...");
     try {
-      Thread.sleep(10000);
+      Thread.sleep(NUM_SECONDS_TO_WAIT_FOR_SHUTDOWN * 1000);
     }
     catch (InterruptedException e) {
       Log.error("Interrupt: ", e);
