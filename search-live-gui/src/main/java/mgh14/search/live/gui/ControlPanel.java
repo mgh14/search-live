@@ -166,8 +166,6 @@ public class ControlPanel {
       Log.error("Error setting user interface theme. " +
         "Setting default Java theme...\nStack trace: ", e);
     }
-
-    // TODO: set theme?
   }
 
   private void createButtons() {

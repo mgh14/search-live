@@ -95,8 +95,6 @@ public class CommandExecutor {
 
   private void processSave() {
     Log.info("Image saved: [{}]", resourceCycler.saveCurrentImage());
-
-    //TODO: How will UI be notified now?
   }
 
   private void processDeleteResourceCache() {
