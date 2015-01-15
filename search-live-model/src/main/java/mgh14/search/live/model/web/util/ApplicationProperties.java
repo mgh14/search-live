@@ -39,13 +39,7 @@ public class ApplicationProperties {
 
   @PostConstruct
   public void loadConfig() {
-    final String appHome = System.getenv().get(APP_HOME_PARAM);
-    if (appHome == null || appHome.isEmpty()) {
-      Log.error("Error: System application home variable " +
-        APP_HOME_PARAM + "is not set; cannot locate config. " +
-        "Exiting...");
-      System.exit(-1);
-    }
+    checkAppHomeVariableIsSet();
     configDir = fileUtils.constructFilepathWithSeparator(
       "search-live-model", "src", "main", "resources",
       "config");
@@ -61,11 +55,7 @@ public class ApplicationProperties {
 
   @PostConstruct
   public void loadPrefs() {
-    final String appHome = System.getenv().get(APP_HOME_PARAM);
-    if (appHome == null || appHome.isEmpty()) {
-      Log.warn("Error: System application home variable" +
-        APP_HOME_PARAM + "is not set; cannot locate prefs.");
-    }
+    checkAppHomeVariableIsSet();
     prefsDir = fileUtils.constructFilepathWithSeparator(
       "search-live-model", "src", "main", "resources",
       "prefs");
@@ -92,6 +82,14 @@ public class ApplicationProperties {
 
   public void setPrefsProperty(String propertyName, String value) {
     prefsProperties.put(propertyName, value);
+  }
+
+  private void checkAppHomeVariableIsSet() {
+    final String appHome = System.getenv().get(APP_HOME_PARAM);
+    if (appHome == null || appHome.isEmpty()) {
+      Log.warn("Error: System application home variable" +
+        APP_HOME_PARAM + "is not set; cannot locate prefs.");
+    }
   }
 
   private void loadPropertyValues(String dirLocation, String filename,
