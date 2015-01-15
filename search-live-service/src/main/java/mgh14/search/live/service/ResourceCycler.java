@@ -30,9 +30,7 @@ public class ResourceCycler extends Observable {
   private final Logger Log = LoggerFactory.getLogger(this.getClass());
 
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
-  private static final int QUEUE_TIMEOUT_SECONDS = 30;
-  private static final int QUEUE_TIMEOUT_MILLISECONDS =
-    QUEUE_TIMEOUT_SECONDS * 1000;
+  private static final int NUM_RETRIES_BEFORE_STOP = 5;
   private static final String DIRECTORY_TIME_APPENDER = "-time";
 
   @Autowired
@@ -93,6 +91,7 @@ public class ResourceCycler extends Observable {
   private void runCycle() {
     Log.debug("Starting wallpaper cycle...");
     queueLoader.startResourceDownloads();
+    runRetryTimer();
 
     final long secondsToSleepInMillis = secondsToSleep.get() * 1000;
     executorService.execute(new Runnable() {
@@ -101,25 +100,7 @@ public class ResourceCycler extends Observable {
         queueLoader.startResourceDownloads();
 
         while (true) {
-          long startTime = System.currentTimeMillis();
-          while (resourcesQueue.isEmpty()) {
-            final long currentTimeMillis = System.currentTimeMillis();
-            final long elapsedTimeMillis = currentTimeMillis - startTime;
-            // TODO: Implement retries here instead of queue timeout?
-            if (elapsedTimeMillis > QUEUE_TIMEOUT_MILLISECONDS) {
-                Log.info("Empty queue timeout of {} seconds reached. Sending exit command...",
-                  (QUEUE_TIMEOUT_SECONDS));
-                commandExecutor.addCommandToQueue(new CycleCommand(CycleAction.SHUTDOWN));
-                notifyObserversWithMessage("Empty timeout. Exiting...");
-                return;   // terminate thread
-            }
-            // TODO: else if ((elapsedTimeMillis % 6000 > 5000) && !queueLoader.isDownloading()) {
-            else if (!queueLoader.isDownloading()) {
-              queueLoader.startResourceDownloads();
-            }
-          }
-
-          if (isCycleActive.get()) {
+          if (isCycleActive.get() && !resourcesQueue.isEmpty()) {
             // check that filename from queue is valid
             String filename = resourcesQueue.poll();
             if (filename == null) {
@@ -171,6 +152,42 @@ public class ResourceCycler extends Observable {
   public void deleteAllResources() {
     Log.debug("Deleting all resources...");
     fileUtils.deleteAllFiles(new File(fileUtils.getResourceFolder()));
+  }
+
+  private void runRetryTimer() {
+    Log.debug("Starting retry timer...");
+
+    executorService.execute(new Runnable() {
+      @Override
+      public void run() {
+        int retryCount = 0;
+        long timeOfLastRetry = System.currentTimeMillis();
+
+        while (true) {
+          if (resourcesQueue.size() < 2 && !queueLoader.isDownloading()) {
+            final long timeElapsed = System.currentTimeMillis() -
+              timeOfLastRetry;
+            if (retryCount < NUM_RETRIES_BEFORE_STOP && timeElapsed > 3000) {
+              Log.debug("Timer kicking off retry {}...", (retryCount + 1));
+              queueLoader.startResourceDownloads();
+              retryCount++;
+              timeOfLastRetry = System.currentTimeMillis();
+            }
+            else if (retryCount >= NUM_RETRIES_BEFORE_STOP) {
+              Log.info("Retry count reached. Sending exit command...");
+              commandExecutor.addCommandToQueue(new CycleCommand(
+                CycleAction.SHUTDOWN));
+              notifyObserversWithMessage("Retry reached. Exiting...");
+              return;   // terminate thread
+            }
+          }
+          else if (resourcesQueue.size() >= 2) {
+            retryCount = 0;
+            timeOfLastRetry = System.currentTimeMillis();
+          }
+        }
+      }
+    });
   }
 
   private void setCycleActive(boolean cycleActive) {
