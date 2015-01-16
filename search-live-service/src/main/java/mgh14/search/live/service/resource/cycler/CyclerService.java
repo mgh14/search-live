@@ -13,6 +13,7 @@ import mgh14.search.live.model.web.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,6 +28,8 @@ public class CyclerService extends Observable {
   private static final String DIRECTORY_TIME_APPENDER = "-time";
 
   @Autowired
+  private ApplicationContext applicationContext;
+  @Autowired
   private RetryTimerRunnable retryTimerRunnable;
   @Autowired
   private ExecutorService executorService;
@@ -35,13 +38,7 @@ public class CyclerService extends Observable {
   @Autowired
   private QueueLoader queueLoader;
   @Autowired
-  private ConcurrentLinkedQueue<String> resourcesQueue;
-  @Autowired
   private FileUtils fileUtils;
-  @Autowired
-  private WindowsWallpaperSetter setter;
-  @Autowired
-  private ImageUtils imageUtils;
 
   private String searchStringFolder;
   private int secondsToSleep;
@@ -69,8 +66,8 @@ public class CyclerService extends Observable {
     retryTimerRunnable.interruptRunnable();
     queueLoader.resetQueueLoader();
 
+    // set properties for new search
     resourceCyclerRunnable = getNewResourceCyclerRunnable();
-
     resourceUrlGetter.setSearchString(searchString);
     searchStringFolder = searchString.replace(" ", "-") + DIRECTORY_TIME_APPENDER
       + System.currentTimeMillis() + "\\";
@@ -84,6 +81,10 @@ public class CyclerService extends Observable {
     queueLoader.startResourceDownloads();
     runRetryTimer();
 
+    // instead of submitting with the ability to stop the thread,
+    // we provide finer-grained control with the threadInterrupted
+    // variable in the ResourceCyclerRunnable class and thus have
+    // no need for the Future object.
     executorService.execute(resourceCyclerRunnable);
   }
 
@@ -124,8 +125,13 @@ public class CyclerService extends Observable {
 
   private ResourceCyclerRunnable getNewResourceCyclerRunnable() {
     ResourceCyclerRunnable resourceCyclerRunnable =
-      new ResourceCyclerRunnable(queueLoader, resourcesQueue,
-        setter, imageUtils, fileUtils);
+      new ResourceCyclerRunnable(
+        applicationContext.getBean(QueueLoader.class),
+        (ConcurrentLinkedQueue<String>)
+          applicationContext.getBean("resourceQueue"),
+        applicationContext.getBean(WindowsWallpaperSetter.class),
+        applicationContext.getBean(ImageUtils.class),
+        applicationContext.getBean(FileUtils.class));
     resourceCyclerRunnable.setIsCycleActive(true);
     resourceCyclerRunnable.setSecondsToSleep(secondsToSleep);
 
