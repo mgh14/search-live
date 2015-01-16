@@ -69,11 +69,13 @@ public class ControlPanel {
 
   private AtomicBoolean resourceCycleStarted;
   private AtomicBoolean resourceCyclePaused;
+  private String currentSearchString;
 
   public ControlPanel() {
     this.cellConstraints = new CellConstraints();
     resourceCycleStarted = new AtomicBoolean(false);
     resourceCyclePaused = new AtomicBoolean(false);
+    currentSearchString = "";
 
     prepareGui();
 
@@ -91,7 +93,10 @@ public class ControlPanel {
     deleteAllResourcesButton.setIcon(getIcon(""));*/
   }
 
-  public void setSearchString(String searchString) {
+  public void setQueryText(String searchString) {
+    if (searchString == null) {
+      searchString = "";
+    }
     queryText.setText(searchString);
   }
 
@@ -210,14 +215,23 @@ public class ControlPanel {
     startResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
     startResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
 
-    // TODO: Handle case where new search query is entered during a pause
     // TODO: Handle case where cycle is stopped (e.g. for errors)
     startResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        resourceCycleStarted.set(true);
-        disableButtonsDuringButtonClickProcess();
-        controller.startResourceCycle(queryText.getText());
-        setStatusText("Resource cycle started");
+        final String currentQueryText = queryText.getText();
+        if (!currentSearchString.equals(currentQueryText)) {
+          currentSearchString = currentQueryText;
+          resourceCyclePaused.set(false);
+
+          resourceCycleStarted.set(true);
+          disableButtonsDuringButtonClickProcess();
+          controller.startResourceCycle(currentQueryText);
+          setStatusText("Resource cycle started");
+        }
+        else {
+          Log.debug("Not starting due to same query entered: {} and {}",
+            currentQueryText, currentSearchString);
+        }
       }
     });
 
@@ -281,6 +295,9 @@ public class ControlPanel {
       public void actionPerformed(ActionEvent e) {
         resourceCyclePaused.set(false);
         disableButtonsDuringButtonClickProcess();
+        // TODO: Replace query text with current search string
+        // if it's changed and then 'resume' is hit (instead of
+        // start
         controller.resumeResourceCycle();
         setStatusText("Resumed cycle");
       }

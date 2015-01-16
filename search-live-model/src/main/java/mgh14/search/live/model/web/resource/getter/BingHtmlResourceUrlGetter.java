@@ -47,24 +47,31 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
     setNumResultsToGet(0);
 
     pageToGet = new AtomicInteger();
-    setPageToGet(FIRST_PAGE_TO_GET);
+    setPageToGet(0);
   }
 
   public void setResourceType(String resourceType) {
     this.resourceType = resourceType;
   }
 
-  public void setSearchString(String searchString) {
-    this.searchString = searchString;
-  }
-
   public void setNumResultsToGet(int numResultsToGet) {
     this.numResultsToGet.set(numResultsToGet);
+  }
+
+  public void setSearchString(String searchString) {
+    Log.debug("Setting search string to: {}", searchString);
+    resetResourceGetter();
+    this.searchString = searchString;
   }
 
   @Override
   public int getNumPagesRetrieved() {
     return pageToGet.get() - 1;
+  }
+
+  private void resetResourceGetter() {
+    Log.debug("Resetting resource getter...");
+    setPageToGet(FIRST_PAGE_TO_GET);
   }
 
   private void setPageToGet(int pageToGet) {

@@ -115,7 +115,7 @@ public class HtmlApplication {
     // set search string in control panel (if present on command line)
     final ControlPanel controlPanel = context.getBean(ControlPanel.class);
     final String query = line.getOptionValue("query");
-    controlPanel.setSearchString((query != null) ? query : "");
+    controlPanel.setQueryText((query != null) ? query : "");
 
     // begin executor commands
     final CommandExecutor commandExecutor = context.getBean(CommandExecutor.class);

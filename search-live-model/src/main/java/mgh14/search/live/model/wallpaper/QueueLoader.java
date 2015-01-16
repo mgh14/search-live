@@ -92,6 +92,13 @@ public class QueueLoader {
     return downloadsInProgress.get();
   }
 
+  public void emptyResourceQueue() {
+    Log.debug("Emptying resource queue...");
+    while (!resourceQueue.isEmpty()) {
+      resourceQueue.poll();
+    }
+  }
+
   private List<String> getSetOfResourceLocations() {
     final List<String> setOfResourceLocations = new LinkedList<String>();
     for (int i=0; i<NUM_DOWNLOADS_PER_REQUEST; i++) {

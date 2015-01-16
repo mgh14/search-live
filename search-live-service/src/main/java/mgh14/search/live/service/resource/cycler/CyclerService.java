@@ -51,6 +51,9 @@ public class CyclerService extends Observable {
       Log.error("Please enter a search query (e.g. \"desktop wallpaper\"");
       return;
     }
+
+    queueLoader.emptyResourceQueue();
+
     resourceUrlGetter.setSearchString(searchString);
     searchStringFolder = searchString.replace(" ", "-") + DIRECTORY_TIME_APPENDER
       + System.currentTimeMillis() + "\\";
@@ -64,6 +67,7 @@ public class CyclerService extends Observable {
     queueLoader.startResourceDownloads();
     runRetryTimer();
 
+    resourceCyclerRunnable.setIsCycleActive(true);
     executorService.execute(resourceCyclerRunnable);
   }
 
