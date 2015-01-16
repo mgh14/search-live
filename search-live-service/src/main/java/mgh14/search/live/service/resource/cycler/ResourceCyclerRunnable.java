@@ -101,6 +101,8 @@ class ResourceCyclerRunnable implements Runnable {
         }
       }
     }
+
+    Log.debug("Thread interrupted: {}", Thread.currentThread());
   }
 
   String saveCurrentImage(String searchStringFolder) {
