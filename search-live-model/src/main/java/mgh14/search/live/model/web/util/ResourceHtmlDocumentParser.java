@@ -29,6 +29,10 @@ public class ResourceHtmlDocumentParser {
   private Document currentDoc = null;
   private String nextSearchQuery = null;
 
+  public String getNextSearchQuery() {
+    return nextSearchQuery;
+  }
+
   public List<URI> getResourceUrisFromSource(URI searchUri,
       int numResultsToGet) {
 
@@ -54,10 +58,6 @@ public class ResourceHtmlDocumentParser {
     }
 
     return pageResources;
-  }
-
-  public String getNextSearchQuery() {
-    return nextSearchQuery;
   }
 
   private String parseNextSearchQuery() {
