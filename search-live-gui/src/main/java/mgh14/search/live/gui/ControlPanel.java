@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
@@ -42,7 +43,7 @@ public class ControlPanel {
     "center:pref, 10px, center:pref, 10px, center:pref, 10px, center:pref, 5px";
   private static final String ROW_LAYOUT = "center:pref, 7px, center:pref";
   private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(70, 40);
-  private static final int CLICK_PROCESS_DISABLE_DURATION = 500;  // milliseconds
+  private static final int CLICK_PROCESS_BUTTON_DISABLE_DURATION = 500;  // milliseconds
 
   @Autowired
   private GuiController controller;
@@ -66,8 +67,13 @@ public class ControlPanel {
   private FormDebugPanel builder;
   private CellConstraints cellConstraints;
 
+  private AtomicBoolean resourceCycleStarted;
+  private AtomicBoolean resourceCyclePaused;
+
   public ControlPanel() {
     this.cellConstraints = new CellConstraints();
+    resourceCycleStarted = new AtomicBoolean(false);
+    resourceCyclePaused = new AtomicBoolean(false);
 
     prepareGui();
 
@@ -77,7 +83,7 @@ public class ControlPanel {
 
   @PostConstruct
   public void setIcons() {
-    startResourceCycleButton.setIcon(getIcon("test-icon.png"));
+    //startResourceCycleButton.setIcon(getIcon("test-icon.png"));
     /*saveCurrentResourceButton.setIcon(getIcon(""));
     pauseResourceCycleButton.setIcon(getIcon(""));
     resumeResourceCycleButton.setIcon(getIcon(""));
@@ -130,6 +136,7 @@ public class ControlPanel {
     mainFrame.setResizable(false);
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent) {
+        setEnabledForAllButtons(false);
         controller.shutdownApplication();
       }
     });
@@ -180,6 +187,7 @@ public class ControlPanel {
     createResumeButton();
     createNextButton();
     createDeleteAllResourcesButton();
+    refreshButtons();
   }
 
   private Icon getIcon(String iconFilename) {
@@ -202,8 +210,11 @@ public class ControlPanel {
     startResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
     startResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
 
+    // TODO: Handle case where new search query is entered during a pause
+    // TODO: Handle case where cycle is stopped (e.g. for errors)
     startResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        resourceCycleStarted.set(true);
         disableButtonsDuringButtonClickProcess();
         controller.startResourceCycle(queryText.getText());
         setStatusText("Resource cycle started");
@@ -234,7 +245,6 @@ public class ControlPanel {
         }*/
       }
     });
-    saveCurrentResourceButton.setEnabled(false);
 
     builder.add(saveCurrentResourceButton, cellConstraints.xy(4, 3));
   }
@@ -247,6 +257,7 @@ public class ControlPanel {
 
     pauseResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        resourceCyclePaused.set(true);
         disableButtonsDuringButtonClickProcess();
         controller.pauseResourceCycle();
 
@@ -256,7 +267,6 @@ public class ControlPanel {
         statusText.setText("Paused cycle");
       }
     });
-    pauseResourceCycleButton.setEnabled(false);
 
     builder.add(pauseResourceCycleButton, cellConstraints.xy(6, 3));
   }
@@ -269,12 +279,12 @@ public class ControlPanel {
 
     resumeResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        resourceCyclePaused.set(false);
         disableButtonsDuringButtonClickProcess();
         controller.resumeResourceCycle();
         setStatusText("Resumed cycle");
       }
     });
-    resumeResourceCycleButton.setEnabled(false);
 
     builder.add(resumeResourceCycleButton, cellConstraints.xy(8, 3));
   }
@@ -292,7 +302,6 @@ public class ControlPanel {
         setStatusText("Next resource retrieved.");
       }
     });
-    nextResourceButton.setEnabled(false);
 
     builder.add(nextResourceButton, cellConstraints.xy(10, 3));
   }
@@ -320,15 +329,49 @@ public class ControlPanel {
       @Override
       public void run() {
         try {
-          Thread.sleep(CLICK_PROCESS_DISABLE_DURATION);
+          Thread.sleep(CLICK_PROCESS_BUTTON_DISABLE_DURATION);
         }
         catch (InterruptedException e) {
           Log.info("Interrupt:", e);
         }
 
-        setEnabledForAllButtons(true);
+        refreshButtons();
       }
     });
+  }
+
+  private void refreshButtons() {
+    Log.debug("Refreshing buttons...");
+    if (resourceCycleStarted.get() && !resourceCyclePaused.get()) {
+      saveCurrentResourceButton.setEnabled(true);
+      pauseResourceCycleButton.setEnabled(true);
+      nextResourceButton.setEnabled(true);
+
+      startResourceCycleButton.setEnabled(false);
+      resumeResourceCycleButton.setEnabled(false);
+    }
+    else if (resourceCycleStarted.get() && resourceCyclePaused.get()) {
+      startResourceCycleButton.setEnabled(true);
+      resumeResourceCycleButton.setEnabled(true);
+
+      saveCurrentResourceButton.setEnabled(false);
+      pauseResourceCycleButton.setEnabled(false);
+      nextResourceButton.setEnabled(false);
+    }
+    else if (!resourceCycleStarted.get() && !resourceCyclePaused.get()) {
+      startResourceCycleButton.setEnabled(true);
+
+      saveCurrentResourceButton.setEnabled(false);
+      pauseResourceCycleButton.setEnabled(false);
+      nextResourceButton.setEnabled(false);
+      resumeResourceCycleButton.setEnabled(false);
+    }
+    else if (!resourceCycleStarted.get() && resourceCyclePaused.get()) {
+      // this case should never happen
+      Log.error("Invalid state reached--cycle not started and paused!");
+    }
+
+    deleteAllResourcesButton.setEnabled(true);
   }
 
   private void setEnabledForAllButtons(boolean enabled) {
