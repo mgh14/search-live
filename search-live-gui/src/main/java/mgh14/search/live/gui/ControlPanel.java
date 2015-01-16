@@ -295,9 +295,14 @@ public class ControlPanel {
       public void actionPerformed(ActionEvent e) {
         resourceCyclePaused.set(false);
         disableButtonsDuringButtonClickProcess();
-        // TODO: Replace query text with current search string
-        // if it's changed and then 'resume' is hit (instead of
-        // start
+
+        // Replace query text with current search string
+        // if the query text has changed and then 'resume'
+        // is hit (instead of start)
+        if (!currentSearchString.equals(queryText.getText())) {
+          queryText.setText(currentSearchString);
+        }
+
         controller.resumeResourceCycle();
         setStatusText("Resumed cycle");
       }
