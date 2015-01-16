@@ -35,6 +35,7 @@ public class ResourceHtmlDocumentParser {
     final List<URI> pageResources = new LinkedList<URI>();
     retrieveSearchDocument(searchUri);
     if (currentDoc != null) {
+      Log.debug("Search document retrieved.");
       final Elements resourcesDetails = currentDoc.select("a[m]");
       for (Element link : resourcesDetails) {
         if (pageResources.size() >= numResultsToGet) {
@@ -47,6 +48,9 @@ public class ResourceHtmlDocumentParser {
       }
 
       nextSearchQuery = parseNextSearchQuery();
+    }
+    else {
+      Log.debug("No document retrieved for [{}]", searchUri);
     }
 
     return pageResources;
@@ -65,6 +69,9 @@ public class ResourceHtmlDocumentParser {
 
     final Elements newSearchQueries = currentDoc.select("a[title*=Search For");
 
+    if (newSearchQueries.isEmpty()) {
+      return "";
+    }
     final int randomAnchorIndex = (newSearchQueries.size() >= RANDOM_ANCHOR_INDEX_LIMIT) ?
       new Random().nextInt(RANDOM_ANCHOR_INDEX_LIMIT) :
       new Random().nextInt(newSearchQueries.size());

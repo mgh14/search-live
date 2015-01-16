@@ -8,33 +8,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.wallpaper.QueueLoader;
 import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
+import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.web.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Class that cycles desktop wallpaper resources
  */
-@Component
 class ResourceCyclerRunnable implements Runnable {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
 
-  @Autowired
   private QueueLoader queueLoader;
-  @Autowired
   private ConcurrentLinkedQueue<String> resourcesQueue;
-  @Autowired
   private WindowsWallpaperSetter setter;
-  @Autowired
   private ImageUtils imageUtils;
-  @Autowired
   private FileUtils fileUtils;
 
   private List<String> filenames = new LinkedList<String>();
@@ -44,7 +36,16 @@ class ResourceCyclerRunnable implements Runnable {
   private AtomicBoolean getNextResource;
   private AtomicBoolean threadInterrupted;
 
-  ResourceCyclerRunnable() {
+  ResourceCyclerRunnable(QueueLoader queueLoader,
+      ConcurrentLinkedQueue<String> resourcesQueue,
+      WindowsWallpaperSetter setter, ImageUtils imageUtils, FileUtils fileUtils) {
+
+    this.queueLoader = queueLoader;
+    this.resourcesQueue = resourcesQueue;
+    this.setter = setter;
+    this.imageUtils = imageUtils;
+    this.fileUtils = fileUtils;
+
     currentAbsoluteFilename = new AtomicReference<String>(null);
     isCycleActive = new AtomicBoolean(true);
     secondsToSleep = new AtomicInteger(DEFAULT_SECONDS_TO_SLEEP);
