@@ -41,7 +41,9 @@ public class DummyResourceUrlGetter implements ResourceUrlGetter {
   }
 
   @Override
-  public void setSearchString(String searchString) {}
+  public void setSearchString(String searchString) {
+    Log.debug("Setting search string: {}", searchString);
+  }
 
   @Override
   public List<String> getResources() {
