@@ -192,7 +192,7 @@ public class ControlPanel {
     createResumeButton();
     createNextButton();
     createDeleteAllResourcesButton();
-    refreshButtons();
+    refreshButtonsEnabled();
   }
 
   private Icon getIcon(String iconFilename) {
@@ -224,6 +224,7 @@ public class ControlPanel {
           resourceCyclePaused.set(false);
 
           resourceCycleStarted.set(true);
+          refreshQueryFieldEnabled();
           disableButtonsDuringButtonClickProcess();
           controller.startResourceCycle(currentQueryText);
           setStatusText("Resource cycle started");
@@ -246,6 +247,7 @@ public class ControlPanel {
 
     saveCurrentResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.saveCurrentImage();
         setStatusText("Image saved");
@@ -272,6 +274,7 @@ public class ControlPanel {
     pauseResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         resourceCyclePaused.set(true);
+        refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.pauseResourceCycle();
 
@@ -294,6 +297,7 @@ public class ControlPanel {
     resumeResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         resourceCyclePaused.set(false);
+        refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
 
         // Replace query text with current search string
@@ -319,6 +323,7 @@ public class ControlPanel {
 
     nextResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.cycleNextResource();
         setStatusText("Next resource retrieved.");
@@ -336,6 +341,7 @@ public class ControlPanel {
 
     deleteAllResourcesButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.deleteAllResources();
         setStatusText("Resources deleted.");
@@ -357,13 +363,33 @@ public class ControlPanel {
           Log.info("Interrupt:", e);
         }
 
-        refreshButtons();
+        refreshButtonsEnabled();
       }
     });
   }
 
-  private void refreshButtons() {
-    Log.debug("Refreshing buttons...");
+  private void refreshQueryFieldEnabled() {
+    Log.debug("Refreshing query field enabled...");
+    if (resourceCycleStarted.get() && !resourceCyclePaused.get()) {
+      queryText.setEnabled(false);
+    }
+    else if (resourceCycleStarted.get() && resourceCyclePaused.get()) {
+      queryText.setEnabled(true);
+    }
+    else if (!resourceCycleStarted.get() && !resourceCyclePaused.get()) {
+      queryText.setEnabled(true);
+    }
+    else if (!resourceCycleStarted.get() && resourceCyclePaused.get()) {
+      // this case should never happen
+      Log.error("Invalid state reached in refreshing query field: " +
+        "cycle not started and paused!");
+    }
+
+    deleteAllResourcesButton.setEnabled(true);
+  }
+
+  private void refreshButtonsEnabled() {
+    Log.debug("Refreshing buttons enabled...");
     if (resourceCycleStarted.get() && !resourceCyclePaused.get()) {
       saveCurrentResourceButton.setEnabled(true);
       pauseResourceCycleButton.setEnabled(true);
