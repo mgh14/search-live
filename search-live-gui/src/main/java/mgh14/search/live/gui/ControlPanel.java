@@ -150,7 +150,7 @@ public class ControlPanel {
 
     // build query text label
     final JLabel queryLabel = new JLabel("<html><font color=RED>" +
-      "<b>Query:</b></font></html>");
+      "<b>Search:</b></font></html>");
     builder.add(queryLabel, cellConstraints.xy(2, 1));
 
     // build query text field
