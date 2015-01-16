@@ -75,7 +75,6 @@ public class ResourceHtmlDocumentParser {
     final int randomAnchorIndex = (newSearchQueries.size() >= RANDOM_ANCHOR_INDEX_LIMIT) ?
       new Random().nextInt(RANDOM_ANCHOR_INDEX_LIMIT) :
       new Random().nextInt(newSearchQueries.size());
-      // TODO: what if new search queries size is null?
 
     final String href = newSearchQueries.get(randomAnchorIndex).attr("abs:href");
     final int locOfQueryParam = href.lastIndexOf("q=") + 2;
