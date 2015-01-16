@@ -42,6 +42,10 @@ public class ImageUtils {
   }
 
   public String saveImage(String searchStringFolder, String absoluteCurrentFilename) {
+    if (absoluteCurrentFilename == null || absoluteCurrentFilename.isEmpty()) {
+      return null;
+    }
+
     final String filename = absoluteCurrentFilename.substring(
       absoluteCurrentFilename.lastIndexOf("\\"));
 
