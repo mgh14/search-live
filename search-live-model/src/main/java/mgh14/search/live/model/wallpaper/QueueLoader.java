@@ -92,11 +92,13 @@ public class QueueLoader {
     return downloadsInProgress.get();
   }
 
-  public void emptyResourceQueue() {
+  public void resetQueueLoader() {
+    downloadsInProgress.set(false);
+
     Log.debug("Emptying resource queue...");
-    while (!resourceQueue.isEmpty()) {
-      resourceQueue.poll();
-    }
+    resourceQueue.clear();
+
+    currentResourceLocations.clear();
   }
 
   private List<String> getSetOfResourceLocations() {

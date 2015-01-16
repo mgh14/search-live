@@ -52,7 +52,10 @@ public class CyclerService extends Observable {
       return;
     }
 
-    queueLoader.emptyResourceQueue();
+    // reset runnables and queue loader
+    resourceCyclerRunnable.interruptRunnable();
+    retryTimerRunnable.interruptRunnable();
+    queueLoader.resetQueueLoader();
 
     resourceUrlGetter.setSearchString(searchString);
     searchStringFolder = searchString.replace(" ", "-") + DIRECTORY_TIME_APPENDER

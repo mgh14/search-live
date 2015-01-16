@@ -1,6 +1,7 @@
 package mgh14.search.live.service.resource.cycler;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import mgh14.search.live.model.wallpaper.QueueLoader;
 import mgh14.search.live.service.CommandExecutor;
@@ -29,12 +30,19 @@ class RetryTimerRunnable implements Runnable {
   @Autowired
   private CommandExecutor commandExecutor;
 
+  private AtomicBoolean threadInterrupted = new AtomicBoolean(false);
+
+  void interruptRunnable() {
+    threadInterrupted.set(true);
+  }
+
   @Override
   public void run() {
     int retryCount = 0;
     long timeOfLastRetry = System.currentTimeMillis();
+    threadInterrupted.set(false);
 
-    while (true) {
+    while (!threadInterrupted.get()) {
       if (resourcesQueue.size() < RESOURCE_QUEUE_THRESHOLD &&
         !queueLoader.isDownloading()) {
 
@@ -47,7 +55,7 @@ class RetryTimerRunnable implements Runnable {
           timeOfLastRetry = System.currentTimeMillis();
         }
         else if (retryCount >= NUM_RETRIES_BEFORE_STOP) {
-          Log.info("Retry count reached. Sending exit command...");
+          Log.info("Retry count reached. Terminating timer...");
           commandExecutor.addCommandToQueue(new CycleCommand(
             CycleAction.SHUTDOWN));
           return;   // terminate thread

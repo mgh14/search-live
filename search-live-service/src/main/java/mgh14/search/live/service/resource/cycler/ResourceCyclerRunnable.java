@@ -42,12 +42,14 @@ class ResourceCyclerRunnable implements Runnable {
   private AtomicInteger secondsToSleep;
   private AtomicReference<String> currentAbsoluteFilename;
   private AtomicBoolean getNextResource;
+  private AtomicBoolean threadInterrupted;
 
   ResourceCyclerRunnable() {
     currentAbsoluteFilename = new AtomicReference<String>(null);
     isCycleActive = new AtomicBoolean(true);
     secondsToSleep = new AtomicInteger(DEFAULT_SECONDS_TO_SLEEP);
     getNextResource = new AtomicBoolean(false);
+    threadInterrupted = new AtomicBoolean(false);
   }
 
   void setIsCycleActive(boolean isCycleActive) {
@@ -62,12 +64,17 @@ class ResourceCyclerRunnable implements Runnable {
     getNextResource.set(newGetNextResource);
   }
 
+  void interruptRunnable() {
+    threadInterrupted.set(true);
+  }
+
   @Override
   public void run() {
     final long secondsToSleepInMillis = secondsToSleep.get() * 1000;
     queueLoader.startResourceDownloads();
+    threadInterrupted.set(false);
 
-    while (true) {
+    while (!threadInterrupted.get()) {
       if (isCycleActive.get() && !resourcesQueue.isEmpty()) {
         // check that filename from queue is valid
         String filename = resourcesQueue.poll();
