@@ -41,13 +41,14 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
   public BingHtmlResourceUrlGetter() {
     allResourceUris = new LinkedList<URI>();
     setResourceType(null);
-    setSearchString(null);
 
     numResultsToGet = new AtomicInteger();
     setNumResultsToGet(0);
 
     pageToGet = new AtomicInteger();
-    setPageToGet(0);
+    setPageToGet(FIRST_PAGE_TO_GET);
+
+    setSearchString(null);
   }
 
   public void setResourceType(String resourceType) {
