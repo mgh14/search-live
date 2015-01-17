@@ -111,7 +111,7 @@ class ResourceCyclerRunnable implements Runnable {
   }
 
   private void sleep(final long sleepStartTime, long secondsToSleepInMillis) {
-    while (!getNextResource.get() &&
+    while (!getNextResource.get() && isCycleActive.get() &&
       (System.currentTimeMillis() - sleepStartTime) <
         secondsToSleepInMillis) {
     }
