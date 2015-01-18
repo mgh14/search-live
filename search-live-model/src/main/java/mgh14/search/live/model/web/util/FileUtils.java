@@ -6,18 +6,20 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-
+import java.util.Observable;
+import java.util.concurrent.ExecutorService;
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * Utility class for file operations
  */
 @Component
-public class FileUtils {
+public class FileUtils extends Observable {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
@@ -25,6 +27,13 @@ public class FileUtils {
   public static final String RESOURCE_FILENAME_TIMESTAMP_SEPARATOR = "-";
   public static final String FILE_SEPARATOR =
     (String) System.getProperties().get("file.separator");
+  public static final String RESOURCES_SUCCESSFULLY_DELETED_MESSAGE
+    = "Resources deleted.";
+  public static final String RESOURCES_FAILED_TO_DELETE_MESSAGE =
+    "Failed to delete resources!";
+
+  @Autowired
+  private ExecutorService executorService;
 
   private String resourceFolder;
 
@@ -94,15 +103,29 @@ public class FileUtils {
     }
   }
 
-  public void deleteAllFiles(File resourceFolder) {
-    Log.info("Deleting all resources...");
+  public void deleteAllFiles(final File resourceFolder) {
+    Log.info("Starting resource deletion thread (deleting" +
+      "all resources)...");
 
     final File[] folderFiles = resourceFolder.listFiles();
-    if(folderFiles != null) {
-      for (final File fileEntry : folderFiles) {
-        deleteFile(fileEntry.toPath());
+    executorService.execute(new Runnable() {
+      @Override
+      public void run() {
+        if (folderFiles == null) {
+          Log.error("Error deleting files in folder [{}]: " +
+              "null returned from file discovery",
+            resourceFolder);
+          notifyObservers(RESOURCES_FAILED_TO_DELETE_MESSAGE);
+          return;   // terminate thread
+        }
+
+        for (final File fileEntry : folderFiles) {
+          deleteFile(fileEntry.toPath());
+        }
+
+        notifyObservers(RESOURCES_SUCCESSFULLY_DELETED_MESSAGE);
       }
-    }
+    });
   }
 
 }

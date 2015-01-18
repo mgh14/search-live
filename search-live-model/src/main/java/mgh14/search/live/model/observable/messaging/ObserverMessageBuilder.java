@@ -1,4 +1,4 @@
-package mgh14.search.live.service.messaging;
+package mgh14.search.live.model.observable.messaging;
 
 import org.springframework.stereotype.Component;
 
