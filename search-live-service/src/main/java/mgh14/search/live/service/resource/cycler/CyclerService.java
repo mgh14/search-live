@@ -115,15 +115,17 @@ public class CyclerService extends Observable {
   public void pauseCycle() {
     Log.debug("Pausing resource cycle...");
     resourceCyclerRunnable.setIsCycleActive(false);
-    notifyObserversWithMessage(CycleAction.PAUSE.name() +
-      "::success");
+    notifyObserversWithMessage(observerMessageBuilder
+      .buildObserverMessage(CycleAction.PAUSE.name(),
+        ObserverMessageProcessor.MESSAGE_SUCCESS));
   }
 
   public void resumeCycle() {
     Log.debug("Resuming resource cycle...");
     resourceCyclerRunnable.setIsCycleActive(true);
-    notifyObserversWithMessage(CycleAction.RESUME.name() +
-      "::success");
+    notifyObserversWithMessage(observerMessageBuilder
+      .buildObserverMessage(CycleAction.RESUME.name(),
+      ObserverMessageProcessor.MESSAGE_SUCCESS));
   }
 
   public void getNextResource() {
