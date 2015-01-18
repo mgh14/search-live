@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Class that cycles desktop wallpaper resources
  */
-class ResourceCyclerRunnable implements Runnable {
+class ResourceCyclerRunnable implements Runnable  {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
@@ -51,6 +51,11 @@ class ResourceCyclerRunnable implements Runnable {
     secondsToSleep = new AtomicInteger(DEFAULT_SECONDS_TO_SLEEP);
     getNextResource = new AtomicBoolean(false);
     threadInterrupted = new AtomicBoolean(false);
+  }
+
+  String getCurrentFilename() {
+    return (currentAbsoluteFilename != null) ? currentAbsoluteFilename.get()
+      : null;
   }
 
   void setIsCycleActive(boolean isCycleActive) {
