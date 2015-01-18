@@ -129,6 +129,11 @@ public class ControlPanel {
       }
     });
   }
+
+  public void setErrorStatusText(String newStatusText) {
+    setStatusText("<html><font color=RED>" + newStatusText +
+      "</font/></html>");
+  }
   
   private void prepareGui() {
     setLookFeelAndTheme();
