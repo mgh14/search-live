@@ -8,11 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ObserverMessageProcessor {
 
-  public static final String SEPARATOR = ":";
+  public static final String MESSAGE_SUCCESS = "success";
+  public static final String MESSAGE_FAILURE = "failure";
 
   private static final int MESSAGE_SUCCESS_INDEX = 1;
-  private static final String MESSAGE_SUCCESS = "success";
-  private static final String MESSAGE_FAILURE = "failure";
 
   private String[] currentResponseMessage = null;
 
@@ -21,13 +20,13 @@ public class ObserverMessageProcessor {
       throw new IllegalArgumentException("Message has null content!");
     }
 
-    final String[] responseMessage = message.split(":");
+    final String[] responseMessage = message.split(ObserverMessageBuilder.SEPARATOR);
     if (responseMessage.length < 2) {
       throw new IllegalArgumentException("Message is not formatted " +
         "properly!");
     }
-    currentResponseMessage = responseMessage;
 
+    currentResponseMessage = responseMessage;
   }
 
   public boolean isSuccessMessage() throws IllegalStateException {
