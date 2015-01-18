@@ -91,6 +91,12 @@ public class GuiController implements Observer {
       guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
         "Cycle resumed." : ERROR_PREFIX + "cycle not resumed!";
     }
+    if (messageStatusType.equals(CycleAction.SAVE.name())) {
+      guiMessage = ((observerMessageProcessor.isSuccessMessage()) ?
+        "Image saved: " + observerMessageProcessor.getArgument(0) :
+        ERROR_PREFIX + "image not saved!") + ":" +
+        observerMessageProcessor.getArgument(0);
+    }
 
     if (observerMessageProcessor.isSuccessMessage()) {
       controlPanel.setStatusText(guiMessage);

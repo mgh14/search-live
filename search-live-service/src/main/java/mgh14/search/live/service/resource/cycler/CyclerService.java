@@ -11,6 +11,8 @@ import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.web.util.ImageUtils;
 import mgh14.search.live.service.messaging.CycleAction;
+import mgh14.search.live.service.messaging.ObserverMessageBuilder;
+import mgh14.search.live.service.messaging.ObserverMessageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,8 @@ public class CyclerService extends Observable {
   private QueueLoader queueLoader;
   @Autowired
   private FileUtils fileUtils;
+  @Autowired
+  private ObserverMessageBuilder observerMessageBuilder;
 
   private String searchStringFolder;
   private int secondsToSleep;
@@ -90,22 +94,36 @@ public class CyclerService extends Observable {
   }
 
   public String saveCurrentImage() {
-    return resourceCyclerRunnable.saveCurrentImage(
-      searchStringFolder);
+    final String savedImageFilename = resourceCyclerRunnable
+      .saveCurrentImage(searchStringFolder);
+
+    // build observer message
+    String successOrFailure = (savedImageFilename != null) ?
+      ObserverMessageProcessor.MESSAGE_SUCCESS :
+      ObserverMessageProcessor.MESSAGE_FAILURE;
+    String resourceIdentifier = (savedImageFilename != null) ?
+      savedImageFilename :
+      resourceCyclerRunnable.getCurrentFilename();
+    final String observerMessage = observerMessageBuilder
+      .buildObserverMessage(CycleAction.SAVE.name(),
+        successOrFailure, resourceIdentifier);
+    notifyObserversWithMessage(observerMessage);
+
+    return savedImageFilename;
   }
 
   public void pauseCycle() {
     Log.debug("Pausing resource cycle...");
     resourceCyclerRunnable.setIsCycleActive(false);
     notifyObserversWithMessage(CycleAction.PAUSE.name() +
-      ":success");
+      "::success");
   }
 
   public void resumeCycle() {
     Log.debug("Resuming resource cycle...");
     resourceCyclerRunnable.setIsCycleActive(true);
     notifyObserversWithMessage(CycleAction.RESUME.name() +
-      ":success");
+      "::success");
   }
 
   public void getNextResource() {
