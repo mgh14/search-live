@@ -101,7 +101,7 @@ public class CommandExecutor {
       Log.error("Image NOT saved: null filename returned!");
     }
     else {
-      Log.info("Image saved: [{}]", cyclerService.saveCurrentImage());
+      Log.info("Image saved: [{}]", imageFilename);
     }
   }
 
