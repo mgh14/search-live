@@ -277,7 +277,7 @@ public class ControlPanel {
         // Note: this setText method is used instead of the setStatusText
         // method because the pause text should stay in the label until
         // cycling resumes
-        // TODO: make this work with new GUI updating
+        // TODO: make this work with new GUI status field updating
         statusText.setText("Paused cycle");
       }
     });
