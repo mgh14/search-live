@@ -9,6 +9,7 @@ import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.resource.cycler.CyclerService;
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
+import mgh14.search.live.service.messaging.ObserverMessageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 public class GuiController implements Observer {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
+  private static final String ERROR_PREFIX = "<b>Error: </b>";
 
   @Autowired
   private CommandExecutor executor;
@@ -29,6 +31,8 @@ public class GuiController implements Observer {
   private CyclerService cyclerService;
   @Autowired
   private ControlPanel controlPanel;
+  @Autowired
+  private ObserverMessageProcessor observerMessageProcessor;
 
   @PostConstruct
   public void registerWithResourceCycler() {
@@ -69,8 +73,31 @@ public class GuiController implements Observer {
     // TODO: Implement(!)
     Log.debug("Controller receiving notification from {} with " +
       "arg [{}]", o, arg);
-    if (o instanceof CyclerService) {
-      controlPanel.setStatusText((String) arg);
+
+    processMessage((String) arg);
+  }
+
+  private void processMessage(String message) {
+    observerMessageProcessor.setResponseMessage(message);
+    final String messageStatusType = observerMessageProcessor
+      .getStatusType();
+
+    String guiMessage = "";
+    if (messageStatusType.equals(CycleAction.PAUSE.name())) {
+      guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
+        "Cycle paused." : ERROR_PREFIX + "cycle not paused!";
+    }
+    if (messageStatusType.equals(CycleAction.RESUME.name())) {
+      guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
+        "Cycle resumed." : ERROR_PREFIX + "cycle not resumed!";
+    }
+
+    if (observerMessageProcessor.isSuccessMessage()) {
+      controlPanel.setStatusText(guiMessage);
+    }
+    else {
+      controlPanel.setErrorStatusText(guiMessage);
     }
   }
+
 }

@@ -10,6 +10,7 @@ import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.web.util.ImageUtils;
+import mgh14.search.live.service.messaging.CycleAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,11 +97,15 @@ public class CyclerService extends Observable {
   public void pauseCycle() {
     Log.debug("Pausing resource cycle...");
     resourceCyclerRunnable.setIsCycleActive(false);
+    notifyObserversWithMessage(CycleAction.PAUSE.name() +
+      ":success");
   }
 
   public void resumeCycle() {
     Log.debug("Resuming resource cycle...");
     resourceCyclerRunnable.setIsCycleActive(true);
+    notifyObserversWithMessage(CycleAction.RESUME.name() +
+      ":success");
   }
 
   public void getNextResource() {
