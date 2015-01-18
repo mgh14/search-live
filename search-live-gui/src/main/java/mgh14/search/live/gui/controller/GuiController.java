@@ -5,11 +5,11 @@ import java.util.Observer;
 import javax.annotation.PostConstruct;
 
 import mgh14.search.live.gui.ControlPanel;
+import mgh14.search.live.model.observable.messaging.ObserverMessageProcessor;
 import mgh14.search.live.service.CommandExecutor;
-import mgh14.search.live.service.resource.cycler.CyclerService;
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
-import mgh14.search.live.service.messaging.ObserverMessageProcessor;
+import mgh14.search.live.service.resource.cycler.CyclerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +96,11 @@ public class GuiController implements Observer {
         "Image saved: " + observerMessageProcessor.getArgument(0) :
         ERROR_PREFIX + "image not saved!") + ":" +
         observerMessageProcessor.getArgument(0);
+    }
+    if (messageStatusType.equals(CycleAction.DELETE_RESOURCES.name())) {
+      guiMessage = (observerMessageProcessor.isSuccessMessage() ?
+        "All resources deleted." : ERROR_PREFIX + "resources couldn't " +
+        "be deleted!");
     }
 
     if (observerMessageProcessor.isSuccessMessage()) {

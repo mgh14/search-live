@@ -2,8 +2,11 @@ package mgh14.search.live.service.resource.cycler;
 
 import java.io.File;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
+
+import javax.annotation.PostConstruct;
 
 import mgh14.search.live.model.wallpaper.QueueLoader;
 import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
@@ -11,8 +14,8 @@ import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.web.util.ImageUtils;
 import mgh14.search.live.service.messaging.CycleAction;
-import mgh14.search.live.service.messaging.ObserverMessageBuilder;
-import mgh14.search.live.service.messaging.ObserverMessageProcessor;
+import mgh14.search.live.model.observable.messaging.ObserverMessageBuilder;
+import mgh14.search.live.model.observable.messaging.ObserverMessageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,7 @@ import org.springframework.stereotype.Component;
  * command executor and the remainder of the classes.
  */
 @Component
-public class CyclerService extends Observable {
+public class CyclerService extends Observable implements Observer {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final String DIRECTORY_TIME_APPENDER = "-time";
@@ -52,6 +55,11 @@ public class CyclerService extends Observable {
   public CyclerService() {
     searchStringFolder = null;
     resourceCyclerRunnable = null;
+  }
+
+  @PostConstruct
+  public void addInternalObservedObjects() {
+    fileUtils.addObserver(this);
   }
 
   public void setSecondsToSleep(int secondsToSleep) {
@@ -125,7 +133,7 @@ public class CyclerService extends Observable {
     resourceCyclerRunnable.setIsCycleActive(true);
     notifyObserversWithMessage(observerMessageBuilder
       .buildObserverMessage(CycleAction.RESUME.name(),
-      ObserverMessageProcessor.MESSAGE_SUCCESS));
+        ObserverMessageProcessor.MESSAGE_SUCCESS));
   }
 
   public void getNextResource() {
@@ -135,7 +143,8 @@ public class CyclerService extends Observable {
 
   public void deleteAllResources() {
     Log.debug("Deleting all resources...");
-    fileUtils.deleteAllFiles(new File(fileUtils.getResourceFolder()));
+    fileUtils.deleteAllFiles(new File(
+      fileUtils.getResourceFolder()));
   }
 
   private void runRetryTimer() {
@@ -163,4 +172,22 @@ public class CyclerService extends Observable {
     return resourceCyclerRunnable;
   }
 
+  @Override
+  public void update(Observable o, Object arg) {
+    final String message = (String) arg;
+
+    // from observing the file utils class
+    if (o instanceof FileUtils) {
+      if (FileUtils.RESOURCES_SUCCESSFULLY_DELETED_MESSAGE.equals(message)) {
+        notifyObserversWithMessage(observerMessageBuilder
+          .buildObserverMessage(CycleAction.DELETE_RESOURCES.name(),
+            ObserverMessageProcessor.MESSAGE_SUCCESS));
+      }
+      else if (FileUtils.RESOURCES_FAILED_TO_DELETE_MESSAGE.equals(message)) {
+        notifyObserversWithMessage(observerMessageBuilder
+        .buildObserverMessage(CycleAction.DELETE_RESOURCES.name(),
+          ObserverMessageProcessor.MESSAGE_FAILURE));
+      }
+    }
+  }
 }

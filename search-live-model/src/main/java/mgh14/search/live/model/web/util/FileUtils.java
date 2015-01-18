@@ -104,7 +104,7 @@ public class FileUtils extends Observable {
   }
 
   public void deleteAllFiles(final File resourceFolder) {
-    Log.info("Starting resource deletion thread (deleting" +
+    Log.info("Starting resource deletion thread (deleting " +
       "all resources)...");
 
     final File[] folderFiles = resourceFolder.listFiles();
@@ -115,7 +115,7 @@ public class FileUtils extends Observable {
           Log.error("Error deleting files in folder [{}]: " +
               "null returned from file discovery",
             resourceFolder);
-          notifyObservers(RESOURCES_FAILED_TO_DELETE_MESSAGE);
+          notifyObserversWithMessage(RESOURCES_FAILED_TO_DELETE_MESSAGE);
           return;   // terminate thread
         }
 
@@ -123,9 +123,14 @@ public class FileUtils extends Observable {
           deleteFile(fileEntry.toPath());
         }
 
-        notifyObservers(RESOURCES_SUCCESSFULLY_DELETED_MESSAGE);
+        notifyObserversWithMessage(RESOURCES_SUCCESSFULLY_DELETED_MESSAGE);
       }
     });
+  }
+
+  private void notifyObserversWithMessage(String message) {
+    setChanged();
+    notifyObservers(message);
   }
 
 }
