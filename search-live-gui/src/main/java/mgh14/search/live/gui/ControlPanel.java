@@ -255,15 +255,6 @@ public class ControlPanel {
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.saveCurrentImage();
-        setStatusText("Image saved");
-        /*final String fileSaved = controller.saveCurrentImage();
-        Log.info("Saving current image [{}]...", fileSaved);
-        if(fileSaved != null && !fileSaved.isEmpty() && !fileSaved.equals("null")) {
-          Log.info("Image saved: [{}]", fileSaved);
-        }
-        else {
-          Log.error("Image couldnt be saved: [{}]", fileSaved);
-        }*/
       }
     });
 
@@ -286,6 +277,7 @@ public class ControlPanel {
         // Note: this setText method is used instead of the setStatusText
         // method because the pause text should stay in the label until
         // cycling resumes
+        // TODO: make this work with new GUI updating
         statusText.setText("Paused cycle");
       }
     });
@@ -313,7 +305,6 @@ public class ControlPanel {
         }
 
         controller.resumeResourceCycle();
-        setStatusText("Resumed cycle");
       }
     });
 
