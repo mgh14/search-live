@@ -58,6 +58,7 @@ public class ImageUtils {
       return null;
     }
 
+    Log.debug("Image saved: [{}]", savedPicsDir + searchStringFolder + filename);
     return absoluteCurrentFilename;
   }
 
