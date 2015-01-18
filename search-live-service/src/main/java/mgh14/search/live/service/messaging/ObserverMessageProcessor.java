@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ObserverMessageProcessor {
 
+  public static final String SEPARATOR = ":";
+
   private static final int MESSAGE_SUCCESS_INDEX = 1;
   private static final String MESSAGE_SUCCESS = "success";
   private static final String MESSAGE_FAILURE = "failure";
