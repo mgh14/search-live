@@ -70,7 +70,6 @@ public class GuiController implements Observer {
 
   @Override
   public void update(Observable o, Object arg) {
-    // TODO: Implement(!)
     Log.debug("Controller receiving notification from {} with " +
       "arg [{}]", o, arg);
 
