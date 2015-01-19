@@ -181,32 +181,57 @@ public class CyclerService extends Observable implements Observer {
 
     // from observing the resource cycler runnable
     if (o instanceof ResourceCyclerRunnable) {
-      if (ResourceCyclerRunnable.RESOURCE_CYCLE_STARTED_MESSAGE
-        .equals(message)) {
-
-        notifyObserversWithMessage((observerMessageBuilder
-        .buildObserverMessage(CycleAction.START_SERVICE.name(),
-          ObserverMessageProcessor.MESSAGE_SUCCESS)));
-      }
-      else {
-        notifyObserversWithMessage((observerMessageBuilder
-        .buildObserverMessage(CycleAction.START_SERVICE.name(),
-          ObserverMessageProcessor.MESSAGE_FAILURE)));
-      }
+      processResourceCyclerRunnableMessage(message);
     }
 
     // from observing the file utils class
     if (o instanceof FileUtils) {
-      if (FileUtils.RESOURCES_SUCCESSFULLY_DELETED_MESSAGE.equals(message)) {
-        notifyObserversWithMessage(observerMessageBuilder
-          .buildObserverMessage(CycleAction.DELETE_RESOURCES.name(),
-            ObserverMessageProcessor.MESSAGE_SUCCESS));
-      }
-      else if (FileUtils.RESOURCES_FAILED_TO_DELETE_MESSAGE.equals(message)) {
-        notifyObserversWithMessage(observerMessageBuilder
-        .buildObserverMessage(CycleAction.DELETE_RESOURCES.name(),
-          ObserverMessageProcessor.MESSAGE_FAILURE));
-      }
+      processFileUtilsMessage(message);
     }
   }
+
+  private void processResourceCyclerRunnableMessage(String message) {
+    if (ResourceCyclerRunnable.RESOURCE_CYCLE_STARTED_MESSAGE
+      .equals(message)) {
+
+      notifyObserversWithMessage((observerMessageBuilder
+        .buildObserverMessage(CycleAction.START_SERVICE.name(),
+          ObserverMessageProcessor.MESSAGE_SUCCESS)));
+    }
+    else if (ResourceCyclerRunnable.RESOURCE_CYCLE_START_FAILED_MESSAGE
+      .equals(message)) {
+
+      notifyObserversWithMessage((observerMessageBuilder
+        .buildObserverMessage(CycleAction.START_SERVICE.name(),
+          ObserverMessageProcessor.MESSAGE_FAILURE)));
+    }
+    else if(ResourceCyclerRunnable.RESOURCE_SKIPPED_MESSAGE_SUCCESS
+      .equals(message)) {
+
+      notifyObserversWithMessage((observerMessageBuilder
+        .buildObserverMessage(CycleAction.NEXT.name(),
+          ObserverMessageProcessor.MESSAGE_SUCCESS)));
+    }
+    else if(ResourceCyclerRunnable.RESOURCE_SKIPPED_MESSAGE_FAILURE
+      .equals(message)) {
+
+      notifyObserversWithMessage((observerMessageBuilder
+        .buildObserverMessage(CycleAction.NEXT.name(),
+          ObserverMessageProcessor.MESSAGE_FAILURE)));
+    }
+  }
+
+  private void processFileUtilsMessage(String message) {
+    if (FileUtils.RESOURCES_SUCCESSFULLY_DELETED_MESSAGE.equals(message)) {
+      notifyObserversWithMessage(observerMessageBuilder
+        .buildObserverMessage(CycleAction.DELETE_RESOURCES.name(),
+          ObserverMessageProcessor.MESSAGE_SUCCESS));
+    }
+    else if (FileUtils.RESOURCES_FAILED_TO_DELETE_MESSAGE.equals(message)) {
+      notifyObserversWithMessage(observerMessageBuilder
+        .buildObserverMessage(CycleAction.DELETE_RESOURCES.name(),
+          ObserverMessageProcessor.MESSAGE_FAILURE));
+    }
+  }
+
 }

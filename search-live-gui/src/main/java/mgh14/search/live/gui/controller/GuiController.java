@@ -101,6 +101,10 @@ public class GuiController implements Observer {
         ERROR_PREFIX + "image not saved!") + ":" +
         observerMessageProcessor.getArgument(0);
     }
+    if (messageStatusType.equals(CycleAction.NEXT.name())) {
+      guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
+        "Resource skipped." : ERROR_PREFIX + "resource not skipped!";
+    }
     if (messageStatusType.equals(CycleAction.DELETE_RESOURCES.name())) {
       guiMessage = (observerMessageProcessor.isSuccessMessage() ?
         "All resources deleted." : ERROR_PREFIX + "resources couldn't " +

@@ -23,6 +23,12 @@ class ResourceCyclerRunnable extends Observable implements Runnable  {
 
   public static final String RESOURCE_CYCLE_STARTED_MESSAGE =
     "Resource cycle started.";
+  public static final String RESOURCE_CYCLE_START_FAILED_MESSAGE =
+    "";
+  public static final String RESOURCE_SKIPPED_MESSAGE_SUCCESS =
+    "Resource skipped.";
+  public static final String RESOURCE_SKIPPED_MESSAGE_FAILURE =
+    "";
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
@@ -130,6 +136,7 @@ class ResourceCyclerRunnable extends Observable implements Runnable  {
     if (getNextResource.get()) {
       Log.debug("Skipping to next resource...");
       getNextResource.set(false);
+      notifyObserversWithMessage(RESOURCE_SKIPPED_MESSAGE_SUCCESS);
     }
   }
 

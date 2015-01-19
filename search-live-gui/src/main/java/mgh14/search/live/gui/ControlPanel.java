@@ -322,7 +322,12 @@ public class ControlPanel {
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.cycleNextResource();
-        setStatusText("Next resource retrieved.");
+
+        // Note: this setText method is used instead of the setStatusText
+        // method because the skipping text should stay in the label until
+        // the current resource has been skipped.
+        // TODO: make this work with new GUI status field updating
+        statusText.setText("Skipping current resource...");
       }
     });
 
