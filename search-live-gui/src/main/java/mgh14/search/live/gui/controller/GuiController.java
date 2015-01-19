@@ -83,6 +83,10 @@ public class GuiController implements Observer {
       .getStatusType();
 
     String guiMessage = "";
+    if (messageStatusType.equals(CycleAction.START_SERVICE.name())) {
+      guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
+        "Cycle started." : ERROR_PREFIX + "cycle not started!";
+    }
     if (messageStatusType.equals(CycleAction.PAUSE.name())) {
       guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
         "Cycle paused." : ERROR_PREFIX + "cycle not paused!";

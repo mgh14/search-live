@@ -75,6 +75,7 @@ public class CyclerService extends Observable implements Observer {
     // reset runnables and queue loader
     if (resourceCyclerRunnable != null) {
       resourceCyclerRunnable.interruptRunnable();
+      resourceCyclerRunnable.deleteObserver(this);
     }
     retryTimerRunnable.interruptRunnable();
     queueLoader.resetQueueLoader();
@@ -169,12 +170,30 @@ public class CyclerService extends Observable implements Observer {
     resourceCyclerRunnable.setIsCycleActive(true);
     resourceCyclerRunnable.setSecondsToSleep(secondsToSleep);
 
+    resourceCyclerRunnable.addObserver(this);
+
     return resourceCyclerRunnable;
   }
 
   @Override
   public void update(Observable o, Object arg) {
     final String message = (String) arg;
+
+    // from observing the resource cycler runnable
+    if (o instanceof ResourceCyclerRunnable) {
+      if (ResourceCyclerRunnable.RESOURCE_CYCLE_STARTED_MESSAGE
+        .equals(message)) {
+
+        notifyObserversWithMessage((observerMessageBuilder
+        .buildObserverMessage(CycleAction.START_SERVICE.name(),
+          ObserverMessageProcessor.MESSAGE_SUCCESS)));
+      }
+      else {
+        notifyObserversWithMessage((observerMessageBuilder
+        .buildObserverMessage(CycleAction.START_SERVICE.name(),
+          ObserverMessageProcessor.MESSAGE_FAILURE)));
+      }
+    }
 
     // from observing the file utils class
     if (o instanceof FileUtils) {

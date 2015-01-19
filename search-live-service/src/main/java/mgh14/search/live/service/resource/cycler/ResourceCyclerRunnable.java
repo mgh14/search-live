@@ -3,6 +3,7 @@ package mgh14.search.live.service.resource.cycler;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,7 +19,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Class that cycles desktop wallpaper resources
  */
-class ResourceCyclerRunnable implements Runnable  {
+class ResourceCyclerRunnable extends Observable implements Runnable  {
+
+  public static final String RESOURCE_CYCLE_STARTED_MESSAGE =
+    "Resource cycle started.";
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
@@ -38,7 +42,8 @@ class ResourceCyclerRunnable implements Runnable  {
 
   ResourceCyclerRunnable(QueueLoader queueLoader,
       ConcurrentLinkedQueue<String> resourcesQueue,
-      WindowsWallpaperSetter setter, ImageUtils imageUtils, FileUtils fileUtils) {
+      WindowsWallpaperSetter setter, ImageUtils imageUtils,
+      FileUtils fileUtils) {
 
     this.queueLoader = queueLoader;
     this.resourcesQueue = resourcesQueue;
@@ -76,6 +81,8 @@ class ResourceCyclerRunnable implements Runnable  {
 
   @Override
   public void run() {
+    notifyObserversWithMessage(RESOURCE_CYCLE_STARTED_MESSAGE);
+
     final long secondsToSleepInMillis = secondsToSleep.get() * 1000;
     queueLoader.startResourceDownloads();
     threadInterrupted.set(false);
@@ -124,6 +131,11 @@ class ResourceCyclerRunnable implements Runnable  {
       Log.debug("Skipping to next resource...");
       getNextResource.set(false);
     }
+  }
+
+  private void notifyObserversWithMessage(String message) {
+    setChanged();
+    notifyObservers(message);
   }
 
 }
