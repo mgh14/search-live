@@ -43,6 +43,7 @@ class ResourceCyclerRunnable extends Observable implements Runnable  {
   private AtomicBoolean isCycleActive;
   private AtomicInteger secondsToSleep;
   private AtomicReference<String> currentAbsoluteFilename;
+  private AtomicBoolean isSleeping;
   private AtomicBoolean getNextResource;
   private AtomicBoolean threadInterrupted;
 
@@ -60,6 +61,7 @@ class ResourceCyclerRunnable extends Observable implements Runnable  {
     currentAbsoluteFilename = new AtomicReference<String>(null);
     isCycleActive = new AtomicBoolean(true);
     secondsToSleep = new AtomicInteger(DEFAULT_SECONDS_TO_SLEEP);
+    isSleeping = new AtomicBoolean(false);
     getNextResource = new AtomicBoolean(false);
     threadInterrupted = new AtomicBoolean(false);
   }
@@ -93,8 +95,34 @@ class ResourceCyclerRunnable extends Observable implements Runnable  {
     queueLoader.startResourceDownloads();
     threadInterrupted.set(false);
 
+    long sleepStartTime = 0;
     while (!threadInterrupted.get()) {
-      if (isCycleActive.get() && !resourcesQueue.isEmpty()) {
+      if (!isCycleActive.get()) {
+        continue;
+      }
+
+      if (isSleeping.get() && !getNextResource.get()) {
+        if (System.currentTimeMillis() - sleepStartTime >
+          secondsToSleepInMillis) {
+
+          Log.debug("Sleep for resource {} has finished. Moving to" +
+            "next resource...", getCurrentFilename());
+          sleepStartTime = 0;
+          isSleeping.set(false);
+        }
+        else {
+          continue;
+        }
+      }
+      else if (isSleeping.get() && getNextResource.get()) {
+        isSleeping.set(false);
+        getNextResource.set(false);
+        Log.debug("Skipping from {} to next resource...",
+          getCurrentFilename());
+        notifyObserversWithMessage(RESOURCE_SKIPPED_MESSAGE_SUCCESS);
+      }
+
+      if (!resourcesQueue.isEmpty()) {
         // check that filename from queue is valid
         String filename = resourcesQueue.poll();
         if (filename == null) {
@@ -110,7 +138,8 @@ class ResourceCyclerRunnable extends Observable implements Runnable  {
           setter.setDesktopWallpaper(filename);
 
           // sleep for x milliseconds (enjoy the background!)
-          sleep(System.currentTimeMillis(), secondsToSleepInMillis);
+          sleepStartTime = System.currentTimeMillis();
+          isSleeping.set(true);
         }
         else {
           Log.error("Couldn't open file: [{}]. " +
@@ -126,18 +155,6 @@ class ResourceCyclerRunnable extends Observable implements Runnable  {
   String saveCurrentImage(String searchStringFolder) {
     return imageUtils.saveImage(searchStringFolder,
       currentAbsoluteFilename.get());
-  }
-
-  private void sleep(final long sleepStartTime, long secondsToSleepInMillis) {
-    while (!getNextResource.get() && isCycleActive.get() &&
-      (System.currentTimeMillis() - sleepStartTime) <
-        secondsToSleepInMillis) {
-    }
-    if (getNextResource.get()) {
-      Log.debug("Skipping to next resource...");
-      getNextResource.set(false);
-      notifyObserversWithMessage(RESOURCE_SKIPPED_MESSAGE_SUCCESS);
-    }
   }
 
   private void notifyObserversWithMessage(String message) {
