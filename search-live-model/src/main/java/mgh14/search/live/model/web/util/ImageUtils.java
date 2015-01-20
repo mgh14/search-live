@@ -11,7 +11,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.PostConstruct;
+import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
@@ -29,19 +29,14 @@ public class ImageUtils {
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   @Autowired
-  private mgh14.search.live.model.web.util.FileUtils fileUtils;
+  private Preferences preferences;
 
-  private String savedPicsDir = null;
   private ConcurrentHashMap<String, String> downloadedResources =
     new ConcurrentHashMap<String, String>();
 
-  @PostConstruct
-  public void setBaseSaveDirectory() {
-    savedPicsDir = fileUtils.constructFilepathWithSeparator(
-      "C:", "Users", "mgh14", "Pictures", "Search-live-saves");
-  }
+  public String saveImage(String searchStringFolder,
+      String absoluteCurrentFilename) {
 
-  public String saveImage(String searchStringFolder, String absoluteCurrentFilename) {
     if (absoluteCurrentFilename == null || absoluteCurrentFilename.isEmpty()) {
       return null;
     }
@@ -51,14 +46,16 @@ public class ImageUtils {
 
     try {
       FileUtils.copyFile(new File(absoluteCurrentFilename),
-        new File(savedPicsDir + searchStringFolder + filename));
+        new File(preferences.get("resource-save-folder", "") +
+          searchStringFolder + filename));
     }
     catch (IOException e) {
       Log.error("IOException copying file: {}", absoluteCurrentFilename, e);
       return null;
     }
 
-    Log.debug("Image saved: [{}]", savedPicsDir + searchStringFolder + filename);
+    Log.debug("Image saved: [{}]", preferences.get("resource-save-folder", "") +
+      searchStringFolder + filename);
     return absoluteCurrentFilename;
   }
 
@@ -131,11 +128,14 @@ public class ImageUtils {
     final URL website = new URL(imageUrl);
     final InputStream webStream = website.openStream();
     final ReadableByteChannel rbc = Channels.newChannel(webStream);
-    final FileOutputStream fileOutputStream = new FileOutputStream(absoluteFilename);
+    final FileOutputStream fileOutputStream = new FileOutputStream(
+      absoluteFilename);
 
-    long amountTransferred = fileOutputStream.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+    long amountTransferred = fileOutputStream.getChannel()
+      .transferFrom(rbc, 0, Long.MAX_VALUE);
     if (amountTransferred < 1) {
-      Log.error("Amount transferred for [{}] is {}", absoluteFilename, amountTransferred);
+      Log.error("Amount transferred for [{}] is {}", absoluteFilename,
+        amountTransferred);
     }
     else {
       Log.debug("Finished downloading image to file: [{}] to [{}]",
