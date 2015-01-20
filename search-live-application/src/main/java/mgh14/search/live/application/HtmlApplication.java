@@ -69,6 +69,7 @@ public class HtmlApplication {
   private Preferences preferences;
   @Autowired
   private FileUtils fileUtils;
+
   /**
    * arg -query: the search query
    * arg -numResults: the number of results to return for each page
@@ -93,93 +94,20 @@ public class HtmlApplication {
       new String[]{DEFAULT_PROFILE};
     final AnnotationConfigApplicationContext context =
       setUpApplicationContext(springProfiles);
-
     final HtmlApplication application = context.getBean(HtmlApplication.class);
     if (application.springProfileIsEnabled(context, DEFAULT_PROFILE)) {
       application.setProperty("append-file-protocol", "true");
     }
 
-    // validate numResults
-    final int numResults = (line.hasOption("numResults")) ?
-      Integer.parseInt(line.getOptionValue("numResults")) :
-      Integer.parseInt((String) application.getProperty("default-num-results"));
-    application.validateNumResults(numResults,
-      Integer.parseInt((String) application.getProperty("max-num-results")));
-
-    // validate secondsToSleep
-    final int secondsToSleep = (line.hasOption("sleepTime")) ?
-      Integer.parseInt(line.getOptionValue("sleepTime")) :
-      Integer.parseInt((String) application.getProperty("default-num-seconds-to-sleep"));
-    application.validateSecondsToSleep(secondsToSleep);
-    context.getBean(CyclerService.class).setSecondsToSleep(secondsToSleep);
-
-    // set production properties (if production profile is enabled)
-    if (application.springProfileIsEnabled(context,
-        BingHtmlResourceUrlGetter.PRODUCTION_PROFILE)) {
-      application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
-    }
-
-    // create AppData directory for application miscellaneouses (if
-    // not already created)
-    final File tempResourceDir = new File(System.getProperty(ParamNames.USER_HOME)
-      + File.separator + application.getFileUtils().constructFilepathWithSeparator(
-      "AppData", "Local", APPLICATION_NAME));
-    if (!Files.exists(tempResourceDir.toPath())) {
-      Log.info("Temp directory creation: {}", tempResourceDir.mkdirs());
-    }
-    application.setProperty(ParamNames.TEMP_RESOURCES_DIR,
-      tempResourceDir.toString() + File.separator);
-    application.setFileUtilsCycledResourcesDir(tempResourceDir + File.separator +
-      "cycle-resource-temp" + File.separator);
-
-    // set directory to save resources to (if it isn't already set)
-    final String resourceSaveDirPref = application.getPreference(
-      ParamNames.RESOURCE_SAVE_DIR);
-    if (resourceSaveDirPref == null) {
-      final String resourceSaveDir = context.getBean(ControlPanel.class)
-        .setResourceSaveDirectory();
-      if (resourceSaveDir != null) {
-        application.putPreference(ParamNames.RESOURCE_SAVE_DIR,
-          resourceSaveDir);
-      }
-      else {
-        Log.warn("No directory for saving resources has been chosen. " +
-          "Save function will not be available.");
-      }
-    }
-
-    // set search string in control panel (if present on command line)
-    final ControlPanel controlPanel = context.getBean(ControlPanel.class);
-    final String query = line.getOptionValue("query");
-    controlPanel.setQueryText((query != null) ? query : "");
+    application.setUpInternals(line, context);
 
     // begin executor commands
     final CommandExecutor commandExecutor = context.getBean(CommandExecutor.class);
     commandExecutor.run();
   }
 
-  Object getProperty(String propName) {
-    return applicationProperties.getConfigProperty(propName);
-  }
-
   void setProperty(String propName, String propValue) {
     applicationProperties.setConfigProperty(propName, propValue);
-  }
-
-  String getPreference(String prefName) {
-    return preferences.get(prefName, null);
-  }
-
-  void putPreference(String prefName, String prefValue) {
-    preferences.put(prefName, prefValue);
-  }
-
-  FileUtils getFileUtils() {
-    return fileUtils;
-  }
-
-  void setFileUtilsCycledResourcesDir(String resourceDir) {
-    fileUtils.setCycledResourcesDir(resourceDir);
   }
 
   void validateNumResults(int numResults, int maxResults) {
@@ -205,6 +133,85 @@ public class HtmlApplication {
     context.refresh();
 
     return context;
+  }
+
+  private int getNumResults(CommandLine line) {
+    final int numResults = (line.hasOption("numResults")) ?
+      Integer.parseInt(line.getOptionValue("numResults")) :
+      Integer.parseInt((String) applicationProperties
+        .getConfigProperty("default-num-results"));
+
+    validateNumResults(numResults, Integer.parseInt(
+      (String) applicationProperties
+        .getConfigProperty("max-num-results")));
+
+    return numResults;
+  }
+
+  private void setSecondsToSleep(CommandLine line, ApplicationContext context) {
+    final int secondsToSleep = (line.hasOption("sleepTime")) ?
+      Integer.parseInt(line.getOptionValue("sleepTime")) :
+      Integer.parseInt((String) applicationProperties
+        .getConfigProperty("default-num-seconds-to-sleep"));
+
+    validateSecondsToSleep(secondsToSleep);
+
+    context.getBean(CyclerService.class).setSecondsToSleep(secondsToSleep);
+  }
+
+  private void ensureAppDataDirExists() {
+    final File tempResourceDir = new File(System.getProperty(ParamNames.USER_HOME)
+      + File.separator + fileUtils.constructFilepathWithSeparator(
+      "AppData", "Local", APPLICATION_NAME));
+    if (!Files.exists(tempResourceDir.toPath())) {
+      Log.info("Temp directory creation: {}", tempResourceDir.mkdirs());
+    }
+    setProperty(ParamNames.TEMP_RESOURCES_DIR,
+      tempResourceDir.toString() + File.separator);
+    fileUtils.setCycledResourcesDir(tempResourceDir + File.separator +
+      "cycle-resource-temp" + File.separator);
+  }
+
+  private void setResourceSaveDir(ApplicationContext context) {
+    final String resourceSaveDirPref = preferences.get(ParamNames.RESOURCE_SAVE_DIR, "");
+    if (resourceSaveDirPref == null) {
+      final String resourceSaveDir = context.getBean(ControlPanel.class)
+        .setResourceSaveDirectory();
+      if (resourceSaveDir != null) {
+        preferences.put(ParamNames.RESOURCE_SAVE_DIR,
+          resourceSaveDir);
+      }
+      else {
+        Log.warn("No directory for saving resources has been chosen. " +
+          "Save function will not be available.");
+      }
+    }
+  }
+
+  private void setUpInternals(CommandLine line, ApplicationContext context) {
+    // validate numResults
+    final int numResults = getNumResults(line);
+
+    // validate secondsToSleep
+    setSecondsToSleep(line, context);
+
+    // set production properties (if production profile is enabled)
+    if (springProfileIsEnabled(context,
+      BingHtmlResourceUrlGetter.PRODUCTION_PROFILE)) {
+      setUpBingHtmlResourceUrlGetter(context, "images", numResults);
+    }
+
+    // create AppData directory for application miscellaneouses (if
+    // not already created)
+    ensureAppDataDirExists();
+
+    // set directory to save resources to (if it isn't already set)
+    setResourceSaveDir(context);
+
+    // set search string in control panel (if present on command line)
+    final ControlPanel controlPanel = context.getBean(ControlPanel.class);
+    final String query = line.getOptionValue("query");
+    controlPanel.setQueryText((query != null) ? query : "");
   }
 
   private void setUpBingHtmlResourceUrlGetter(ApplicationContext context,
