@@ -101,7 +101,7 @@ public class ImageUtils {
       && image.getHeight() > pixelTolerance);
   }
 
-  public String downloadImage(String resourceUrl, String ROOT_DIR,
+  public String downloadImage(String resourceUrl, String rootDir,
     String localFilename) throws IOException {
 
     if (downloadedResources.keySet().contains(resourceUrl)) {
@@ -112,7 +112,7 @@ public class ImageUtils {
 
     Log.info("Downloading URL [{}]...", resourceUrl);
     try {
-      downloadImageToFile(resourceUrl, ROOT_DIR, localFilename);
+      downloadImageToFile(resourceUrl, rootDir, localFilename);
     } catch (IOException e) {
       final String exceptionMessage = "IOException: Couldn\'t " +
         "download image: [" + resourceUrl + "]";
@@ -124,10 +124,10 @@ public class ImageUtils {
     return localFilename;
   }
 
-  private void downloadImageToFile(String imageUrl, String ROOT_DIR,
+  private void downloadImageToFile(String imageUrl, String rootDir,
       String destinationFile) throws IOException {
 
-    final String absoluteFilename = getAbsolutePath(ROOT_DIR, destinationFile);
+    final String absoluteFilename = getAbsolutePath(rootDir, destinationFile);
 
     final URL website = new URL(imageUrl);
     final InputStream webStream = website.openStream();
@@ -151,10 +151,10 @@ public class ImageUtils {
     fileOutputStream.close();
   }
 
-  private String getAbsolutePath(String ROOT_DIR, String destination) {
+  private String getAbsolutePath(String rootDir, String destination) {
     String absoluteFilename = destination;
-    if (!absoluteFilename.contains(ROOT_DIR)) {
-      absoluteFilename = ROOT_DIR + destination;
+    if (!absoluteFilename.contains(rootDir)) {
+      absoluteFilename = rootDir + destination;
     }
     return absoluteFilename;
   }
