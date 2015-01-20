@@ -1,6 +1,7 @@
 package mgh14.search.live.application;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -12,6 +13,7 @@ import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.model.ParamNames;
 import mgh14.search.live.model.web.resource.getter.BingHtmlResourceUrlGetter;
 import mgh14.search.live.model.web.util.ApplicationProperties;
+import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.resource.cycler.CyclerService;
 import org.apache.commons.cli.CommandLine;
@@ -56,6 +58,8 @@ public class HtmlApplication {
 
   }
 
+  public static final String APPLICATION_NAME = "Search-Live";
+
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
   private static final String DEFAULT_PROFILE = "DummyResources";
 
@@ -63,7 +67,8 @@ public class HtmlApplication {
   private ApplicationProperties applicationProperties;
   @Autowired
   private Preferences preferences;
-
+  @Autowired
+  private FileUtils fileUtils;
   /**
    * arg -query: the search query
    * arg -numResults: the number of results to return for each page
@@ -114,6 +119,15 @@ public class HtmlApplication {
       application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
     }
 
+    // create AppData directory for application miscellaneouses (if
+    // not already created)
+    final File tempResourceDir = new File(System.getProperty(ParamNames.USER_HOME)
+      + File.separator + application.getFileUtils().constructFilepathWithSeparator(
+      "AppData", "Local", APPLICATION_NAME));
+    if (!Files.exists(tempResourceDir.toPath())) {
+      Log.info("Temp directory creation: {}", tempResourceDir.mkdirs());
+    }
+
     // set directory to save resources to (if it isn't already set)
     final String resourceSaveDirPref = application.getPreference(
       ParamNames.RESOURCE_SAVE_DIR);
@@ -154,6 +168,10 @@ public class HtmlApplication {
 
   void putPreference(String prefName, String prefValue) {
     preferences.put(prefName, prefValue);
+  }
+
+  FileUtils getFileUtils() {
+    return fileUtils;
   }
 
   void validateNumResults(int numResults, int maxResults) {
