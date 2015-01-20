@@ -59,9 +59,11 @@ public class QueueLoader {
 
     executorService.execute(new Runnable() {
       public void run() {
+        Log.debug("Downloading on thread {}.", Thread.currentThread().getName());
         List<String> resourceUris = getSetOfResourceLocations();
         if (resourceUris.isEmpty()) {
-          Log.info("Resource URI's is empty. Terminating download thread...");
+          Log.info("Resource URI's is empty. Terminating download thread {}...",
+            Thread.currentThread().getName());
           downloadsInProgress.set(false);
           return;   // terminate thread
         }
