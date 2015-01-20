@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -107,7 +108,8 @@ public class ControlPanel {
 
     int returnValue = fileChooser.showOpenDialog(mainFrame);
     if (returnValue == JFileChooser.APPROVE_OPTION) {
-      return fileChooser.getSelectedFile().getAbsolutePath();
+      return fileChooser.getSelectedFile().getAbsolutePath() +
+        File.separator;
     }
 
     return null;
