@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.prefs.Preferences;
 
 import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.model.web.resource.getter.BingHtmlResourceUrlGetter;
@@ -34,7 +35,7 @@ public class HtmlApplication {
 
   @Configuration
   @ComponentScan("mgh14.search.live")
-  public static class BeanConfiguration {
+  static class BeanConfiguration {
 
     @Bean
     public ConcurrentLinkedQueue<String> resourceQueue() {
@@ -46,6 +47,11 @@ public class HtmlApplication {
       return Executors.newFixedThreadPool(10);
     }
 
+    @Bean
+    public Preferences preferences() {
+      return Preferences.systemNodeForPackage(HtmlApplication.class);
+    }
+
   }
 
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
@@ -53,6 +59,8 @@ public class HtmlApplication {
 
   @Autowired
   private ApplicationProperties applicationProperties;
+  @Autowired
+  private Preferences preferences;
 
   /**
    * arg -query: the search query
@@ -104,13 +112,19 @@ public class HtmlApplication {
       application.setUpBingHtmlResourceUrlGetter(context, "images", numResults);
     }
 
-    // set directory to save resources to
-    final String resourceSaveDir = context.getBean(ControlPanel.class).setResourceSaveDirectory();
-    if (resourceSaveDir == null || resourceSaveDir.isEmpty()) {
-      Log.warn("No directory for saving resources has been chosen. " +
-        "Save function will not be available.");
+    // set directory to save resources to (if it isn't already set)
+    final String resourceSaveDirPref = application.getPreference("resource-save-folder");
+    if (resourceSaveDirPref == null) {
+      final String resourceSaveDir = context.getBean(ControlPanel.class)
+        .setResourceSaveDirectory();
+      if (resourceSaveDir != null) {
+        application.putPreference("resource-save-folder", resourceSaveDir);
+      }
+      else {
+        Log.warn("No directory for saving resources has been chosen. " +
+          "Save function will not be available.");
+      }
     }
-    application.setProperty("resource-save-dir", resourceSaveDir);
 
     // set search string in control panel (if present on command line)
     final ControlPanel controlPanel = context.getBean(ControlPanel.class);
@@ -128,6 +142,14 @@ public class HtmlApplication {
 
   void setProperty(String propName, String propValue) {
     applicationProperties.setConfigProperty(propName, propValue);
+  }
+
+  String getPreference(String prefName) {
+    return preferences.get(prefName, null);
+  }
+
+  void putPreference(String prefName, String prefValue) {
+    preferences.put(prefName, prefValue);
   }
 
   void validateNumResults(int numResults, int maxResults) {

@@ -27,14 +27,10 @@ public class ApplicationProperties {
 
   private String configDir;
   private Properties configProperties;
-  private String prefsDir;
-  private Properties prefsProperties;
 
   public ApplicationProperties() {
     configDir = null;
     configProperties = new Properties();
-    prefsDir = null;
-    prefsProperties = new Properties();
   }
 
   @PostConstruct
@@ -53,35 +49,12 @@ public class ApplicationProperties {
     }
   }
 
-  @PostConstruct
-  public void loadPrefs() {
-    checkIfAppHomeVariableIsSet();
-    prefsDir = fileUtils.constructFilepathWithSeparator(
-      "search-live-model", "src", "main", "resources",
-      "prefs");
-
-    try {
-      loadPropertyValues(prefsDir, "prefs.properties", prefsProperties);
-    } catch (IOException e) {
-      Log.warn("Warning: Couldn't load prefs properties file " +
-        "in dir [{}]. Continuing...", prefsDir);
-    }
-  }
-
   public Object getConfigProperty(String propertyName) {
     return configProperties.get(propertyName);
   }
 
   public void setConfigProperty(String propertyName, String value) {
     configProperties.put(propertyName, value);
-  }
-
-  public Object getPrefsProperty(String propertyName) {
-    return prefsProperties.get(propertyName);
-  }
-
-  public void setPrefsProperty(String propertyName, String value) {
-    prefsProperties.put(propertyName, value);
   }
 
   private void checkIfAppHomeVariableIsSet() {
