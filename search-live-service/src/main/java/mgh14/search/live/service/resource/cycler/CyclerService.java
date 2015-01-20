@@ -87,14 +87,9 @@ public class CyclerService extends Observable implements Observer {
       + System.currentTimeMillis() + "\\";
 
     // run resource cycle
-    runResourceCycle();
-  }
-
-  private void runResourceCycle() {
     Log.debug("Starting wallpaper cycle...");
     queueLoader.startResourceDownloads();
     runRetryTimer();
-
     // instead of submitting with the ability to stop the thread,
     // we provide finer-grained control with the threadInterrupted
     // variable in the ResourceCyclerRunnable class and thus have
