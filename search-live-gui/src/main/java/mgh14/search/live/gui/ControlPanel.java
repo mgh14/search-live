@@ -115,7 +115,7 @@ public class ControlPanel {
 
   public void setStatusText(String newStatusText) {
     statusText.setText(newStatusText);
-    executorService.execute(new Runnable() {
+    /*executorService.execute(new Runnable() {
       @Override
       public void run() {
         try {
@@ -127,7 +127,7 @@ public class ControlPanel {
 
         statusText.setText("");
       }
-    });
+    });*/
   }
 
   public void setErrorStatusText(String newStatusText) {
