@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 
+import mgh14.search.live.model.ParamNames;
 import mgh14.search.live.model.web.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +36,9 @@ public class DummyResourceUrlGetter implements ResourceUrlGetter {
 
   @PostConstruct
   public void setDummyResourceDirectory() {
-    dummyResourceDir = fileUtils.constructFilepathWithSeparator(
-      "C:", "Users", "mgh14", "Pictures", "dummy-resources");
+    dummyResourceDir = System.getProperty(ParamNames.USER_HOME) +
+      File.separator + fileUtils.constructFilepathWithSeparator(
+      "Pictures", "dummy-resources");
     loadDummyResources();
   }
 
