@@ -8,7 +8,6 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
-import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +24,6 @@ public class FileUtils extends Observable {
 
   public static final String RESOURCE_FILENAME_PREPEND = "rsrc";
   public static final String RESOURCE_FILENAME_TIMESTAMP_SEPARATOR = "-";
-  public static final String FILE_SEPARATOR =
-    (String) System.getProperties().get("file.separator");
   public static final String RESOURCES_SUCCESSFULLY_DELETED_MESSAGE
     = "Resources deleted.";
   public static final String RESOURCES_FAILED_TO_DELETE_MESSAGE =
@@ -38,13 +35,9 @@ public class FileUtils extends Observable {
   private String resourceFolder;
 
   public FileUtils() {
-    resourceFolder = null;
-  }
-
-  @PostConstruct
-  public void constructTemporaryResourceFolder() {
-    resourceFolder = constructFilepathWithSeparator(
-      "C:", "Users", "mgh14", "Pictures", "screen-temp");
+    resourceFolder = System.getProperty("user.home") +
+      File.separator + constructFilepathWithSeparator("Pictures",
+      "screen-temp");
   }
 
   public String getResourceFolder() {
@@ -54,7 +47,7 @@ public class FileUtils extends Observable {
   public String constructFilepathWithSeparator(String... dirs) {
     String filepath = "";
     for (String dir : dirs) {
-      filepath += dir + FILE_SEPARATOR;
+      filepath += dir + File.separator;
     }
     return filepath;
   }
