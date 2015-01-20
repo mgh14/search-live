@@ -1,5 +1,6 @@
 package mgh14.search.live.application;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -8,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
 
 import mgh14.search.live.gui.ControlPanel;
+import mgh14.search.live.model.ParamNames;
 import mgh14.search.live.model.web.resource.getter.BingHtmlResourceUrlGetter;
 import mgh14.search.live.model.web.util.ApplicationProperties;
 import mgh14.search.live.service.CommandExecutor;
@@ -113,12 +115,14 @@ public class HtmlApplication {
     }
 
     // set directory to save resources to (if it isn't already set)
-    final String resourceSaveDirPref = application.getPreference("resource-save-folder");
+    final String resourceSaveDirPref = application.getPreference(
+      ParamNames.RESOURCE_SAVE_DIR);
     if (resourceSaveDirPref == null) {
       final String resourceSaveDir = context.getBean(ControlPanel.class)
         .setResourceSaveDirectory();
       if (resourceSaveDir != null) {
-        application.putPreference("resource-save-folder", resourceSaveDir);
+        application.putPreference(ParamNames.RESOURCE_SAVE_DIR,
+          resourceSaveDir + File.separator);
       }
       else {
         Log.warn("No directory for saving resources has been chosen. " +

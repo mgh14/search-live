@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 
+import mgh14.search.live.model.ParamNames;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,8 @@ public class ImageUtils {
   public String saveImage(String searchStringFolder,
       String absoluteCurrentFilename) {
 
-    if (absoluteCurrentFilename == null || absoluteCurrentFilename.isEmpty()) {
+    if (absoluteCurrentFilename == null ||
+      absoluteCurrentFilename.isEmpty()) {
       return null;
     }
 
@@ -46,16 +48,18 @@ public class ImageUtils {
 
     try {
       FileUtils.copyFile(new File(absoluteCurrentFilename),
-        new File(preferences.get("resource-save-folder", "") +
+        new File(preferences.get(ParamNames.RESOURCE_SAVE_DIR, "") +
           searchStringFolder + filename));
     }
     catch (IOException e) {
-      Log.error("IOException copying file: {}", absoluteCurrentFilename, e);
+      Log.error("IOException copying file: {}", absoluteCurrentFilename,
+        e);
       return null;
     }
 
-    Log.debug("Image saved: [{}]", preferences.get("resource-save-folder", "") +
-      searchStringFolder + filename);
+    Log.debug("Image saved: [{}]", preferences.get(
+      ParamNames.RESOURCE_SAVE_DIR, "") + searchStringFolder
+      + filename);
     return absoluteCurrentFilename;
   }
 

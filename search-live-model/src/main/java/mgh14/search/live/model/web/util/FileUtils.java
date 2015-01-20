@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 
+import mgh14.search.live.model.ParamNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class FileUtils extends Observable {
   private String resourceFolder;
 
   public FileUtils() {
-    resourceFolder = System.getProperty("user.home") +
+    resourceFolder = System.getProperty(ParamNames.USER_HOME) +
       File.separator + constructFilepathWithSeparator("Pictures",
       "screen-temp");
   }
