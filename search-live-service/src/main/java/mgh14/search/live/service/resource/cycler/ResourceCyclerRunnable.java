@@ -105,7 +105,7 @@ class ResourceCyclerRunnable extends Observable implements Runnable  {
         if (System.currentTimeMillis() - sleepStartTime >
           secondsToSleepInMillis) {
 
-          Log.debug("Sleep for resource {} has finished. Moving to" +
+          Log.debug("Sleep for resource {} has finished. Moving to " +
             "next resource...", getCurrentFilename());
           sleepStartTime = 0;
           isSleeping.set(false);
@@ -116,6 +116,7 @@ class ResourceCyclerRunnable extends Observable implements Runnable  {
       }
       else if (isSleeping.get() && getNextResource.get()) {
         isSleeping.set(false);
+        sleepStartTime = 0;
         getNextResource.set(false);
         Log.debug("Skipping from {} to next resource...",
           getCurrentFilename());
