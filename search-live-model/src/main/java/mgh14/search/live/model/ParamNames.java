@@ -14,6 +14,9 @@ public class ParamNames {
   // System property param names
   public static final String USER_HOME = "user.home";
 
+  // Config property param names
+  public static final String TEMP_RESOURCES_DIR = "temp-resources-dir";
+
   // Preferences param names
   public static final String RESOURCE_SAVE_DIR = "resource-save-dir";
 

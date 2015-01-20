@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 
-import mgh14.search.live.model.ParamNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +34,15 @@ public class FileUtils extends Observable {
 
   private String resourceDir;
 
-  public FileUtils() {
-    resourceDir = System.getProperty(ParamNames.USER_HOME) +
-      File.separator + constructFilepathWithSeparator("Pictures",
-      "screen-temp");
+  public void setCycledResourcesDir(String resourceDir) {
+    this.resourceDir = resourceDir;
+
+    // if directory doesn't exist, create it
+    final File resourceDirAsFile = new File(resourceDir);
+    if (!Files.exists(resourceDirAsFile.toPath())) {
+      Log.info("Creating cycle resource dir: {}",
+        resourceDirAsFile.mkdirs());
+    }
   }
 
   public String getResourceDir() {

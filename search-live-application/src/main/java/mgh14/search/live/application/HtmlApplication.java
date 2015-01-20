@@ -127,6 +127,10 @@ public class HtmlApplication {
     if (!Files.exists(tempResourceDir.toPath())) {
       Log.info("Temp directory creation: {}", tempResourceDir.mkdirs());
     }
+    application.setProperty(ParamNames.TEMP_RESOURCES_DIR,
+      tempResourceDir.toString() + File.separator);
+    application.setFileUtilsCycledResourcesDir(tempResourceDir + File.separator +
+      "cycle-resource-temp" + File.separator);
 
     // set directory to save resources to (if it isn't already set)
     final String resourceSaveDirPref = application.getPreference(
@@ -136,7 +140,7 @@ public class HtmlApplication {
         .setResourceSaveDirectory();
       if (resourceSaveDir != null) {
         application.putPreference(ParamNames.RESOURCE_SAVE_DIR,
-          resourceSaveDir + File.separator);
+          resourceSaveDir);
       }
       else {
         Log.warn("No directory for saving resources has been chosen. " +
@@ -172,6 +176,10 @@ public class HtmlApplication {
 
   FileUtils getFileUtils() {
     return fileUtils;
+  }
+
+  void setFileUtilsCycledResourcesDir(String resourceDir) {
+    fileUtils.setCycledResourcesDir(resourceDir);
   }
 
   void validateNumResults(int numResults, int maxResults) {
