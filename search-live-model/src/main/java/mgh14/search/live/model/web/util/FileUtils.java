@@ -33,16 +33,16 @@ public class FileUtils extends Observable {
   @Autowired
   private ExecutorService executorService;
 
-  private String resourceFolder;
+  private String resourceDir;
 
   public FileUtils() {
-    resourceFolder = System.getProperty(ParamNames.USER_HOME) +
+    resourceDir = System.getProperty(ParamNames.USER_HOME) +
       File.separator + constructFilepathWithSeparator("Pictures",
       "screen-temp");
   }
 
-  public String getResourceFolder() {
-    return resourceFolder;
+  public String getResourceDir() {
+    return resourceDir;
   }
 
   public String constructFilepathWithSeparator(String... dirs) {
@@ -56,7 +56,7 @@ public class FileUtils extends Observable {
   public String getRelativeResourceFilename(String resourceStr, int downloadNum) {
     // construct (local) filename
     final String filetype = resourceStr.substring(resourceStr.lastIndexOf("."));
-    return getResourceFolder() + RESOURCE_FILENAME_PREPEND +
+    return getResourceDir() + RESOURCE_FILENAME_PREPEND +
       downloadNum + RESOURCE_FILENAME_TIMESTAMP_SEPARATOR +
       System.currentTimeMillis() + filetype;
   }

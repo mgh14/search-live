@@ -140,7 +140,7 @@ public class CyclerService extends Observable implements Observer {
   public void deleteAllResources() {
     Log.debug("Deleting all resources...");
     fileUtils.deleteAllFiles(new File(
-      fileUtils.getResourceFolder()));
+      fileUtils.getResourceDir()));
   }
 
   private void runRetryTimer() {

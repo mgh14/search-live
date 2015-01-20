@@ -130,7 +130,7 @@ public class QueueLoader {
     try {
       if (!urlsToFilenames.containsKey(resourceStr)) {
         finalFilename = imageUtils.downloadImage(resourceStr,
-          fileUtils.getResourceFolder(), filename);
+          fileUtils.getResourceDir(), filename);
         if (!(finalFilename == null || finalFilename.trim().isEmpty())) {
           fileUtils.makeFileReadableAndWriteable(finalFilename);
           resourceQueue.add(finalFilename);

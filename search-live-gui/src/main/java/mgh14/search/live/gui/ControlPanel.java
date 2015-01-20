@@ -101,7 +101,7 @@ public class ControlPanel {
   }
 
   public String setResourceSaveDirectory() {
-    final JFileChooser fileChooser = new JFileChooser(fileUtils.getResourceFolder());
+    final JFileChooser fileChooser = new JFileChooser(fileUtils.getResourceDir());
     fileChooser.setDialogTitle("Choose the directory for saved images");
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
