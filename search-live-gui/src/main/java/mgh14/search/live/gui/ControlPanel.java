@@ -41,9 +41,9 @@ public class ControlPanel {
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final int SECONDS_BEFORE_LABEL_CLEAR = 15;
   private static final String COL_LAYOUT = "5px, center:pref, 10px, center:pref, 10px, " +
-    "center:pref, 10px, center:pref, 10px, center:pref, 10px, center:pref, 5px";
-  private static final String ROW_LAYOUT = "center:pref, 7px, center:pref";
-  private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(70, 40);
+    "center:pref, 7px, 3px, center:pref, 10px, center:pref, 10px, center:pref, 5px";
+  private static final String ROW_LAYOUT = "5px, center:pref, 7px, center:pref, 5px";
+  private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(60, 35);
   private static final int CLICK_PROCESS_BUTTON_DISABLE_DURATION = 500;  // milliseconds
 
   @Autowired
@@ -65,6 +65,7 @@ public class ControlPanel {
   private JButton nextResourceButton;
   private JButton deleteAllResourcesButton;
 
+  //private PanelBuilder builder;
   private FormDebugPanel builder;
   private CellConstraints cellConstraints;
 
@@ -142,7 +143,7 @@ public class ControlPanel {
 
     // set up main frame
     mainFrame = new JFrame("SearchLive Control Panel");
-    final Dimension mainFrameDimension = new Dimension(500, 115);
+    final Dimension mainFrameDimension = new Dimension(430, 115);
     mainFrame.setMinimumSize(mainFrameDimension);
     mainFrame.setMaximumSize(mainFrameDimension);
     mainFrame.setResizable(false);
@@ -156,29 +157,30 @@ public class ControlPanel {
     // set up JGoodies builder and layout
     builder = new FormDebugPanel();
     final FormLayout layout = new FormLayout(COL_LAYOUT, ROW_LAYOUT);
+    //builder = new PanelBuilder(layout);
     builder.setLayout(layout);
-    layout.setColumnGroups(new int[][]{{2, 4, 6, 8, 10, 12}, {1, 13}, {3, 5, 7, 9, 11}});
-    //PanelBuilder builder = new PanelBuilder(layout);
+    layout.setColumnGroups(new int[][]{{2, 4, 6, 9, 11, 13}, {3, 5, 10, 12}});
 
     // build query text label
-    final JLabel queryLabel = new JLabel("<html><font color=RED>" +
-      "<b>Search:</b></font></html>");
-    builder.add(queryLabel, cellConstraints.xy(2, 1));
+    final JLabel queryLabel = new JLabel("<html>" +
+      "<b>Search:</b></html>");
+    builder.add(queryLabel, cellConstraints.xy(2, 2));
 
     // build query text field
     this.queryText = new JTextField();
-    builder.add(queryText, cellConstraints.xyw(4, 1, 4));
+    builder.add(queryText, cellConstraints.xyw(3, 2, 5));
 
     // build status label
-    final JLabel statusLabel = new JLabel("<html><font color=RED>" +
+    final JLabel statusLabel = new JLabel("<html>" +
       "<b>Status:</b></html>");
-    builder.add(statusLabel, cellConstraints.xy(8, 1));
+    //builder.add(statusLabel, cellConstraints.xy(8, 1));
 
     // build status text label
     statusText = new JLabel("", JLabel.CENTER);
-    builder.add(statusText, cellConstraints.xyw(9, 1, 4));
+    builder.add(statusText, cellConstraints.xyw(9, 2, 5));
 
     // show main frame
+    //mainFrame.add(builder.getPanel());
     mainFrame.add(builder);
     mainFrame.setVisible(true);
   }
@@ -243,7 +245,7 @@ public class ControlPanel {
       }
     });
 
-    builder.add(startResourceCycleButton, cellConstraints.xy(2, 3));
+    builder.add(startResourceCycleButton, cellConstraints.xy(2, 4));
   }
 
   private void createSaveButton(){
@@ -260,7 +262,7 @@ public class ControlPanel {
       }
     });
 
-    builder.add(saveCurrentResourceButton, cellConstraints.xy(4, 3));
+    builder.add(saveCurrentResourceButton, cellConstraints.xy(4, 4));
   }
 
   private void createPauseButton() {
@@ -284,7 +286,7 @@ public class ControlPanel {
       }
     });
 
-    builder.add(pauseResourceCycleButton, cellConstraints.xy(6, 3));
+    builder.add(pauseResourceCycleButton, cellConstraints.xy(6, 4));
   }
 
   private void createResumeButton() {
@@ -310,7 +312,7 @@ public class ControlPanel {
       }
     });
 
-    builder.add(resumeResourceCycleButton, cellConstraints.xy(8, 3));
+    builder.add(resumeResourceCycleButton, cellConstraints.xy(9, 4));
   }
 
   private void createNextButton() {
@@ -333,7 +335,7 @@ public class ControlPanel {
       }
     });
 
-    builder.add(nextResourceButton, cellConstraints.xy(10, 3));
+    builder.add(nextResourceButton, cellConstraints.xy(11, 4));
   }
 
   private void createDeleteAllResourcesButton() {
@@ -351,7 +353,7 @@ public class ControlPanel {
       }
     });
 
-    builder.add(deleteAllResourcesButton, cellConstraints.xy(12, 3));
+    builder.add(deleteAllResourcesButton, cellConstraints.xy(13, 4));
   }
 
   private void disableButtonsDuringButtonClickProcess() {
