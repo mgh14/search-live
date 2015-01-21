@@ -65,6 +65,10 @@ public class FileUtils extends Observable {
       System.currentTimeMillis() + filetype;
   }
 
+  public String getResourceFilenameFromPath(String path) {
+    return path.substring(path.lastIndexOf(File.separator) + 1);
+  }
+
   @SuppressWarnings("ResultOfMethodCallIgnored")
   public void makeFileReadableAndWriteable(String filename) {
     final File file = new File(filename);

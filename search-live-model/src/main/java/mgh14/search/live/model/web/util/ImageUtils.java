@@ -31,6 +31,8 @@ public class ImageUtils {
 
   @Autowired
   private Preferences preferences;
+  @Autowired
+  private mgh14.search.live.model.web.util.FileUtils fileUtils;
 
   private ConcurrentHashMap<String, String> downloadedResources =
     new ConcurrentHashMap<String, String>();
@@ -43,8 +45,8 @@ public class ImageUtils {
       return null;
     }
 
-    final String filename = absoluteCurrentFilename.substring(
-      absoluteCurrentFilename.lastIndexOf("\\"));
+    final String filename = fileUtils.
+      getResourceFilenameFromPath(absoluteCurrentFilename);
 
     try {
       FileUtils.copyFile(new File(absoluteCurrentFilename),
