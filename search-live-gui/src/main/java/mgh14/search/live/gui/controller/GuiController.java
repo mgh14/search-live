@@ -95,10 +95,10 @@ public class GuiController implements Observer {
         "Cycle resumed." : ERROR_PREFIX + "cycle not resumed!";
     }
     if (messageStatusType.equals(CycleAction.SAVE.name())) {
-      guiMessage = ((observerMessageProcessor.isSuccessMessage()) ?
-        "Image saved: " + observerMessageProcessor.getArgument(0) :
-        ERROR_PREFIX + "image not saved!") + ":" +
-        observerMessageProcessor.getArgument(0);
+      guiMessage = (observerMessageProcessor.isSuccessMessage() ?
+        "Saved: " + observerMessageProcessor.getArgument(0) :
+        ERROR_PREFIX + observerMessageProcessor.getArgument(0) +
+          "\nnot saved!");
     }
     if (messageStatusType.equals(CycleAction.NEXT.name())) {
       guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
