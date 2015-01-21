@@ -16,8 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * UI Controller that gives commands to the model's
- * command executor.
+ * UI Controller that gives commands to the service's
+ * command executor and also updates the UI with
+ * messages from the service.
  */
 @Component
 public class GuiController implements Observer {
