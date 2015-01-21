@@ -170,11 +170,6 @@ public class ControlPanel {
     this.queryText = new JTextField();
     builder.add(queryText, cellConstraints.xyw(3, 2, 5));
 
-    // build status label
-    final JLabel statusLabel = new JLabel("<html>" +
-      "<b>Status:</b></html>");
-    //builder.add(statusLabel, cellConstraints.xy(8, 1));
-
     // build status text label
     statusText = new JLabel("", JLabel.CENTER);
     builder.add(statusText, cellConstraints.xyw(9, 2, 5));
