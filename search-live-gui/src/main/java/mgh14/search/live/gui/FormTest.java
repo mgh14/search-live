@@ -15,7 +15,6 @@ import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.debug.FormDebugPanel;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import org.slf4j.Logger;
@@ -30,9 +29,9 @@ public class FormTest {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final String COL_LAYOUT = "5px, center:pref, 10px, center:pref, 10px, " +
-    "center:pref, 5px";
-  private static final String ROW_LAYOUT = "5px, center:pref, 7px, center:pref, 7px, " +
-    "center:pref, 7px, center:pref";
+    "center:pref, 7px, 3px, center:pref, 10px, center:pref, 10px, center:pref, 5px";
+  private static final String ROW_LAYOUT = "5px, center:pref, 7px, center:pref, 5px";
+
   private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(60, 35);
 
   private JFrame mainFrame;
@@ -94,7 +93,7 @@ public class FormTest {
 
     // set up main frame
     mainFrame = new JFrame("SearchLive Control Panel");
-    final Dimension mainFrameDimension = new Dimension(230, 190);
+    final Dimension mainFrameDimension = new Dimension(440, 130);
     mainFrame.setMinimumSize(mainFrameDimension);
     //mainFrame.setMaximumSize(mainFrameDimension);
     //mainFrame.setResizable(false);
@@ -109,8 +108,7 @@ public class FormTest {
     final FormLayout layout = new FormLayout(COL_LAYOUT, ROW_LAYOUT);
     builder = new PanelBuilder(layout);
     //builder.setLayout(layout);
-    layout.setColumnGroups(new int[][]{{2, 4, 6}, {3, 5, 7}});
-    layout.setRowGroups(new int[][]{{3, 5}, {4, 6}});
+    layout.setColumnGroups(new int[][]{{2, 4, 6, 9, 11, 13}, {3, 5, 10, 12}});
 
     // build query text label
     final JLabel queryLabel = new JLabel("<html>" +
@@ -119,15 +117,15 @@ public class FormTest {
 
     // build query text field
     this.queryText = new JTextField();
-    builder.add(queryText, cellConstraints.xyw(3, 2, 4));
+    builder.add(queryText, cellConstraints.xyw(3, 2, 5));
 
     // build status text label
     statusText = new JLabel("", JLabel.CENTER);
-    builder.add(statusText, cellConstraints.xyw(2, 8, 5));
+    builder.add(statusText, cellConstraints.xyw(9, 2, 5));
 
     // show main frame
     mainFrame.add(builder.getPanel());
-    mainFrame.add(builder);
+    //mainFrame.add(builder);
     mainFrame.setVisible(true);
   }
 
@@ -224,7 +222,7 @@ public class FormTest {
     resumeResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     resumeResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
 
-    builder.add(resumeResourceCycleButton, cellConstraints.xy(2, 6));
+    builder.add(resumeResourceCycleButton, cellConstraints.xy(9, 4));
   }
 
   private void createNextButton() {
@@ -243,7 +241,7 @@ public class FormTest {
       }
     });
 
-    builder.add(nextResourceButton, cellConstraints.xy(4, 6));
+    builder.add(nextResourceButton, cellConstraints.xy(11, 4));
   }
 
   private void createDeleteAllResourcesButton() {
@@ -258,7 +256,7 @@ public class FormTest {
       }
     });
 
-    builder.add(deleteAllResourcesButton, cellConstraints.xy(6, 6));
+    builder.add(deleteAllResourcesButton, cellConstraints.xy(13, 4));
   }
 
 }
