@@ -98,19 +98,17 @@ public class CyclerService extends Observable implements Observer {
   }
 
   public String saveCurrentImage() {
-    final String savedImageFilename = resourceCyclerRunnable
-      .saveCurrentImage(searchStringFolder);
+    final String savedImageFilename = fileUtils
+      .getResourceFilenameFromPath(resourceCyclerRunnable
+        .saveCurrentImage(searchStringFolder));
 
     // build observer message
     String successOrFailure = (savedImageFilename != null) ?
       ObserverMessageProcessor.MESSAGE_SUCCESS :
       ObserverMessageProcessor.MESSAGE_FAILURE;
-    String resourceIdentifier = (savedImageFilename != null) ?
-      savedImageFilename :
-      resourceCyclerRunnable.getCurrentFilename();
     final String observerMessage = observerMessageBuilder
       .buildObserverMessage(CycleAction.SAVE.name(),
-        successOrFailure, resourceIdentifier);
+        successOrFailure, savedImageFilename);
     notifyObserversWithMessage(observerMessage);
 
     return savedImageFilename;
