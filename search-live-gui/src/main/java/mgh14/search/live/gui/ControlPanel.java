@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-import com.jgoodies.forms.debug.FormDebugPanel;
+import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import mgh14.search.live.gui.controller.GuiController;
@@ -65,8 +65,8 @@ public class ControlPanel {
   private JButton nextResourceButton;
   private JButton deleteAllResourcesButton;
 
-  //private PanelBuilder builder;
-  private FormDebugPanel builder;
+  private PanelBuilder builder;
+  //private FormDebugPanel builder;
   private CellConstraints cellConstraints;
 
   private AtomicBoolean resourceCycleStarted;
@@ -155,10 +155,10 @@ public class ControlPanel {
     });
 
     // set up JGoodies builder and layout
-    builder = new FormDebugPanel();
+    //builder = new FormDebugPanel();
     final FormLayout layout = new FormLayout(COL_LAYOUT, ROW_LAYOUT);
-    //builder = new PanelBuilder(layout);
-    builder.setLayout(layout);
+    builder = new PanelBuilder(layout);
+    //builder.setLayout(layout);
     layout.setColumnGroups(new int[][]{{2, 4, 6, 9, 11, 13}, {3, 5, 10, 12}});
 
     // build query text label
@@ -175,8 +175,8 @@ public class ControlPanel {
     builder.add(statusText, cellConstraints.xyw(9, 2, 5));
 
     // show main frame
-    //mainFrame.add(builder.getPanel());
-    mainFrame.add(builder);
+    mainFrame.add(builder.getPanel());
+    //mainFrame.add(builder);
     mainFrame.setVisible(true);
   }
 
