@@ -1,6 +1,7 @@
 package mgh14.search.live.gui;
 
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -19,6 +20,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
@@ -44,6 +46,7 @@ public class ControlPanel {
     "center:pref, 7px, 3px, center:pref, 10px, center:pref, 10px, center:pref, 5px";
   private static final String ROW_LAYOUT = "5px, center:pref, 7px, center:pref, 5px";
   private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(60, 35);
+  private static final int BUTTON_MARGIN = 5;
   private static final int CLICK_PROCESS_BUTTON_DISABLE_DURATION = 500;  // milliseconds
 
   @Autowired
@@ -64,6 +67,7 @@ public class ControlPanel {
   private JButton resumeResourceCycleButton;
   private JButton nextResourceButton;
   private JButton deleteAllResourcesButton;
+  private UIDefaults def;
 
   private PanelBuilder builder;
   //private FormDebugPanel builder;
@@ -81,13 +85,17 @@ public class ControlPanel {
 
     prepareGui();
 
+    def = new UIDefaults();
+    def.put("Button.contentMargins", new Insets(BUTTON_MARGIN,
+      BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_MARGIN));
+
     createButtons();
     mainFrame.revalidate();
   }
 
   @PostConstruct
   public void setIcons() {
-    //startResourceCycleButton.setIcon(getIcon("test-icon.png"));
+    startResourceCycleButton.setIcon(getIcon("test-icon-small.png"));
     /*saveCurrentResourceButton.setIcon(getIcon(""));
     pauseResourceCycleButton.setIcon(getIcon(""));
     resumeResourceCycleButton.setIcon(getIcon(""));
@@ -218,6 +226,7 @@ public class ControlPanel {
     startResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     startResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
     startResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
+    startResourceCycleButton.putClientProperty("Nimbus.Overrides", def);
 
     // TODO: Handle case where cycle is stopped (e.g. for errors)
     startResourceCycleButton.addActionListener(new ActionListener() {
@@ -248,6 +257,7 @@ public class ControlPanel {
     saveCurrentResourceButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
     saveCurrentResourceButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     saveCurrentResourceButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
+    saveCurrentResourceButton.putClientProperty("Nimbus.Overrides", def);
 
     saveCurrentResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -265,6 +275,7 @@ public class ControlPanel {
     pauseResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
     pauseResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     pauseResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
+    pauseResourceCycleButton.putClientProperty("Nimbus.Overrides", def);
 
     pauseResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -289,6 +300,7 @@ public class ControlPanel {
     resumeResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
     resumeResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     resumeResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
+    resumeResourceCycleButton.putClientProperty("Nimbus.Overrides", def);
 
     resumeResourceCycleButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -315,6 +327,7 @@ public class ControlPanel {
     nextResourceButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
     nextResourceButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     nextResourceButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
+    nextResourceButton.putClientProperty("Nimbus.Overrides", def);
 
     nextResourceButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -338,6 +351,7 @@ public class ControlPanel {
     deleteAllResourcesButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
     deleteAllResourcesButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     deleteAllResourcesButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
+    deleteAllResourcesButton.putClientProperty("Nimbus.Overrides", def);
 
     deleteAllResourcesButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
