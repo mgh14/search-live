@@ -87,7 +87,8 @@ public class BingHtmlResourceUrlGetter implements ResourceUrlGetter {
     // fetch the resource URI's
     final List<URI> pageResources = docParser.getResourceUrisFromSource(
       URI.create(HOST + resourceType + SEARCH_PATH +
-        searchString.replaceAll(" ", "+")), numResultsToGet.get());
+        searchString.replaceAll(" ", "+") + "&adlt=Strict"),
+      numResultsToGet.get());
     allResourceUris.addAll(pageResources);
     Log.info("Retrieved {} URI's from document with search string \"{}\"",
       pageResources.size(), searchString);
