@@ -61,6 +61,11 @@ public class CommandLineUtils {
   static Options getHtmlResourceOptions() {
     Options options = new Options();
 
+    OptionBuilder.isRequired();
+    OptionBuilder.hasArg();
+    OptionBuilder.withDescription("Temporary param for installation dir");
+    options.addOption(OptionBuilder.create("installDir"));
+
     OptionBuilder.hasArg();
     OptionBuilder.withDescription("Spring profiles to activate");
     options.addOption(OptionBuilder.create("springProfiles"));

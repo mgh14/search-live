@@ -70,6 +70,8 @@ public class HtmlApplication {
   @Autowired
   private FileUtils fileUtils;
 
+  private CommandLine line;
+
   /**
    * arg -query: the search query
    * arg -numResults: the number of results to return for each page
@@ -95,15 +97,20 @@ public class HtmlApplication {
     final AnnotationConfigApplicationContext context =
       setUpApplicationContext(springProfiles);
     final HtmlApplication application = context.getBean(HtmlApplication.class);
+    application.setCommandLine(line);
     if (application.springProfileIsEnabled(context, DEFAULT_PROFILE)) {
       application.setProperty("append-file-protocol", "true");
     }
 
-    application.setUpInternals(line, context);
+    application.setUpInternals(context);
 
     // begin executor commands
     final CommandExecutor commandExecutor = context.getBean(CommandExecutor.class);
     commandExecutor.run();
+  }
+
+  void setCommandLine(CommandLine line) {
+    this.line = line;
   }
 
   void setProperty(String propName, String propValue) {
@@ -147,10 +154,10 @@ public class HtmlApplication {
       WinReg.HKEY_LOCAL_MACHINE, fileUtils.constructFilepathWithSeparator(
         "SOFTWARE", "Microsoft", "Windows", "Uninstall", "SearchLive"));*/
 
-    return "C:\\Users\\mgh14\\search-live\\";
+    return line.getOptionValue("installDir");
   }
 
-  private int getNumResults(CommandLine line) {
+  private int getNumResults() {
     final int numResults = (line.hasOption("numResults")) ?
       Integer.parseInt(line.getOptionValue("numResults")) :
       Integer.parseInt((String) applicationProperties
@@ -163,7 +170,7 @@ public class HtmlApplication {
     return numResults;
   }
 
-  private void setSecondsToSleep(CommandLine line, ApplicationContext context) {
+  private void setSecondsToSleep(ApplicationContext context) {
     final int secondsToSleep = (line.hasOption("sleepTime")) ?
       Integer.parseInt(line.getOptionValue("sleepTime")) :
       Integer.parseInt((String) applicationProperties
@@ -204,15 +211,15 @@ public class HtmlApplication {
     }
   }
 
-  private void setUpInternals(CommandLine line, ApplicationContext context) {
+  private void setUpInternals(ApplicationContext context) {
     applicationProperties.setConfigProperty("installation-dir",
       getInstallationLocation());
 
     // validate numResults
-    final int numResults = getNumResults(line);
+    final int numResults = getNumResults();
 
     // validate secondsToSleep
-    setSecondsToSleep(line, context);
+    setSecondsToSleep(context);
 
     // set production properties (if production profile is enabled)
     if (springProfileIsEnabled(context,
