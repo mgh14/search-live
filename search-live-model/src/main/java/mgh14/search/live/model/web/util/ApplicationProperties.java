@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationProperties {
 
-  public static final String APP_HOME_PARAM = "SEARCH_LIVE_HOME";
-
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   private Properties configProperties;
@@ -30,8 +28,6 @@ public class ApplicationProperties {
 
   @PostConstruct
   public void loadConfig() {
-    checkIfAppHomeVariableIsSet();
-
     try {
       loadPropertyValues("config" + File.separator +
         "config.properties", configProperties);
@@ -48,14 +44,6 @@ public class ApplicationProperties {
 
   public void setConfigProperty(String propertyName, String value) {
     configProperties.put(propertyName, value);
-  }
-
-  private void checkIfAppHomeVariableIsSet() {
-    final String appHome = System.getenv().get(APP_HOME_PARAM);
-    if (appHome == null || appHome.isEmpty()) {
-      Log.warn("Error: System application home variable" +
-        APP_HOME_PARAM + "is not set; cannot locate prefs.");
-    }
   }
 
   private void loadPropertyValues(String filename,
