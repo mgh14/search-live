@@ -1,15 +1,15 @@
 package mgh14.search.live.model.web.util;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,30 +22,23 @@ public class ApplicationProperties {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
-  @Autowired
-  private FileUtils fileUtils;
-
-  private String configDir;
   private Properties configProperties;
 
   public ApplicationProperties() {
-    configDir = null;
     configProperties = new Properties();
   }
 
   @PostConstruct
   public void loadConfig() {
     checkIfAppHomeVariableIsSet();
-    configDir = fileUtils.constructFilepathWithSeparator(
-      "search-live-model", "src", "main", "resources",
-      "config");
 
     try {
-      loadPropertyValues(configDir, "config.properties", configProperties);
+      loadPropertyValues("config" + File.separator +
+        "config.properties", configProperties);
     }
     catch (IOException e) {
-      Log.warn("Warning: Couldn\'t load properties file " +
-        "in dir [{}]. Continuing...", configDir);
+      Log.warn("Warning: Couldn't load properties file. " +
+        "Couldn't find config in classpath. Continuing...");
     }
   }
 
@@ -65,11 +58,17 @@ public class ApplicationProperties {
     }
   }
 
-  private void loadPropertyValues(String dirLocation, String filename,
+  private void loadPropertyValues(String filename,
       Properties properties) throws IOException {
 
-    final String fullFilepath = dirLocation + filename;
-    final InputStream inputStream = new FileInputStream(new File(fullFilepath));
+    final ClassLoader classLoader = getClass().getClassLoader();
+    final URL fullFilepath = classLoader.getResource(filename);
+    if (fullFilepath == null) {
+      Log.error("File not found: {}", filename);
+      throw new FileNotFoundException("File not found: " + filename);
+    }
+
+    final InputStream inputStream = fullFilepath.openStream();
     properties.load(inputStream);
 
     inputStream.close();
