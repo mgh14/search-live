@@ -7,13 +7,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -42,13 +38,15 @@ public class ControlPanel {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final int SECONDS_BEFORE_LABEL_CLEAR = 15;
-  private static final String COL_LAYOUT = "5px, center:pref, 10px, center:pref, 10px, " +
-    "center:pref, 7px, 3px, center:pref, 10px, center:pref, 10px, center:pref, 5px";
+  private static final String COL_LAYOUT = "5px, center:pref, 10px, center:pref, " +
+    "10px, center:pref, 7px, 3px, center:pref, 10px, center:pref, 10px, " +
+    "center:pref, 5px";
   private static final String ROW_LAYOUT = "5px, center:pref, 7px, center:pref, 5px";
   private static final String ICONS_LOCATION = "icons" + File.separator;
   private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(60, 35);
   private static final int BUTTON_MARGIN = 5;
-  private static final int CLICK_PROCESS_BUTTON_DISABLE_DURATION = 500;  // milliseconds
+  // in milliseconds
+  private static final int CLICK_PROCESS_BUTTON_DISABLE_DURATION = 500;
 
   @Autowired
   private GuiController controller;
@@ -123,7 +121,8 @@ public class ControlPanel {
   }
 
   public String setResourceSaveDirectory() {
-    final JFileChooser fileChooser = new JFileChooser(fileUtils.getResourceDir());
+    final JFileChooser fileChooser = new JFileChooser(
+      fileUtils.getResourceDir());
     fileChooser.setDialogTitle("Choose the directory for saved images");
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
@@ -179,7 +178,8 @@ public class ControlPanel {
     final FormLayout layout = new FormLayout(COL_LAYOUT, ROW_LAYOUT);
     builder = new PanelBuilder(layout);
     //builder.setLayout(layout);
-    layout.setColumnGroups(new int[][]{{2, 4, 6, 9, 11, 13}, {3, 5, 10, 12}});
+    layout.setColumnGroups(new int[][]{{2, 4, 6, 9, 11, 13},
+      {3, 5, 10, 12}});
 
     // build query text label
     final JLabel queryLabel = new JLabel("<html>" +
@@ -217,20 +217,6 @@ public class ControlPanel {
     createNextButton();
     createDeleteAllResourcesButton();
     refreshButtonsEnabled();
-  }
-
-  private Icon getIcon(String iconFilename) {
-    final String iconsLocation = fileUtils.constructFilepathWithSeparator("C:",
-      "Users", "mgh14", "search-live", "search-live-gui", "src", "main",
-      "resources", "icons");
-    try {
-      return new ImageIcon(ImageIO.read(
-        new FileInputStream(iconsLocation + iconFilename)));
-    } catch (IOException e) {
-      Log.error("Error fetching icon {}:", iconFilename, e);
-    }
-
-    return null;
   }
 
   private void createStartButton() {
