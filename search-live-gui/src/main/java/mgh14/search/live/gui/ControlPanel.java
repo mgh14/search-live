@@ -45,6 +45,7 @@ public class ControlPanel {
   private static final String COL_LAYOUT = "5px, center:pref, 10px, center:pref, 10px, " +
     "center:pref, 7px, 3px, center:pref, 10px, center:pref, 10px, center:pref, 5px";
   private static final String ROW_LAYOUT = "5px, center:pref, 7px, center:pref, 5px";
+  private static final String ICONS_LOCATION = "icons" + File.separator;
   private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(60, 35);
   private static final int BUTTON_MARGIN = 5;
   private static final int CLICK_PROCESS_BUTTON_DISABLE_DURATION = 500;  // milliseconds
@@ -95,12 +96,23 @@ public class ControlPanel {
 
   @PostConstruct
   public void setIcons() {
-    startResourceCycleButton.setIcon(getIcon("test-icon-small.png"));
-    /*saveCurrentResourceButton.setIcon(getIcon(""));
-    pauseResourceCycleButton.setIcon(getIcon(""));
-    resumeResourceCycleButton.setIcon(getIcon(""));
-    nextResourceButton.setIcon(getIcon(""));
-    deleteAllResourcesButton.setIcon(getIcon(""));*/
+    final ClassLoader classLoader = getClass().getClassLoader();
+    final ImageIcon img = new ImageIcon(
+      classLoader.getResource(ICONS_LOCATION + "logo.png"));
+    mainFrame.setIconImage(img.getImage());
+
+    startResourceCycleButton.setIcon(new ImageIcon(
+      classLoader.getResource(ICONS_LOCATION + "start.png")));
+    saveCurrentResourceButton.setIcon(new ImageIcon(
+      classLoader.getResource(ICONS_LOCATION + "save.png")));
+    pauseResourceCycleButton.setIcon(new ImageIcon(
+      classLoader.getResource(ICONS_LOCATION + "pause.png")));
+    resumeResourceCycleButton.setIcon(new ImageIcon(
+      classLoader.getResource(ICONS_LOCATION + "resume.png")));
+    nextResourceButton.setIcon(new ImageIcon(
+      classLoader.getResource(ICONS_LOCATION + "next.png")));
+    deleteAllResourcesButton.setIcon(new ImageIcon(
+      classLoader.getResource(ICONS_LOCATION + "delete.png")));
   }
 
   public void setQueryText(String searchString) {
@@ -222,7 +234,7 @@ public class ControlPanel {
   }
 
   private void createStartButton() {
-    startResourceCycleButton = new JButton("St");
+    startResourceCycleButton = new JButton();
     startResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     startResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
     startResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
@@ -253,7 +265,7 @@ public class ControlPanel {
   }
 
   private void createSaveButton(){
-    saveCurrentResourceButton = new JButton("Sv");
+    saveCurrentResourceButton = new JButton();
     saveCurrentResourceButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
     saveCurrentResourceButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     saveCurrentResourceButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
@@ -271,7 +283,7 @@ public class ControlPanel {
   }
 
   private void createPauseButton() {
-    pauseResourceCycleButton = new JButton("Pa");
+    pauseResourceCycleButton = new JButton();
     pauseResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
     pauseResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     pauseResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
@@ -296,7 +308,7 @@ public class ControlPanel {
   }
 
   private void createResumeButton() {
-    resumeResourceCycleButton = new JButton("Re");
+    resumeResourceCycleButton = new JButton();
     resumeResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
     resumeResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     resumeResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
@@ -323,7 +335,7 @@ public class ControlPanel {
   }
 
   private void createNextButton() {
-    nextResourceButton = new JButton("Nx");
+    nextResourceButton = new JButton();
     nextResourceButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
     nextResourceButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     nextResourceButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
@@ -347,7 +359,7 @@ public class ControlPanel {
   }
 
   private void createDeleteAllResourcesButton() {
-    deleteAllResourcesButton = new JButton("Dl");
+    deleteAllResourcesButton = new JButton();
     deleteAllResourcesButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
     deleteAllResourcesButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
     deleteAllResourcesButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
