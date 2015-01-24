@@ -142,21 +142,6 @@ public class HtmlApplication {
     return context;
   }
 
-  private String getInstallationLocation() {
-    // TODO: Eventually we'll dynamically set the install location,
-    // but since we aren't messing with installations yet we will
-    // just return a hard-coded string for now
-    //
-    // NOTE: the dependency in the model on the JNA libraries should
-    // be moved to the application module if the commented-out method
-    // below is ever used.
-    /*return Advapi32Util.registryGetStringValue(
-      WinReg.HKEY_LOCAL_MACHINE, fileUtils.constructFilepathWithSeparator(
-        "SOFTWARE", "Microsoft", "Windows", "Uninstall", "SearchLive"));*/
-
-    return line.getOptionValue("installDir");
-  }
-
   private int getNumResults() {
     final int numResults = (line.hasOption("numResults")) ?
       Integer.parseInt(line.getOptionValue("numResults")) :
@@ -212,14 +197,6 @@ public class HtmlApplication {
   }
 
   private void setUpInternals(ApplicationContext context) {
-    String installationDir = getInstallationLocation();
-    if (!installationDir.substring(installationDir.length() - 1)
-      .equals(File.separator)) {
-      installationDir += File.separator;
-    }
-    applicationProperties.setConfigProperty("installation-dir",
-      installationDir);
-
     // validate numResults
     final int numResults = getNumResults();
 
