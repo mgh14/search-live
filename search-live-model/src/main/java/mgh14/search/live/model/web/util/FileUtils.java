@@ -66,6 +66,10 @@ public class FileUtils extends Observable {
   }
 
   public String getResourceFilenameFromPath(String path) {
+    if (path == null || path.isEmpty() || !path.contains(File.separator)) {
+      return null;
+    }
+
     return path.substring(path.lastIndexOf(File.separator) + 1);
   }
 
