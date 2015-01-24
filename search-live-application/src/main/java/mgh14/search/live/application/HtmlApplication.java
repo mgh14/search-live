@@ -212,8 +212,13 @@ public class HtmlApplication {
   }
 
   private void setUpInternals(ApplicationContext context) {
+    String installationDir = getInstallationLocation();
+    if (!installationDir.substring(installationDir.length() - 1)
+      .equals(File.separator)) {
+      installationDir += File.separator;
+    }
     applicationProperties.setConfigProperty("installation-dir",
-      getInstallationLocation());
+      installationDir);
 
     // validate numResults
     final int numResults = getNumResults();
