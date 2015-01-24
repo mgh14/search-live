@@ -28,6 +28,7 @@ public class WindowsWallpaperSetter {
       return;
     }
 
+    Log.info("Setting desktop background: [{}]", path);
     try {
       Runtime.getRuntime().exec(
         applicationProperties.getConfigProperty("installation-dir") +
