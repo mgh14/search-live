@@ -29,6 +29,8 @@ public class ImageUtils {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
+  private static final String BITMAP_EXTENSION = "bmp";
+
   @Autowired
   private Preferences preferences;
   @Autowired
@@ -63,6 +65,49 @@ public class ImageUtils {
       ParamNames.RESOURCE_SAVE_DIR, "") + searchStringFolder
       + filename);
     return absoluteCurrentFilename;
+  }
+
+  public boolean isBitmap(String absoluteFilepathToImage) {
+    final String extension = fileUtils.getFileExtension(absoluteFilepathToImage);
+
+    return !extension.isEmpty() &&
+      extension.toLowerCase().equals(BITMAP_EXTENSION);
+  }
+
+  public String convertImageToBitmap(String absoluteFilepathToImage) {
+    if (!canOpenImage(absoluteFilepathToImage)) {
+      return null;
+    }
+    if (isBitmap(absoluteFilepathToImage)) {
+      return absoluteFilepathToImage;
+    }
+
+    //Create file for the source
+    final File inputImage = new File(absoluteFilepathToImage);
+
+    //Read the file to a BufferedImage
+    BufferedImage image = null;
+    try {
+      image = ImageIO.read(inputImage);
+    }
+    catch (IOException e) {
+      Log.error("Error reading in {} file:", absoluteFilepathToImage, e);
+    }
+
+    //Create a file for the output
+    final File output = new File(absoluteFilepathToImage
+      .substring(0, absoluteFilepathToImage.lastIndexOf("."))
+      + "." + BITMAP_EXTENSION);
+
+    //Write the image to the destination as a BMP
+    try {
+      ImageIO.write(image, BITMAP_EXTENSION, output);
+    }
+    catch (IOException e) {
+      Log.error("Error writing bitmap to file: ", e);
+    }
+
+    return output.getAbsolutePath();
   }
 
   public boolean canOpenImage(String absoluteFilepath) {

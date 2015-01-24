@@ -73,6 +73,14 @@ public class FileUtils extends Observable {
     return path.substring(path.lastIndexOf(File.separator) + 1);
   }
 
+  public String getFileExtension(String filepath) {
+    if (filepath == null || filepath.isEmpty() || !filepath.contains(".")) {
+      return null;
+    }
+
+    return filepath.substring(filepath.lastIndexOf(".") + 1);
+  }
+
   @SuppressWarnings("ResultOfMethodCallIgnored")
   public void makeFileReadableAndWriteable(String filename) {
     final File file = new File(filename);
