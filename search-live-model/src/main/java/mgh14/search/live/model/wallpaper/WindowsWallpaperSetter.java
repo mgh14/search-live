@@ -31,9 +31,9 @@ public class WindowsWallpaperSetter {
     Log.info("Setting desktop background: [{}]", path);
     try {
       Runtime.getRuntime().exec(
-        applicationProperties.getConfigProperty("installation-dir") +
-        "bin" + File.separator + "wallpaper-changer.exe "
-        + path + " 0");
+        "\"" + applicationProperties.getConfigProperty("installation-dir") +
+        "bin" + File.separator + "wallpaper-changer.exe\" "
+        + "\"" + path + "\"" + " 0");
     }
     catch (IOException e) {
       Log.error("Error executing wallpaper changer command: ", e);
