@@ -48,7 +48,10 @@ public class ResourceHtmlDocumentParser {
           break;
         }
 
-        pageResources.add(parseResourceFromLink(link.attr("abs:m")));
+        final URI resourceUri = parseResourceFromLink(link.attr("abs:m"));
+        if (resourceUri != null) {
+          pageResources.add(resourceUri);
+        }
       }
 
       nextSearchQuery = parseNextSearchQuery();
@@ -96,6 +99,14 @@ public class ResourceHtmlDocumentParser {
       IMG_RESOURCE_ATTRIBUTE_NAME.length();
     String url = resourceAttr.substring(imgUrlStart,
       resourceAttr.indexOf(",", imgUrlStart)).replace("\"", "");
-    return URI.create(url);
+
+    URI resourceUri = null;
+    try {
+      resourceUri = URI.create(url);
+    } catch (IllegalArgumentException e) {
+      Log.error("Error creating [{}] as URI: ", url, e);
+    }
+
+    return resourceUri;
   }
 }
