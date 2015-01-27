@@ -1,4 +1,4 @@
-package mgh14.search.live.gui;
+package mgh14.search.live.gui.menu;
 
 import javax.annotation.PostConstruct;
 import javax.swing.BorderFactory;
@@ -10,6 +10,9 @@ import javax.swing.border.Border;
 
 import com.jgoodies.looks.HeaderStyle;
 import com.jgoodies.looks.Options;
+import mgh14.search.live.gui.GuiUtils;
+import mgh14.search.live.gui.menu.actions.AboutAction;
+import mgh14.search.live.gui.menu.actions.ChooseSaveDirAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +48,9 @@ public class MenuBarManager {
   @PostConstruct
   private void createFileMenuItems() {
     JMenuItem menuItem = new JMenuItem(
-      getMenuItemFormattedText("About"),
-      guiUtils.getImageIcon("save-small.png"));
+      new ChooseSaveDirAction(
+        getMenuItemFormattedText("About"),
+        guiUtils.getImageIcon("save-small.png")));
 
     menuItem.setBorder(MENU_ITEM_BORDER);
     fileMenu.add(menuItem);
@@ -57,8 +61,9 @@ public class MenuBarManager {
   @PostConstruct
   private void createSettingsMenuItems() {
     JMenuItem menuItem = new JMenuItem(
-      getMenuItemFormattedText("Set save directory"),
-      guiUtils.getImageIcon("save-small.png"));
+      new AboutAction(
+        getMenuItemFormattedText("Set save directory"),
+        guiUtils.getImageIcon("save-small.png")));
 
     menuItem.setBorder(MENU_ITEM_BORDER);
     //menuItem.setMnemonic(KeyEvent.VK_A);
