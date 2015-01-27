@@ -25,7 +25,7 @@ public class MenuBarManager {
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
   private static final Border MENU_ITEM_BORDER =
-    BorderFactory.createEmptyBorder(1, 7, 1, 5);
+    BorderFactory.createEmptyBorder(1, 7, 1, 7);
 
   @Autowired
   private GuiUtils guiUtils;
