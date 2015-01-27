@@ -27,28 +27,35 @@ public class MenuBarManager {
 
   private JMenuBar menuBar;
   private JMenu fileMenu;
+  private JMenu settingsMenu;
 
   public MenuBarManager() {
     menuBar = new JMenuBar();
     fileMenu = new JMenu("File");
+    settingsMenu = new JMenu("Settings");
 
     setupMenuBar();
   }
 
   @PostConstruct
   private void createFileMenuItems() {
-    JMenuItem menuItem = new JMenuItem("Set resource save " +
-      "location", guiUtils.getImageIcon("save.png"));
-    //menuItem.setMnemonic(KeyEvent.VK_A);
-    menuItem.getAccessibleContext().setAccessibleDescription(
-      "This doesn't really do anything");
-    fileMenu.add(menuItem);
-
-    menuItem = new JMenuItem("About",
+    JMenuItem menuItem = new JMenuItem("About",
       guiUtils.getImageIcon("save.png"));
     fileMenu.add(menuItem);
 
     fileMenu.setVisible(true);
+  }
+
+  @PostConstruct
+  private void createSettingsMenuItems() {
+    JMenuItem menuItem = new JMenuItem("Set save directory",
+      guiUtils.getImageIcon("save.png"));
+    //menuItem.setMnemonic(KeyEvent.VK_A);
+    menuItem.getAccessibleContext().setAccessibleDescription(
+      "This doesn't really do anything");
+    settingsMenu.add(menuItem);
+
+    settingsMenu.setVisible(true);
   }
 
   public void addMenuBarToFrame(JFrame frame) {
@@ -61,6 +68,7 @@ public class MenuBarManager {
     menuBar.putClientProperty(Options.HEADER_STYLE_KEY,
       HeaderStyle.SINGLE);
     menuBar.add(fileMenu);
+    menuBar.add(settingsMenu);
   }
 
 }
