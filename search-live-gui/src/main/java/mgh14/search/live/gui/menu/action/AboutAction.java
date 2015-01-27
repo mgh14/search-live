@@ -1,4 +1,4 @@
-package mgh14.search.live.gui.menu.actions;
+package mgh14.search.live.gui.menu.action;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
