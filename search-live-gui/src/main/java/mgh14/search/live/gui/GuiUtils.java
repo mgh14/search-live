@@ -36,7 +36,7 @@ public class GuiUtils {
   }
 
   public ImageIcon getImageIcon(String iconFilename) {
-    Log.debug("Locating icon [{}]...", iconFilename);
+    Log.debug("Loading icon [{}]...", iconFilename);
     final URL iconUrl = classLoader.getResource(
       ICONS_LOCATION + iconFilename);
     return (iconUrl == null) ? null : new ImageIcon(
@@ -51,8 +51,13 @@ public class GuiUtils {
 
     int returnValue = fileChooser.showOpenDialog(mainFrame);
     if (returnValue == JFileChooser.APPROVE_OPTION) {
-      return fileChooser.getSelectedFile().getAbsolutePath() +
-        File.separator;
+      final String chosenDir = fileChooser.getSelectedFile()
+        .getAbsolutePath() + File.separator;
+      Log.debug("File location chosen: [{}]", chosenDir);
+      return chosenDir;
+    }
+    else {
+      Log.debug("Return value of file chooser: [{}]", returnValue);
     }
 
     return null;
