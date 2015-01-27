@@ -54,6 +54,8 @@ public class ControlPanel {
   private ExecutorService executorService;
   @Autowired
   private FileUtils fileUtils;
+  @Autowired
+  private MenuBarManager menuBarManager;
 
   private JFrame mainFrame;
   private JLabel statusText;
@@ -90,6 +92,11 @@ public class ControlPanel {
 
     createButtons();
     mainFrame.revalidate();
+  }
+
+  @PostConstruct
+  public void addMenuBar() {
+    menuBarManager.addMenuBarToFrame(mainFrame);
   }
 
   @PostConstruct
@@ -162,7 +169,7 @@ public class ControlPanel {
 
     // set up main frame
     mainFrame = new JFrame("SearchLive Control Panel");
-    final Dimension mainFrameDimension = new Dimension(430, 115);
+    final Dimension mainFrameDimension = new Dimension(430, 135);
     mainFrame.setMinimumSize(mainFrameDimension);
     mainFrame.setMaximumSize(mainFrameDimension);
     mainFrame.setResizable(false);
