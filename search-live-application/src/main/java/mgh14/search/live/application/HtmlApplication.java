@@ -184,7 +184,7 @@ public class HtmlApplication {
     Log.debug("Pref resource save dir: [{}]", resourceSaveDirPref);
     if (resourceSaveDirPref == null || resourceSaveDirPref.isEmpty()) {
       final String resourceSaveDir = context.getBean(ControlPanel.class)
-        .setResourceSaveDirectory();
+        .getResourceSaveDirectory();
       if (resourceSaveDir != null) {
         preferences.put(ParamNames.RESOURCE_SAVE_DIR,
           resourceSaveDir);

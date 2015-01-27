@@ -6,13 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.PostConstruct;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -42,7 +39,6 @@ public class ControlPanel {
     "10px, center:pref, 7px, 3px, center:pref, 10px, center:pref, 10px, " +
     "center:pref, 5px";
   private static final String ROW_LAYOUT = "5px, center:pref, 7px, center:pref, 5px";
-  private static final String ICONS_LOCATION = "icons" + File.separator;
   private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(60, 35);
   private static final int BUTTON_MARGIN = 5;
   // in milliseconds
@@ -56,6 +52,8 @@ public class ControlPanel {
   private FileUtils fileUtils;
   @Autowired
   private MenuBarManager menuBarManager;
+  @Autowired
+  private GuiUtils guiUtils;
 
   private JFrame mainFrame;
   private JLabel statusText;
@@ -101,23 +99,21 @@ public class ControlPanel {
 
   @PostConstruct
   public void setIcons() {
-    final ClassLoader classLoader = getClass().getClassLoader();
-    final ImageIcon img = new ImageIcon(
-      classLoader.getResource(ICONS_LOCATION + "logo.png"));
-    mainFrame.setIconImage(img.getImage());
+    mainFrame.setIconImage(guiUtils.getImageIcon("logo.png")
+      .getImage());
 
-    startResourceCycleButton.setIcon(new ImageIcon(
-      classLoader.getResource(ICONS_LOCATION + "start.png")));
-    saveCurrentResourceButton.setIcon(new ImageIcon(
-      classLoader.getResource(ICONS_LOCATION + "save.png")));
-    pauseResourceCycleButton.setIcon(new ImageIcon(
-      classLoader.getResource(ICONS_LOCATION + "pause.png")));
-    resumeResourceCycleButton.setIcon(new ImageIcon(
-      classLoader.getResource(ICONS_LOCATION + "resume.png")));
-    nextResourceButton.setIcon(new ImageIcon(
-      classLoader.getResource(ICONS_LOCATION + "next.png")));
-    deleteAllResourcesButton.setIcon(new ImageIcon(
-      classLoader.getResource(ICONS_LOCATION + "delete.png")));
+    startResourceCycleButton.setIcon(
+      guiUtils.getImageIcon("start.png"));
+    saveCurrentResourceButton.setIcon(
+      guiUtils.getImageIcon("save.png"));
+    pauseResourceCycleButton.setIcon(
+      guiUtils.getImageIcon("pause.png"));
+    resumeResourceCycleButton.setIcon(
+      guiUtils.getImageIcon("resume.png"));
+    nextResourceButton.setIcon(
+      guiUtils.getImageIcon("next.png"));
+    deleteAllResourcesButton.setIcon(
+      guiUtils.getImageIcon("delete.png"));
   }
 
   public void setQueryText(String searchString) {
@@ -127,19 +123,8 @@ public class ControlPanel {
     queryText.setText(searchString);
   }
 
-  public String setResourceSaveDirectory() {
-    final JFileChooser fileChooser = new JFileChooser(
-      fileUtils.getResourceDir());
-    fileChooser.setDialogTitle("Choose the directory for saved images");
-    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-    int returnValue = fileChooser.showOpenDialog(mainFrame);
-    if (returnValue == JFileChooser.APPROVE_OPTION) {
-      return fileChooser.getSelectedFile().getAbsolutePath() +
-        File.separator;
-    }
-
-    return null;
+  public String getResourceSaveDirectory() {
+    return guiUtils.chooseFileLocation(mainFrame);
   }
 
   public void setStatusText(String newStatusText) {
