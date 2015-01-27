@@ -82,7 +82,7 @@ public class MenuBarManager {
   }
 
   private String getMenuItemFormattedText(String text) {
-    return "<html><p style=\"margin:0px; margin-left:10px;\">" +
+    return "<html><p style=\"margin:0px; margin-left:5px;\">" +
       text + "</p></html>";
   }
 }
