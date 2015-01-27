@@ -1,10 +1,12 @@
 package mgh14.search.live.gui;
 
 import javax.annotation.PostConstruct;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.border.Border;
 
 import com.jgoodies.looks.HeaderStyle;
 import com.jgoodies.looks.Options;
@@ -21,6 +23,9 @@ import org.springframework.stereotype.Component;
 public class MenuBarManager {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
+
+  private static final Border MENU_ITEM_BORDER =
+    BorderFactory.createEmptyBorder(1, 7, 1, 5);
 
   @Autowired
   private GuiUtils guiUtils;
@@ -39,8 +44,11 @@ public class MenuBarManager {
 
   @PostConstruct
   private void createFileMenuItems() {
-    JMenuItem menuItem = new JMenuItem("About",
-      guiUtils.getImageIcon("save.png"));
+    JMenuItem menuItem = new JMenuItem(
+      getMenuItemFormattedText("About"),
+      guiUtils.getImageIcon("save-small.png"));
+
+    menuItem.setBorder(MENU_ITEM_BORDER);
     fileMenu.add(menuItem);
 
     fileMenu.setVisible(true);
@@ -48,11 +56,12 @@ public class MenuBarManager {
 
   @PostConstruct
   private void createSettingsMenuItems() {
-    JMenuItem menuItem = new JMenuItem("Set save directory",
-      guiUtils.getImageIcon("save.png"));
+    JMenuItem menuItem = new JMenuItem(
+      getMenuItemFormattedText("Set save directory"),
+      guiUtils.getImageIcon("save-small.png"));
+
+    menuItem.setBorder(MENU_ITEM_BORDER);
     //menuItem.setMnemonic(KeyEvent.VK_A);
-    menuItem.getAccessibleContext().setAccessibleDescription(
-      "This doesn't really do anything");
     settingsMenu.add(menuItem);
 
     settingsMenu.setVisible(true);
@@ -65,10 +74,15 @@ public class MenuBarManager {
   }
 
   private void setupMenuBar() {
+    Log.debug("Setting up the menu bar...");
     menuBar.putClientProperty(Options.HEADER_STYLE_KEY,
       HeaderStyle.SINGLE);
     menuBar.add(fileMenu);
     menuBar.add(settingsMenu);
   }
 
+  private String getMenuItemFormattedText(String text) {
+    return "<html><p style=\"margin:0px; margin-left:10px;\">" +
+      text + "</p></html>";
+  }
 }
