@@ -37,7 +37,6 @@ public class ControlPanel {
     "center:pref, 5px";
   private static final String ROW_LAYOUT = "5px, center:pref, 7px, center:pref, 5px";
   private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(60, 35);
-  private static final int BUTTON_MARGIN = 5;
   // in milliseconds
   private static final int CLICK_PROCESS_BUTTON_DISABLE_DURATION = 500;
 
