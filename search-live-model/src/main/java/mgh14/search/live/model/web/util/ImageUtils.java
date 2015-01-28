@@ -42,18 +42,26 @@ public class ImageUtils {
   public String saveImage(String searchStringFolder,
       String absoluteCurrentFilename) {
 
+    // check params and preferences
     if (absoluteCurrentFilename == null ||
       absoluteCurrentFilename.isEmpty()) {
       return null;
     }
+    final String prefResourceSaveDir = preferences.get(
+      ParamNames.RESOURCE_SAVE_DIR, "");
+    if (prefResourceSaveDir == null ||
+      prefResourceSaveDir.isEmpty()) {
+      Log.warn("No save directory set. May not be able" +
+        "to copy the image.");
+    }
 
+    // copy file
     final String filename = fileUtils.
       getResourceFilenameFromPath(absoluteCurrentFilename);
-
     try {
       FileUtils.copyFile(new File(absoluteCurrentFilename),
-        new File(preferences.get(ParamNames.RESOURCE_SAVE_DIR, "") +
-          searchStringFolder + filename));
+        new File(prefResourceSaveDir + searchStringFolder +
+          filename));
     }
     catch (IOException e) {
       Log.error("IOException copying file: {}", absoluteCurrentFilename,
