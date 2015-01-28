@@ -5,17 +5,18 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
-
+import java.util.prefs.Preferences;
 import javax.annotation.PostConstruct;
 
+import mgh14.search.live.model.ParamNames;
+import mgh14.search.live.model.observable.messaging.ObserverMessageBuilder;
+import mgh14.search.live.model.observable.messaging.ObserverMessageProcessor;
 import mgh14.search.live.model.wallpaper.QueueLoader;
 import mgh14.search.live.model.wallpaper.WindowsWallpaperSetter;
 import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.web.util.ImageUtils;
 import mgh14.search.live.service.messaging.CycleAction;
-import mgh14.search.live.model.observable.messaging.ObserverMessageBuilder;
-import mgh14.search.live.model.observable.messaging.ObserverMessageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class CyclerService extends Observable implements Observer {
 
   @Autowired
   private ApplicationContext applicationContext;
+  @Autowired
+  private Preferences preferences;
   @Autowired
   private RetryTimerRunnable retryTimerRunnable;
   @Autowired
@@ -60,6 +63,27 @@ public class CyclerService extends Observable implements Observer {
   @PostConstruct
   public void addInternalObservedObjects() {
     fileUtils.addObserver(this);
+  }
+
+  public void setResourceSaveDir(String newResourceDirFilepath) {
+    if (newResourceDirFilepath != null &&
+      !newResourceDirFilepath.isEmpty()) {
+      Log.debug("Setting preferences resource save dir: [{}]",
+        newResourceDirFilepath);
+      preferences.put(ParamNames.RESOURCE_SAVE_DIR,
+        newResourceDirFilepath);
+    }
+    else {
+      Log.warn("Null/empty directory for saving resources has " +
+        "been passed as a param. (Was it not chosen by the user?)");
+
+      final String saveDirPref = preferences.get(
+        ParamNames.RESOURCE_SAVE_DIR, "");
+      if (saveDirPref == null || saveDirPref.isEmpty()) {
+        Log.error("No save dir preference exists. " +
+          "Save function will not be available.");
+      }
+    }
   }
 
   public void setSecondsToSleep(int secondsToSleep) {
