@@ -51,7 +51,7 @@ public class ImageUtils {
       ParamNames.RESOURCE_SAVE_DIR, "");
     if (prefResourceSaveDir == null ||
       prefResourceSaveDir.isEmpty()) {
-      Log.warn("No save directory set. May not be able" +
+      Log.warn("No save directory set. May not be able " +
         "to copy the image.");
     }
 
