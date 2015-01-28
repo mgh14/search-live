@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
 
 import mgh14.search.live.gui.ControlPanel;
+import mgh14.search.live.gui.controller.GuiController;
 import mgh14.search.live.model.ParamNames;
 import mgh14.search.live.model.web.resource.getter.BingHtmlResourceUrlGetter;
 import mgh14.search.live.model.web.util.ApplicationProperties;
@@ -179,20 +180,14 @@ public class HtmlApplication {
       "cycle-resource-temp" + File.separator);
   }
 
-  private void setResourceSaveDir(ApplicationContext context) {
-    final String resourceSaveDirPref = preferences.get(ParamNames.RESOURCE_SAVE_DIR, "");
-    Log.debug("Pref resource save dir: [{}]", resourceSaveDirPref);
+  private void setInitialResourceSaveDir(ApplicationContext context) {
+    final String resourceSaveDirPref = preferences.get(
+      ParamNames.RESOURCE_SAVE_DIR, "");
+    Log.debug("Initial preferences resource save dir: [{}]",
+      resourceSaveDirPref);
     if (resourceSaveDirPref == null || resourceSaveDirPref.isEmpty()) {
-      final String resourceSaveDir = context.getBean(ControlPanel.class)
-        .getResourceSaveDirectory();
-      if (resourceSaveDir != null) {
-        preferences.put(ParamNames.RESOURCE_SAVE_DIR,
-          resourceSaveDir);
-      }
-      else {
-        Log.warn("No directory for saving resources has been chosen. " +
-          "Save function will not be available.");
-      }
+      context.getBean(GuiController.class)
+        .handleNewResourceSaveDir();
     }
   }
 
@@ -214,7 +209,7 @@ public class HtmlApplication {
     ensureAppDataDirExists();
 
     // set directory to save resources to (if it isn't already set)
-    setResourceSaveDir(context);
+    setInitialResourceSaveDir(context);
 
     // set search string in control panel (if present on command line)
     final ControlPanel controlPanel = context.getBean(ControlPanel.class);

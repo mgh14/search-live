@@ -40,6 +40,11 @@ public class GuiController implements Observer {
     cyclerService.addObserver(this);
   }
 
+  public void handleNewResourceSaveDir() {
+    cyclerService.setResourceSaveDir(controlPanel
+      .getResourceSaveDirectory());
+  }
+
   public void startResourceCycle(String query) {
     executor.addCommandToQueue(new CycleCommand(CycleAction.START_SERVICE,
       "searchString:" + query));

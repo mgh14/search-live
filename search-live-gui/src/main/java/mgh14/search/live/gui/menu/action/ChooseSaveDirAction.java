@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import mgh14.search.live.gui.controller.GuiController;
 
 /**
  * Action associated with setting the save directory in the
@@ -12,12 +12,17 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public class ChooseSaveDirAction extends AbstractAction {
 
-  public ChooseSaveDirAction(String text, Icon icon) {
+  private GuiController guiController;
+
+  public ChooseSaveDirAction(String text, Icon icon,
+      GuiController guiController) {
+
     super(text, icon);
+    this.guiController = guiController;
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    throw new NotImplementedException();
+    guiController.handleNewResourceSaveDir();
   }
 }
