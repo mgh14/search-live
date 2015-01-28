@@ -2,10 +2,12 @@ package mgh14.search.live.gui;
 
 import java.io.File;
 import java.net.URL;
+import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
+import mgh14.search.live.model.ParamNames;
 import mgh14.search.live.model.web.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,8 @@ public class GuiUtils {
 
   private static final String ICONS_LOCATION = "icons" + File.separator;
 
+  @Autowired
+  private Preferences preferences;
   @Autowired
   private FileUtils fileUtils;
 
@@ -44,8 +48,14 @@ public class GuiUtils {
   }
 
   public String chooseFileLocation(JFrame mainFrame) {
+    final String resourceSaveDirPref = preferences.get(
+      ParamNames.RESOURCE_SAVE_DIR, "");
+    final String startingDirPath = (resourceSaveDirPref != null &&
+    !resourceSaveDirPref.isEmpty()) ? resourceSaveDirPref :
+      fileUtils.getResourceDir();
+
     final JFileChooser fileChooser = new JFileChooser(
-      fileUtils.getResourceDir());
+      startingDirPath);
     fileChooser.setDialogTitle("Choose the directory for saved images");
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
