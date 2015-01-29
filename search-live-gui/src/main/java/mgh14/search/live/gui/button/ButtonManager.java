@@ -78,6 +78,57 @@ public class ButtonManager extends Observable {
     }
   }
 
+  public void refreshButtonsEnabled(boolean resourceCycleStarted,
+                                    boolean resourceCyclePaused) {
+    Log.debug("Refreshing buttons enabled...");
+    if (resourceCycleStarted && !resourceCyclePaused) {
+      getControlButton(GuiParamNames.SAVE_BUTTON)
+        .setEnabled(true);
+      getControlButton(GuiParamNames.PAUSE_BUTTON)
+        .setEnabled(true);
+      getControlButton(GuiParamNames.NEXT_BUTTON)
+        .setEnabled(true);
+
+      getControlButton(GuiParamNames.START_BUTTON)
+        .setEnabled(false);
+      getControlButton(GuiParamNames.RESUME_BUTTON)
+        .setEnabled(false);
+    }
+    else if (resourceCycleStarted && resourceCyclePaused) {
+      getControlButton(GuiParamNames.START_BUTTON)
+        .setEnabled(true);
+      getControlButton(GuiParamNames.RESUME_BUTTON)
+        .setEnabled(true);
+
+      getControlButton(GuiParamNames.SAVE_BUTTON)
+        .setEnabled(false);
+      getControlButton(GuiParamNames.PAUSE_BUTTON)
+        .setEnabled(false);
+      getControlButton(GuiParamNames.NEXT_BUTTON)
+        .setEnabled(false);
+    }
+    else if (!resourceCycleStarted && !resourceCyclePaused) {
+      getControlButton(GuiParamNames.START_BUTTON)
+        .setEnabled(true);
+
+      getControlButton(GuiParamNames.SAVE_BUTTON)
+        .setEnabled(false);
+      getControlButton(GuiParamNames.PAUSE_BUTTON)
+        .setEnabled(false);
+      getControlButton(GuiParamNames.NEXT_BUTTON)
+        .setEnabled(false);
+      getControlButton(GuiParamNames.RESUME_BUTTON)
+        .setEnabled(false);
+    }
+    else if (!resourceCycleStarted && resourceCyclePaused) {
+      // this case should never happen
+      Log.error("Invalid state reached--cycle not started and paused!");
+    }
+
+    getControlButton(GuiParamNames.DELETE_RESOURCES_BUTTON).
+      setEnabled(true);
+  }
+
   private JButton getNewControlButton() {
     final JButton jbutton = new JButton();
     jbutton.setMaximumSize(BUTTON_DIMENSION_OBJ);

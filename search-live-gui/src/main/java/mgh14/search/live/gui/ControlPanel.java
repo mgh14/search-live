@@ -200,7 +200,7 @@ public class ControlPanel {
     });
     builder.add(controlButton, cellConstraints.xy(13, 4));
 
-    refreshButtonsEnabled();
+    refreshButtons();
   }
 
 
@@ -302,7 +302,7 @@ public class ControlPanel {
           Log.info("Interrupt:", e);
         }
 
-        refreshButtonsEnabled();
+        refreshButtons();
       }
     });
   }
@@ -323,40 +323,6 @@ public class ControlPanel {
       Log.error("Invalid state reached in refreshing query field: " +
         "cycle not started and paused!");
     }
-
-    deleteAllResourcesButton.setEnabled(true);
-  }
-
-  private void refreshButtonsEnabled() {
-    Log.debug("Refreshing buttons enabled...");
-    if (resourceCycleStarted.get() && !resourceCyclePaused.get()) {
-      saveCurrentResourceButton.setEnabled(true);
-      pauseResourceCycleButton.setEnabled(true);
-      nextResourceButton.setEnabled(true);
-
-      startResourceCycleButton.setEnabled(false);
-      resumeResourceCycleButton.setEnabled(false);
-  }
-    else if (resourceCycleStarted.get() && resourceCyclePaused.get()) {
-      startResourceCycleButton.setEnabled(true);
-      resumeResourceCycleButton.setEnabled(true);
-
-      saveCurrentResourceButton.setEnabled(false);
-      pauseResourceCycleButton.setEnabled(false);
-      nextResourceButton.setEnabled(false);
-  }
-    else if (!resourceCycleStarted.get() && !resourceCyclePaused.get()) {
-      startResourceCycleButton.setEnabled(true);
-
-      saveCurrentResourceButton.setEnabled(false);
-      pauseResourceCycleButton.setEnabled(false);
-      nextResourceButton.setEnabled(false);
-      resumeResourceCycleButton.setEnabled(false);
-  }
-    else if (!resourceCycleStarted.get() && resourceCyclePaused.get()) {
-      // this case should never happen
-      Log.error("Invalid state reached--cycle not started and paused!");
-  }
 
     deleteAllResourcesButton.setEnabled(true);
   }
@@ -389,6 +355,12 @@ public class ControlPanel {
   private JButton getDeleteResourcesButton() {
     return buttonManager.getControlButton(
       GuiParamNames.DELETE_RESOURCES_BUTTON);
+  }
+
+  private void refreshButtons() {
+    buttonManager.refreshButtonsEnabled(
+      resourceCycleStarted.get(),
+      resourceCyclePaused.get());
   }
 
 }
