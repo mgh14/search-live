@@ -88,7 +88,7 @@ public class ControlPanel {
   }
 
   @PostConstruct
-  public void setIcons() {
+  public void setMainFrameIcon() {
     mainFrame.setIconImage(guiUtils.getImageIcon("logo.png")
       .getImage());
     mainFrame.revalidate();
