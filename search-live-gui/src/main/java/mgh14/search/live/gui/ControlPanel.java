@@ -91,20 +91,6 @@ public class ControlPanel {
   public void setIcons() {
     mainFrame.setIconImage(guiUtils.getImageIcon("logo.png")
       .getImage());
-
-    startResourceCycleButton.setIcon(
-      guiUtils.getImageIcon("start.png"));
-    saveCurrentResourceButton.setIcon(
-      guiUtils.getImageIcon("save.png"));
-    pauseResourceCycleButton.setIcon(
-      guiUtils.getImageIcon("pause.png"));
-    resumeResourceCycleButton.setIcon(
-      guiUtils.getImageIcon("resume.png"));
-    nextResourceButton.setIcon(
-      guiUtils.getImageIcon("next.png"));
-    deleteAllResourcesButton.setIcon(
-      guiUtils.getImageIcon("delete.png"));
-
     mainFrame.revalidate();
   }
 
@@ -140,7 +126,7 @@ public class ControlPanel {
     setStatusText("<html><font color=RED>" + newStatusText +
       "</font/></html>");
   }
-  
+
   private void prepareGui() {
     setLookFeelAndTheme();
 
@@ -387,7 +373,7 @@ public class ControlPanel {
 
       startResourceCycleButton.setEnabled(false);
       resumeResourceCycleButton.setEnabled(false);
-    }
+  }
     else if (resourceCycleStarted.get() && resourceCyclePaused.get()) {
       startResourceCycleButton.setEnabled(true);
       resumeResourceCycleButton.setEnabled(true);
@@ -395,7 +381,7 @@ public class ControlPanel {
       saveCurrentResourceButton.setEnabled(false);
       pauseResourceCycleButton.setEnabled(false);
       nextResourceButton.setEnabled(false);
-    }
+  }
     else if (!resourceCycleStarted.get() && !resourceCyclePaused.get()) {
       startResourceCycleButton.setEnabled(true);
 
@@ -403,11 +389,11 @@ public class ControlPanel {
       pauseResourceCycleButton.setEnabled(false);
       nextResourceButton.setEnabled(false);
       resumeResourceCycleButton.setEnabled(false);
-    }
+  }
     else if (!resourceCycleStarted.get() && resourceCyclePaused.get()) {
       // this case should never happen
       Log.error("Invalid state reached--cycle not started and paused!");
-    }
+  }
 
     deleteAllResourcesButton.setEnabled(true);
   }
