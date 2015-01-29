@@ -187,6 +187,7 @@ public class ControlPanel {
     builder.add(controlButton, cellConstraints.xy(13, 4));
 
     refreshButtons();
+    mainFrame.revalidate();
   }
 
 
