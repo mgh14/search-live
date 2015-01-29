@@ -248,7 +248,7 @@ public class ControlPanel {
     mainFrame.setResizable(false);
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent) {
-        setEnabledForAllButtons(false);
+        buttonManager.setEnabledForAllButtons(false);
         controller.shutdownApplication();
       }
     });
@@ -291,7 +291,7 @@ public class ControlPanel {
 
 
   private void disableButtonsDuringButtonClickProcess() {
-    setEnabledForAllButtons(false);
+    buttonManager.setEnabledForAllButtons(false);
     executorService.execute(new Runnable() {
       @Override
       public void run() {
@@ -359,15 +359,6 @@ public class ControlPanel {
   }
 
     deleteAllResourcesButton.setEnabled(true);
-  }
-
-  private void setEnabledForAllButtons(boolean enabled) {
-    startResourceCycleButton.setEnabled(enabled);
-    saveCurrentResourceButton.setEnabled(enabled);
-    pauseResourceCycleButton.setEnabled(enabled);
-    resumeResourceCycleButton.setEnabled(enabled);
-    nextResourceButton.setEnabled(enabled);
-    deleteAllResourcesButton.setEnabled(enabled);
   }
 
   private JButton getStartButton() {

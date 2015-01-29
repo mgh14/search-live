@@ -72,6 +72,12 @@ public class ButtonManager extends Observable {
       buttons.get(buttonName) : null);
   }
 
+  public void setEnabledForAllButtons(boolean enabled) {
+    for (String buttonName : buttons.keySet()) {
+      getControlButton(buttonName).setEnabled(enabled);
+    }
+  }
+
   private JButton getNewControlButton() {
     final JButton jbutton = new JButton();
     jbutton.setMaximumSize(BUTTON_DIMENSION_OBJ);
