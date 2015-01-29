@@ -291,8 +291,6 @@ public class ControlPanel {
       Log.error("Invalid state reached in refreshing query field: " +
         "cycle not started and paused!");
     }
-
-    getDeleteResourcesButton().setEnabled(true);
   }
 
   private JButton getStartButton() {
