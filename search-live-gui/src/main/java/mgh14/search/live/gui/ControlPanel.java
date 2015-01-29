@@ -18,6 +18,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import mgh14.search.live.gui.button.ButtonManager;
 import mgh14.search.live.gui.controller.GuiController;
 import mgh14.search.live.gui.menu.MenuBarManager;
 import org.slf4j.Logger;
@@ -47,6 +48,8 @@ public class ControlPanel {
   private ExecutorService executorService;
   @Autowired
   private MenuBarManager menuBarManager;
+  @Autowired
+  private ButtonManager buttonManager;
   @Autowired
   private GuiUtils guiUtils;
 
@@ -78,7 +81,6 @@ public class ControlPanel {
 
     prepareGui();
 
-    createButtons();
     mainFrame.revalidate();
   }
 
@@ -93,6 +95,114 @@ public class ControlPanel {
       .getImage());
     mainFrame.revalidate();
   }
+
+  @PostConstruct
+  public void setButtonFunctions() {
+    // start button
+    JButton controlButton = getStartButton();
+    // TODO: Handle case where cycle is stopped (e.g. for errors)
+    controlButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        final String currentQueryText = queryText.getText();
+        if (!currentSearchString.equals(currentQueryText)) {
+          currentSearchString = currentQueryText;
+          resourceCyclePaused.set(false);
+
+          resourceCycleStarted.set(true);
+          refreshQueryFieldEnabled();
+          disableButtonsDuringButtonClickProcess();
+          controller.startResourceCycle(currentQueryText);
+          setStatusText("Resource cycle started");
+        }
+        else {
+          Log.debug("Not starting due to same query entered: {} and {}",
+            currentQueryText, currentSearchString);
+        }
+      }
+    });
+    builder.add(controlButton, cellConstraints.xy(2, 4));
+
+    // save button
+    controlButton = getSaveButton();
+    controlButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        refreshQueryFieldEnabled();
+        disableButtonsDuringButtonClickProcess();
+        controller.saveCurrentImage();
+      }
+    });
+    builder.add(controlButton, cellConstraints.xy(4, 4));
+
+    // pause button
+    controlButton = getPauseButton();
+    controlButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        resourceCyclePaused.set(true);
+        refreshQueryFieldEnabled();
+        disableButtonsDuringButtonClickProcess();
+        controller.pauseResourceCycle();
+
+        // Note: this setText method is used instead of the setStatusText
+        // method because the pause text should stay in the label until
+        // cycling resumes
+        // TODO: make this work with new GUI status field updating
+        statusText.setText("Paused cycle");
+      }
+    });
+    builder.add(controlButton, cellConstraints.xy(6, 4));
+
+    // resume button
+    controlButton = getResumeButton();
+    controlButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        resourceCyclePaused.set(false);
+        refreshQueryFieldEnabled();
+        disableButtonsDuringButtonClickProcess();
+
+        // Replace query text with current search string
+        // if the query text has changed and then 'resume'
+        // is hit (instead of start)
+        if (!currentSearchString.equals(queryText.getText())) {
+          queryText.setText(currentSearchString);
+        }
+
+        controller.resumeResourceCycle();
+      }
+    });
+    builder.add(controlButton, cellConstraints.xy(9, 4));
+
+    // next button
+    controlButton = getNextButton();
+    controlButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        refreshQueryFieldEnabled();
+        disableButtonsDuringButtonClickProcess();
+        controller.cycleNextResource();
+
+        // Note: this setText method is used instead of the setStatusText
+        // method because the skipping text should stay in the label until
+        // the current resource has been skipped.
+        // TODO: make this work with new GUI status field updating
+        statusText.setText("Skipping current resource...");
+      }
+    });
+    builder.add(controlButton, cellConstraints.xy(11, 4));
+
+    // delete resources button
+    controlButton = getDeleteResourcesButton();
+    controlButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        refreshQueryFieldEnabled();
+        disableButtonsDuringButtonClickProcess();
+        controller.deleteAllResources();
+        setStatusText("Resources deleted.");
+      }
+    });
+    builder.add(controlButton, cellConstraints.xy(13, 4));
+
+    refreshButtonsEnabled();
+  }
+
 
   public void setQueryText(String searchString) {
     if (searchString == null) {
@@ -179,153 +289,6 @@ public class ControlPanel {
     }
   }
 
-  private void createButtons() {
-    createStartButton();
-    createSaveButton();
-    createPauseButton();
-    createResumeButton();
-    createNextButton();
-    createDeleteAllResourcesButton();
-    refreshButtonsEnabled();
-  }
-
-  private void createStartButton() {
-    startResourceCycleButton = new JButton();
-    startResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
-    startResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
-    startResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
-
-    // TODO: Handle case where cycle is stopped (e.g. for errors)
-    startResourceCycleButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        final String currentQueryText = queryText.getText();
-        if (!currentSearchString.equals(currentQueryText)) {
-          currentSearchString = currentQueryText;
-          resourceCyclePaused.set(false);
-
-          resourceCycleStarted.set(true);
-          refreshQueryFieldEnabled();
-          disableButtonsDuringButtonClickProcess();
-          controller.startResourceCycle(currentQueryText);
-          setStatusText("Resource cycle started");
-        }
-        else {
-          Log.debug("Not starting due to same query entered: {} and {}",
-            currentQueryText, currentSearchString);
-        }
-      }
-    });
-
-    builder.add(startResourceCycleButton, cellConstraints.xy(2, 4));
-  }
-
-  private void createSaveButton(){
-    saveCurrentResourceButton = new JButton();
-    saveCurrentResourceButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
-    saveCurrentResourceButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
-    saveCurrentResourceButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
-
-    saveCurrentResourceButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        refreshQueryFieldEnabled();
-        disableButtonsDuringButtonClickProcess();
-        controller.saveCurrentImage();
-      }
-    });
-
-    builder.add(saveCurrentResourceButton, cellConstraints.xy(4, 4));
-  }
-
-  private void createPauseButton() {
-    pauseResourceCycleButton = new JButton();
-    pauseResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
-    pauseResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
-    pauseResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
-
-    pauseResourceCycleButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        resourceCyclePaused.set(true);
-        refreshQueryFieldEnabled();
-        disableButtonsDuringButtonClickProcess();
-        controller.pauseResourceCycle();
-
-        // Note: this setText method is used instead of the setStatusText
-        // method because the pause text should stay in the label until
-        // cycling resumes
-        // TODO: make this work with new GUI status field updating
-        statusText.setText("Paused cycle");
-      }
-    });
-
-    builder.add(pauseResourceCycleButton, cellConstraints.xy(6, 4));
-  }
-
-  private void createResumeButton() {
-    resumeResourceCycleButton = new JButton();
-    resumeResourceCycleButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
-    resumeResourceCycleButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
-    resumeResourceCycleButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
-
-    resumeResourceCycleButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        resourceCyclePaused.set(false);
-        refreshQueryFieldEnabled();
-        disableButtonsDuringButtonClickProcess();
-
-        // Replace query text with current search string
-        // if the query text has changed and then 'resume'
-        // is hit (instead of start)
-        if (!currentSearchString.equals(queryText.getText())) {
-          queryText.setText(currentSearchString);
-        }
-
-        controller.resumeResourceCycle();
-      }
-    });
-
-    builder.add(resumeResourceCycleButton, cellConstraints.xy(9, 4));
-  }
-
-  private void createNextButton() {
-    nextResourceButton = new JButton();
-    nextResourceButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
-    nextResourceButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
-    nextResourceButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
-
-    nextResourceButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        refreshQueryFieldEnabled();
-        disableButtonsDuringButtonClickProcess();
-        controller.cycleNextResource();
-
-        // Note: this setText method is used instead of the setStatusText
-        // method because the skipping text should stay in the label until
-        // the current resource has been skipped.
-        // TODO: make this work with new GUI status field updating
-        statusText.setText("Skipping current resource...");
-      }
-    });
-
-    builder.add(nextResourceButton, cellConstraints.xy(11, 4));
-  }
-
-  private void createDeleteAllResourcesButton() {
-    deleteAllResourcesButton = new JButton();
-    deleteAllResourcesButton.setPreferredSize(BUTTON_DIMENSION_OBJ);
-    deleteAllResourcesButton.setMaximumSize(BUTTON_DIMENSION_OBJ);
-    deleteAllResourcesButton.setMinimumSize(BUTTON_DIMENSION_OBJ);
-
-    deleteAllResourcesButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        refreshQueryFieldEnabled();
-        disableButtonsDuringButtonClickProcess();
-        controller.deleteAllResources();
-        setStatusText("Resources deleted.");
-      }
-    });
-
-    builder.add(deleteAllResourcesButton, cellConstraints.xy(13, 4));
-  }
 
   private void disableButtonsDuringButtonClickProcess() {
     setEnabledForAllButtons(false);
@@ -405,6 +368,36 @@ public class ControlPanel {
     resumeResourceCycleButton.setEnabled(enabled);
     nextResourceButton.setEnabled(enabled);
     deleteAllResourcesButton.setEnabled(enabled);
+  }
+
+  private JButton getStartButton() {
+    return buttonManager.getControlButton(
+      GuiParamNames.START_BUTTON);
+  }
+
+  private JButton getSaveButton() {
+    return buttonManager.getControlButton(
+      GuiParamNames.SAVE_BUTTON);
+  }
+
+  private JButton getPauseButton() {
+    return buttonManager.getControlButton(
+      GuiParamNames.PAUSE_BUTTON);
+  }
+
+  private JButton getResumeButton() {
+    return buttonManager.getControlButton(
+      GuiParamNames.RESUME_BUTTON);
+  }
+
+  private JButton getNextButton() {
+    return buttonManager.getControlButton(
+      GuiParamNames.NEXT_BUTTON);
+  }
+
+  private JButton getDeleteResourcesButton() {
+    return buttonManager.getControlButton(
+      GuiParamNames.DELETE_RESOURCES_BUTTON);
   }
 
 }
