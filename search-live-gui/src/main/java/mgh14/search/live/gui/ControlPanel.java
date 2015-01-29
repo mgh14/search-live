@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.PostConstruct;
 import javax.swing.JButton;
@@ -38,14 +37,9 @@ public class ControlPanel {
     "10px, center:pref, 7px, 3px, center:pref, 10px, center:pref, 10px, " +
     "center:pref, 5px";
   private static final String ROW_LAYOUT = "5px, center:pref, 7px, center:pref, 5px";
-  private static final Dimension BUTTON_DIMENSION_OBJ = new Dimension(60, 35);
-  // in milliseconds
-  private static final int CLICK_PROCESS_BUTTON_DISABLE_DURATION = 500;
 
   @Autowired
   private GuiController controller;
-  @Autowired
-  private ExecutorService executorService;
   @Autowired
   private MenuBarManager menuBarManager;
   @Autowired
@@ -56,14 +50,6 @@ public class ControlPanel {
   private JFrame mainFrame;
   private JLabel statusText;
   private JTextField queryText;
-
-  // buttons
-  private JButton startResourceCycleButton;
-  private JButton saveCurrentResourceButton;
-  private JButton pauseResourceCycleButton;
-  private JButton resumeResourceCycleButton;
-  private JButton nextResourceButton;
-  private JButton deleteAllResourcesButton;
 
   private PanelBuilder builder;
   //private FormDebugPanel builder;
@@ -289,24 +275,6 @@ public class ControlPanel {
     }
   }
 
-
-  private void disableButtonsDuringButtonClickProcess() {
-    buttonManager.setEnabledForAllButtons(false);
-    executorService.execute(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          Thread.sleep(CLICK_PROCESS_BUTTON_DISABLE_DURATION);
-        }
-        catch (InterruptedException e) {
-          Log.info("Interrupt:", e);
-        }
-
-        refreshButtons();
-      }
-    });
-  }
-
   private void refreshQueryFieldEnabled() {
     Log.debug("Refreshing query field enabled...");
     if (resourceCycleStarted.get() && !resourceCyclePaused.get()) {
@@ -324,7 +292,7 @@ public class ControlPanel {
         "cycle not started and paused!");
     }
 
-    deleteAllResourcesButton.setEnabled(true);
+    getDeleteResourcesButton().setEnabled(true);
   }
 
   private JButton getStartButton() {
@@ -359,6 +327,12 @@ public class ControlPanel {
 
   private void refreshButtons() {
     buttonManager.refreshButtonsEnabled(
+      resourceCycleStarted.get(),
+      resourceCyclePaused.get());
+  }
+
+  private void disableButtonsDuringButtonClickProcess() {
+    buttonManager.disableButtonsDuringButtonClickProcess(
       resourceCycleStarted.get(),
       resourceCyclePaused.get());
   }
