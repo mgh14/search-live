@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.PostConstruct;
 import javax.swing.JButton;
@@ -44,6 +45,8 @@ public class ControlPanel {
   private MenuBarManager menuBarManager;
   @Autowired
   private ButtonManager buttonManager;
+  @Autowired
+  private ExecutorService executorService;
   @Autowired
   private GuiUtils guiUtils;
 
@@ -91,6 +94,8 @@ public class ControlPanel {
       public void actionPerformed(ActionEvent e) {
         final String currentQueryText = queryText.getText();
         if (!currentSearchString.equals(currentQueryText)) {
+          setStatusText("");
+
           currentSearchString = currentQueryText;
           resourceCyclePaused.set(false);
 
@@ -112,6 +117,8 @@ public class ControlPanel {
     controlButton = getSaveButton();
     controlButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        setStatusText("");
+
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.saveCurrentImage();
@@ -123,6 +130,8 @@ public class ControlPanel {
     controlButton = getPauseButton();
     controlButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        setStatusText("");
+
         resourceCyclePaused.set(true);
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
@@ -141,6 +150,8 @@ public class ControlPanel {
     controlButton = getResumeButton();
     controlButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        setStatusText("");
+
         resourceCyclePaused.set(false);
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
@@ -161,6 +172,8 @@ public class ControlPanel {
     controlButton = getNextButton();
     controlButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        setStatusText("");
+
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.cycleNextResource();
@@ -178,6 +191,8 @@ public class ControlPanel {
     controlButton = getDeleteResourcesButton();
     controlButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        setStatusText("");
+
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.deleteAllResources();
@@ -189,7 +204,6 @@ public class ControlPanel {
     refreshButtons();
     mainFrame.revalidate();
   }
-
 
   public void setQueryText(String searchString) {
     if (searchString == null) {
@@ -203,8 +217,10 @@ public class ControlPanel {
   }
 
   public void setStatusText(String newStatusText) {
+    Log.debug("Setting new status text: [{}]",
+      newStatusText);
     statusText.setText(newStatusText);
-    /*executorService.execute(new Runnable() {
+    executorService.execute(new Runnable() {
       @Override
       public void run() {
         try {
@@ -216,7 +232,7 @@ public class ControlPanel {
 
         statusText.setText("");
       }
-    });*/
+    });
   }
 
   public void setErrorStatusText(String newStatusText) {
