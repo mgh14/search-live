@@ -1,6 +1,5 @@
 package mgh14.search.live.gui;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -49,8 +48,9 @@ public class ControlPanel {
   private ExecutorService executorService;
   @Autowired
   private GuiUtils guiUtils;
-
+  @Autowired
   private JFrame mainFrame;
+
   private JLabel statusText;
   private JTextField queryText;
 
@@ -67,21 +67,57 @@ public class ControlPanel {
     resourceCycleStarted = new AtomicBoolean(false);
     resourceCyclePaused = new AtomicBoolean(false);
     currentSearchString = "";
-
-    prepareGui();
-
-    mainFrame.revalidate();
   }
 
   @PostConstruct
   public void addMenuBar() {
     menuBarManager.addMenuBarToFrame(mainFrame);
+    mainFrame.revalidate();
   }
 
   @PostConstruct
   public void setMainFrameIcon() {
     mainFrame.setIconImage(guiUtils.getImageIcon("logo.png")
       .getImage());
+    mainFrame.revalidate();
+  }
+
+  @PostConstruct
+  private void prepareGui() {
+    setLookFeelAndTheme();
+
+    // set up main frame
+    mainFrame.addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent windowEvent) {
+        buttonManager.setEnabledForAllButtons(false);
+        controller.shutdownApplication();
+      }
+    });
+
+    // set up JGoodies builder and layout
+    //builder = new FormDebugPanel();
+    final FormLayout layout = new FormLayout(COL_LAYOUT, ROW_LAYOUT);
+    builder = new PanelBuilder(layout);
+    //builder.setLayout(layout);
+    layout.setColumnGroups(new int[][]{{2, 4, 6, 9, 11, 13},
+      {3, 5, 10, 12}});
+
+    // build query text label
+    final JLabel queryLabel = new JLabel("<html>" +
+      "<b>Search:</b></html>");
+    builder.add(queryLabel, cellConstraints.xy(2, 2));
+
+    // build query text field
+    this.queryText = new JTextField();
+    builder.add(queryText, cellConstraints.xyw(3, 2, 5));
+
+    // build status text label
+    statusText = new JLabel("", JLabel.CENTER);
+    builder.add(statusText, cellConstraints.xyw(9, 2, 5));
+
+    // show main frame
+    mainFrame.add(builder.getPanel());
+    //mainFrame.add(builder);
     mainFrame.revalidate();
   }
 
@@ -238,49 +274,6 @@ public class ControlPanel {
   public void setErrorStatusText(String newStatusText) {
     setStatusText("<html><font color=RED>" + newStatusText +
       "</font/></html>");
-  }
-
-  private void prepareGui() {
-    setLookFeelAndTheme();
-
-    // set up main frame
-    mainFrame = new JFrame("SearchLive Control Panel");
-    final Dimension mainFrameDimension = new Dimension(430, 135);
-    mainFrame.setMinimumSize(mainFrameDimension);
-    mainFrame.setMaximumSize(mainFrameDimension);
-    mainFrame.setResizable(false);
-    mainFrame.addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent windowEvent) {
-        buttonManager.setEnabledForAllButtons(false);
-        controller.shutdownApplication();
-      }
-    });
-
-    // set up JGoodies builder and layout
-    //builder = new FormDebugPanel();
-    final FormLayout layout = new FormLayout(COL_LAYOUT, ROW_LAYOUT);
-    builder = new PanelBuilder(layout);
-    //builder.setLayout(layout);
-    layout.setColumnGroups(new int[][]{{2, 4, 6, 9, 11, 13},
-      {3, 5, 10, 12}});
-
-    // build query text label
-    final JLabel queryLabel = new JLabel("<html>" +
-      "<b>Search:</b></html>");
-    builder.add(queryLabel, cellConstraints.xy(2, 2));
-
-    // build query text field
-    this.queryText = new JTextField();
-    builder.add(queryText, cellConstraints.xyw(3, 2, 5));
-
-    // build status text label
-    statusText = new JLabel("", JLabel.CENTER);
-    builder.add(statusText, cellConstraints.xyw(9, 2, 5));
-
-    // show main frame
-    mainFrame.add(builder.getPanel());
-    //mainFrame.add(builder);
-    mainFrame.setVisible(true);
   }
 
   private void setLookFeelAndTheme() {
