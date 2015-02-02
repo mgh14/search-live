@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
 
 import mgh14.search.live.gui.ControlPanel;
-import mgh14.search.live.gui.controller.GuiController;
+import mgh14.search.live.gui.controller.MenuBarController;
 import mgh14.search.live.model.ParamNames;
 import mgh14.search.live.model.web.resource.getter.BingHtmlResourceUrlGetter;
 import mgh14.search.live.model.web.util.ApplicationProperties;
@@ -186,7 +186,7 @@ public class HtmlApplication {
     Log.debug("Initial preferences resource save dir: [{}]",
       resourceSaveDirPref);
     if (resourceSaveDirPref == null || resourceSaveDirPref.isEmpty()) {
-      context.getBean(GuiController.class)
+      context.getBean(MenuBarController.class)
         .handleNewResourceSaveDir();
     }
   }

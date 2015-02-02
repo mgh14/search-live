@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 
-import mgh14.search.live.gui.controller.GuiController;
+import mgh14.search.live.gui.controller.MenuBarController;
 
 /**
  * Action associated with setting the save directory in the
@@ -12,17 +12,17 @@ import mgh14.search.live.gui.controller.GuiController;
  */
 public class ChooseSaveDirAction extends AbstractAction {
 
-  private GuiController guiController;
+  private MenuBarController menuBarController;
 
   public ChooseSaveDirAction(String text, Icon icon,
-      GuiController guiController) {
+      MenuBarController menuBarController) {
 
     super(text, icon);
-    this.guiController = guiController;
+    this.menuBarController = menuBarController;
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    guiController.handleNewResourceSaveDir();
+    menuBarController.handleNewResourceSaveDir();
   }
 }

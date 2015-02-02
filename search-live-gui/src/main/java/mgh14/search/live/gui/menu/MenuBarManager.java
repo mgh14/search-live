@@ -11,7 +11,7 @@ import javax.swing.border.Border;
 import com.jgoodies.looks.HeaderStyle;
 import com.jgoodies.looks.Options;
 import mgh14.search.live.gui.GuiUtils;
-import mgh14.search.live.gui.controller.GuiController;
+import mgh14.search.live.gui.controller.MenuBarController;
 import mgh14.search.live.gui.menu.action.AboutAction;
 import mgh14.search.live.gui.menu.action.ChooseSaveDirAction;
 import org.slf4j.Logger;
@@ -27,7 +27,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MenuBarManager {
 
-  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
+  private final Logger Log = LoggerFactory.getLogger(
+    getClass().getSimpleName());
 
   private static final Border MENU_ITEM_BORDER =
     BorderFactory.createEmptyBorder(1, 7, 1, 7);
@@ -64,11 +65,14 @@ public class MenuBarManager {
 
   @PostConstruct
   private void createSettingsMenuItems() {
+    // resource save directory option
+    final MenuBarController menuBarController = context
+      .getBean(MenuBarController.class);
     JMenuItem menuItem = new JMenuItem(
       new ChooseSaveDirAction(
         getMenuItemFormattedText("Set save directory"),
         guiUtils.getImageIcon("save-small.png"),
-        context.getBean(GuiController.class)));
+        menuBarController));
 
     menuItem.setBorder(MENU_ITEM_BORDER);
     //menuItem.setMnemonic(KeyEvent.VK_A);
