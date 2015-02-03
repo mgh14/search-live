@@ -68,12 +68,11 @@ public class ControlPanel {
     resourceCyclePaused = new AtomicBoolean(false);
     currentSearchString = "";
 
-    prepareGui();
-
     setLookFeelAndTheme();
+    prepareControlPanel();
   }
 
-  private void prepareGui() {
+  private void prepareControlPanel() {
     // set up main frame
     mainFrame = new JFrame("SearchLive Control Panel");
     final Dimension mainFrameDimension = new Dimension(430, 135);
