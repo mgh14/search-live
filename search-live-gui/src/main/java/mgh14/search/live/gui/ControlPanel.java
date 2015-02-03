@@ -71,17 +71,6 @@ public class ControlPanel {
     setLookFeelAndTheme();
   }
 
-  public void addMenuBar() {
-    menuBarManager.addMenuBarToFrame(mainFrame);
-    mainFrame.revalidate();
-  }
-
-  public void setMainFrameIcon() {
-    mainFrame.setIconImage(guiUtils.getImageIcon("logo.png")
-      .getImage());
-    mainFrame.revalidate();
-  }
-
   @PostConstruct
   private void prepareGui() {
     // set up main frame
@@ -124,7 +113,18 @@ public class ControlPanel {
     mainFrame.revalidate();
   }
 
-  public void setButtonFunctions() {
+  private void setMainFrameIcon() {
+    mainFrame.setIconImage(guiUtils.getImageIcon("logo.png")
+      .getImage());
+    mainFrame.revalidate();
+  }
+
+  private void addMenuBar() {
+    menuBarManager.addMenuBarToFrame(mainFrame);
+    mainFrame.revalidate();
+  }
+
+  private void setButtonFunctions() {
     // start button
     JButton controlButton = getStartButton();
     // TODO: Handle case where cycle is stopped (e.g. for errors)
