@@ -69,13 +69,11 @@ public class ControlPanel {
     currentSearchString = "";
   }
 
-  @PostConstruct
   public void addMenuBar() {
     menuBarManager.addMenuBarToFrame(mainFrame);
     mainFrame.revalidate();
   }
 
-  @PostConstruct
   public void setMainFrameIcon() {
     mainFrame.setIconImage(guiUtils.getImageIcon("logo.png")
       .getImage());
@@ -118,10 +116,13 @@ public class ControlPanel {
     // show main frame
     mainFrame.add(builder.getPanel());
     //mainFrame.add(builder);
+
+    setMainFrameIcon();
+    addMenuBar();
+    setButtonFunctions();
     mainFrame.revalidate();
   }
 
-  @PostConstruct
   public void setButtonFunctions() {
     // start button
     JButton controlButton = getStartButton();
