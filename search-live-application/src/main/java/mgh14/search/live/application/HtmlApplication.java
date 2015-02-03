@@ -1,6 +1,5 @@
 package mgh14.search.live.application;
 
-import java.awt.Dimension;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.Arrays;
@@ -9,7 +8,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
-import javax.swing.JFrame;
 
 import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.gui.controller.MenuBarController;
@@ -57,18 +55,6 @@ public class HtmlApplication {
     @Bean
     public Preferences preferences() {
       return Preferences.systemNodeForPackage(HtmlApplication.class);
-    }
-
-    @Bean
-    public JFrame mainFrame() {
-      final JFrame mainFrame = new JFrame("SearchLive Control Panel");
-      final Dimension mainFrameDimension = new Dimension(430, 135);
-      mainFrame.setMinimumSize(mainFrameDimension);
-      mainFrame.setMaximumSize(mainFrameDimension);
-      mainFrame.setResizable(false);
-      mainFrame.setVisible(true);
-
-      return mainFrame;
     }
 
   }

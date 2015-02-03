@@ -1,5 +1,6 @@
 package mgh14.search.live.gui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -48,9 +49,8 @@ public class ControlPanel {
   private ExecutorService executorService;
   @Autowired
   private GuiUtils guiUtils;
-  @Autowired
-  private JFrame mainFrame;
 
+  private JFrame mainFrame;
   private JLabel statusText;
   private JTextField queryText;
 
@@ -68,12 +68,18 @@ public class ControlPanel {
     resourceCyclePaused = new AtomicBoolean(false);
     currentSearchString = "";
 
+    prepareGui();
+
     setLookFeelAndTheme();
   }
 
-  @PostConstruct
   private void prepareGui() {
     // set up main frame
+    mainFrame = new JFrame("SearchLive Control Panel");
+    final Dimension mainFrameDimension = new Dimension(430, 135);
+    mainFrame.setMinimumSize(mainFrameDimension);
+    mainFrame.setMaximumSize(mainFrameDimension);
+    mainFrame.setResizable(false);
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent) {
         buttonManager.setEnabledForAllButtons(false);
@@ -105,25 +111,24 @@ public class ControlPanel {
     // show main frame
     mainFrame.add(builder.getPanel());
     //mainFrame.add(builder);
-
-    setMainFrameIcon();
-    addMenuBar();
-    setButtonFunctions();
-
     mainFrame.revalidate();
+    mainFrame.setVisible(true);
   }
 
+  @PostConstruct
   private void setMainFrameIcon() {
     mainFrame.setIconImage(guiUtils.getImageIcon("logo.png")
       .getImage());
     mainFrame.revalidate();
   }
 
+  @PostConstruct
   private void addMenuBar() {
     menuBarManager.addMenuBarToFrame(mainFrame);
     mainFrame.revalidate();
   }
 
+  @PostConstruct
   private void setButtonFunctions() {
     // start button
     JButton controlButton = getStartButton();
