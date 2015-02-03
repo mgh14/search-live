@@ -67,6 +67,8 @@ public class ControlPanel {
     resourceCycleStarted = new AtomicBoolean(false);
     resourceCyclePaused = new AtomicBoolean(false);
     currentSearchString = "";
+
+    setLookFeelAndTheme();
   }
 
   public void addMenuBar() {
@@ -82,8 +84,6 @@ public class ControlPanel {
 
   @PostConstruct
   private void prepareGui() {
-    setLookFeelAndTheme();
-
     // set up main frame
     mainFrame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent windowEvent) {
@@ -120,6 +120,7 @@ public class ControlPanel {
     setMainFrameIcon();
     addMenuBar();
     setButtonFunctions();
+
     mainFrame.revalidate();
   }
 
