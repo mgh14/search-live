@@ -21,6 +21,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import mgh14.search.live.gui.button.ButtonManager;
 import mgh14.search.live.gui.controller.GuiController;
 import mgh14.search.live.gui.menu.MenuBarManager;
+import mgh14.search.live.gui.menu.SecondsToWaitDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -256,6 +257,14 @@ public class ControlPanel {
 
   public String getResourceSaveDirectory() {
     return guiUtils.chooseFileLocation(mainFrame);
+  }
+
+  public int getNewSecondsToSleep() {
+    final SecondsToWaitDialog dialogue =
+      new SecondsToWaitDialog(mainFrame);
+    dialogue.setVisible(true);
+
+    return dialogue.getResult();
   }
 
   public void setStatusText(String newStatusText) {

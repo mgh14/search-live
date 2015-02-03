@@ -14,6 +14,7 @@ import mgh14.search.live.gui.GuiUtils;
 import mgh14.search.live.gui.controller.MenuBarController;
 import mgh14.search.live.gui.menu.action.AboutAction;
 import mgh14.search.live.gui.menu.action.ChooseSaveDirAction;
+import mgh14.search.live.gui.menu.action.SetCycleSecondsAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,16 @@ public class MenuBarManager {
         getMenuItemFormattedText("Set save directory"),
         guiUtils.getImageIcon("save-small.png"),
         menuBarController));
+    menuItem.setBorder(MENU_ITEM_BORDER);
+    //menuItem.setMnemonic(KeyEvent.VK_A);
+    settingsMenu.add(menuItem);
 
+    // cycle seconds option
+    menuItem = new JMenuItem(
+      new SetCycleSecondsAction(
+        getMenuItemFormattedText("Set cycle time"),
+        guiUtils.getImageIcon("save-small.png"),
+        menuBarController));
     menuItem.setBorder(MENU_ITEM_BORDER);
     //menuItem.setMnemonic(KeyEvent.VK_A);
     settingsMenu.add(menuItem);

@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by mgh14 on 2/2/2015.
+ * Controller responsible for handling actions associated
+ * with the menu bar of the control panel.
  */
 @Component
 public class MenuBarController {
@@ -19,6 +20,12 @@ public class MenuBarController {
   public void handleNewResourceSaveDir() {
     cyclerService.setResourceSaveDir(controlPanel
       .getResourceSaveDirectory());
+  }
+
+  public void handleNewCycleSecondsSetting() {
+    final int newSecondsToSleep = controlPanel
+      .getNewSecondsToSleep();
+    cyclerService.setSecondsToSleep(newSecondsToSleep);
   }
 
 }
