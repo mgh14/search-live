@@ -5,11 +5,11 @@ import java.util.Observer;
 import javax.annotation.PostConstruct;
 
 import mgh14.search.live.gui.ControlPanel;
+import mgh14.search.live.model.notification.NotificationProcessor;
 import mgh14.search.live.model.observable.messaging.ObserverMessageProcessor;
 import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
-import mgh14.search.live.service.resource.cycler.CyclerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +29,16 @@ public class GuiController implements Observer {
   @Autowired
   private CommandExecutor executor;
   @Autowired
-  private CyclerService cyclerService;
-  @Autowired
   private ControlPanel controlPanel;
   @Autowired
   private ObserverMessageProcessor observerMessageProcessor;
 
+  @Autowired
+  private NotificationProcessor cyclerRunnableProcessor;
+
   @PostConstruct
   public void registerWithResourceCycler() {
-    cyclerService.addObserver(this);
+    cyclerRunnableProcessor.addObserver(this);
   }
 
   public void startResourceCycle(String query) {

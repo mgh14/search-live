@@ -17,6 +17,7 @@ import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.web.util.ImageUtils;
 import mgh14.search.live.service.messaging.CycleAction;
+import mgh14.search.live.service.notification.CyclerRunnableProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,8 @@ public class CyclerService extends Observable implements Observer {
   private FileUtils fileUtils;
   @Autowired
   private ObserverMessageBuilder observerMessageBuilder;
+  @Autowired
+  private CyclerRunnableProcessor cyclerRunnableProcessor;
 
   private String searchStringFolder;
   private int secondsToSleep;
@@ -176,7 +179,7 @@ public class CyclerService extends Observable implements Observer {
   }
 
   private ResourceCyclerRunnable getNewResourceCyclerRunnable() {
-    ResourceCyclerRunnable resourceCyclerRunnable =
+    final ResourceCyclerRunnable resourceCyclerRunnable =
       new ResourceCyclerRunnable(
         applicationContext.getBean(QueueLoader.class),
         (ConcurrentLinkedQueue<String>)
@@ -187,7 +190,7 @@ public class CyclerService extends Observable implements Observer {
     resourceCyclerRunnable.setIsCycleActive(true);
     resourceCyclerRunnable.setSecondsToSleep(secondsToSleep);
 
-    resourceCyclerRunnable.addObserver(this);
+    resourceCyclerRunnable.addObserver(cyclerRunnableProcessor);
 
     return resourceCyclerRunnable;
   }
@@ -196,45 +199,9 @@ public class CyclerService extends Observable implements Observer {
   public void update(Observable o, Object arg) {
     final String message = (String) arg;
 
-    // from observing the resource cycler runnable
-    if (o instanceof ResourceCyclerRunnable) {
-      processResourceCyclerRunnableMessage(message);
-    }
-
     // from observing the file utils class
     if (o instanceof FileUtils) {
       processFileUtilsMessage(message);
-    }
-  }
-
-  private void processResourceCyclerRunnableMessage(String message) {
-    if (ResourceCyclerRunnable.RESOURCE_CYCLE_STARTED_MESSAGE
-      .equals(message)) {
-
-      notifyObserversWithMessage((observerMessageBuilder
-        .buildObserverMessage(CycleAction.START_SERVICE.name(),
-          ObserverMessageProcessor.MESSAGE_SUCCESS)));
-    }
-    else if (ResourceCyclerRunnable.RESOURCE_CYCLE_START_FAILED_MESSAGE
-      .equals(message)) {
-
-      notifyObserversWithMessage((observerMessageBuilder
-        .buildObserverMessage(CycleAction.START_SERVICE.name(),
-          ObserverMessageProcessor.MESSAGE_FAILURE)));
-    }
-    else if(ResourceCyclerRunnable.RESOURCE_SKIPPED_MESSAGE_SUCCESS
-      .equals(message)) {
-
-      notifyObserversWithMessage((observerMessageBuilder
-        .buildObserverMessage(CycleAction.NEXT.name(),
-          ObserverMessageProcessor.MESSAGE_SUCCESS)));
-    }
-    else if(ResourceCyclerRunnable.RESOURCE_SKIPPED_MESSAGE_FAILURE
-      .equals(message)) {
-
-      notifyObserversWithMessage((observerMessageBuilder
-        .buildObserverMessage(CycleAction.NEXT.name(),
-          ObserverMessageProcessor.MESSAGE_FAILURE)));
     }
   }
 

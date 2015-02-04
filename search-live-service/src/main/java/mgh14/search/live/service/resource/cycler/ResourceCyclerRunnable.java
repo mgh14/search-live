@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Class that cycles desktop wallpaper resources
  */
-class ResourceCyclerRunnable extends Observable implements Runnable  {
+public class ResourceCyclerRunnable extends Observable implements Runnable  {
 
   public static final String RESOURCE_CYCLE_STARTED_MESSAGE =
     "Resource cycle started.";
@@ -30,7 +30,8 @@ class ResourceCyclerRunnable extends Observable implements Runnable  {
   public static final String RESOURCE_SKIPPED_MESSAGE_FAILURE =
     "";
 
-  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
+  private final Logger Log = LoggerFactory.getLogger(
+    getClass().getSimpleName());
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
 
   private QueueLoader queueLoader;
