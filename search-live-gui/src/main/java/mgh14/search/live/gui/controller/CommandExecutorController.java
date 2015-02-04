@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
  * messages from the service.
  */
 @Component
-public class GuiController implements Observer {
+public class CommandExecutorController implements Observer {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final String ERROR_PREFIX = "<b>Error: </b>";

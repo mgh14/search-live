@@ -19,7 +19,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import mgh14.search.live.gui.button.ButtonManager;
-import mgh14.search.live.gui.controller.GuiController;
+import mgh14.search.live.gui.controller.CommandExecutorController;
 import mgh14.search.live.gui.menu.MenuBarManager;
 import mgh14.search.live.gui.menu.SecondsToWaitDialog;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public class ControlPanel {
   private static final String ROW_LAYOUT = "5px, center:pref, 7px, center:pref, 5px";
 
   @Autowired
-  private GuiController controller;
+  private CommandExecutorController controller;
   @Autowired
   private MenuBarManager menuBarManager;
   @Autowired
