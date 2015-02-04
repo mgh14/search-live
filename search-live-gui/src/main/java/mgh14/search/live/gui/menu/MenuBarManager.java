@@ -92,7 +92,8 @@ public class MenuBarManager {
   }
 
   public void addMenuBarToFrame(JFrame frame) {
-    Log.debug("Adding menu bar to frame [{}]...", frame);
+    Log.debug("Adding menu bar to frame [{}]...",
+      frame.getTitle());
     frame.setJMenuBar(menuBar);
     frame.revalidate();
   }
