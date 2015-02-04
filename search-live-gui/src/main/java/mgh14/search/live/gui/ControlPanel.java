@@ -73,6 +73,51 @@ public class ControlPanel {
     prepareControlPanel();
   }
 
+  public void setQueryText(String searchString) {
+    if (searchString == null) {
+      searchString = "";
+    }
+    queryText.setText(searchString);
+  }
+
+  public String getResourceSaveDirectory() {
+    return guiUtils.chooseFileLocation(mainFrame);
+  }
+
+  public int getNewSecondsToSleep() {
+    final SecondsToWaitDialog dialogue =
+      new SecondsToWaitDialog(mainFrame);
+    dialogue.setVisible(true);
+
+    return dialogue.getResult();
+  }
+
+  public void setStatusText(String newStatusText) {
+    Log.debug("Setting new status text: [{}]",
+      newStatusText);
+    statusText.setText(newStatusText);
+    executorService.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          Thread.sleep(SECONDS_BEFORE_LABEL_CLEAR * 1000);
+        }
+        catch (InterruptedException e) {
+          Log.error("Interrupted exception: ", e);
+        }
+
+        statusText.setText("");
+      }
+    });
+  }
+
+  public void setErrorStatusText(String newStatusText) {
+    setStatusText("<html><font color=RED>" + newStatusText +
+      "</font/></html>");
+  }
+
+  // ------------------ Internal Methods ------------------//
+
   private void prepareControlPanel() {
     // set up main frame
     mainFrame = new JFrame("SearchLive Control Panel");
@@ -246,49 +291,6 @@ public class ControlPanel {
 
     refreshButtons();
     mainFrame.revalidate();
-  }
-
-  public void setQueryText(String searchString) {
-    if (searchString == null) {
-      searchString = "";
-    }
-    queryText.setText(searchString);
-  }
-
-  public String getResourceSaveDirectory() {
-    return guiUtils.chooseFileLocation(mainFrame);
-  }
-
-  public int getNewSecondsToSleep() {
-    final SecondsToWaitDialog dialogue =
-      new SecondsToWaitDialog(mainFrame);
-    dialogue.setVisible(true);
-
-    return dialogue.getResult();
-  }
-
-  public void setStatusText(String newStatusText) {
-    Log.debug("Setting new status text: [{}]",
-      newStatusText);
-    statusText.setText(newStatusText);
-    executorService.execute(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          Thread.sleep(SECONDS_BEFORE_LABEL_CLEAR * 1000);
-        }
-        catch (InterruptedException e) {
-          Log.error("Interrupted exception: ", e);
-        }
-
-        statusText.setText("");
-      }
-    });
-  }
-
-  public void setErrorStatusText(String newStatusText) {
-    setStatusText("<html><font color=RED>" + newStatusText +
-      "</font/></html>");
   }
 
   private void setLookFeelAndTheme() {
