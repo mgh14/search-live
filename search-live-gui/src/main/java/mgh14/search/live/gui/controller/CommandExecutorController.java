@@ -34,11 +34,11 @@ public class CommandExecutorController implements Observer {
   private ObserverMessageProcessor observerMessageProcessor;
 
   @Autowired
-  private NotificationProcessor cyclerRunnableProcessor;
+  private NotificationProcessor cyclerServiceProcessor;
 
   @PostConstruct
   public void registerWithResourceCycler() {
-    cyclerRunnableProcessor.addObserver(this);
+    cyclerServiceProcessor.addObserver(this);
   }
 
   public void startResourceCycle(String query) {

@@ -9,6 +9,7 @@ import java.util.prefs.Preferences;
 import javax.annotation.PostConstruct;
 
 import mgh14.search.live.model.ParamNames;
+import mgh14.search.live.model.notification.NotificationProcessor;
 import mgh14.search.live.model.observable.messaging.ObserverMessageBuilder;
 import mgh14.search.live.model.observable.messaging.ObserverMessageProcessor;
 import mgh14.search.live.model.wallpaper.QueueLoader;
@@ -17,7 +18,6 @@ import mgh14.search.live.model.web.resource.getter.ResourceUrlGetter;
 import mgh14.search.live.model.web.util.FileUtils;
 import mgh14.search.live.model.web.util.ImageUtils;
 import mgh14.search.live.service.messaging.CycleAction;
-import mgh14.search.live.service.notification.CyclerRunnableProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class CyclerService extends Observable implements Observer {
   @Autowired
   private ObserverMessageBuilder observerMessageBuilder;
   @Autowired
-  private CyclerRunnableProcessor cyclerRunnableProcessor;
+  private NotificationProcessor cyclerServiceProcessor;
 
   private String searchStringFolder;
   private int secondsToSleep;
@@ -143,18 +143,12 @@ public class CyclerService extends Observable implements Observer {
 
   public void pauseCycle() {
     Log.debug("Pausing resource cycle...");
-    resourceCyclerRunnable.setIsCycleActive(false);
-    notifyObserversWithMessage(observerMessageBuilder
-      .buildObserverMessage(CycleAction.PAUSE.name(),
-        ObserverMessageProcessor.MESSAGE_SUCCESS));
+    resourceCyclerRunnable.setIsCycleActive(false, true);
   }
 
   public void resumeCycle() {
     Log.debug("Resuming resource cycle...");
-    resourceCyclerRunnable.setIsCycleActive(true);
-    notifyObserversWithMessage(observerMessageBuilder
-      .buildObserverMessage(CycleAction.RESUME.name(),
-        ObserverMessageProcessor.MESSAGE_SUCCESS));
+    resourceCyclerRunnable.setIsCycleActive(true, true);
   }
 
   public void getNextResource() {
@@ -186,11 +180,12 @@ public class CyclerService extends Observable implements Observer {
           applicationContext.getBean("resourceQueue"),
         applicationContext.getBean(WindowsWallpaperSetter.class),
         applicationContext.getBean(ImageUtils.class),
-        applicationContext.getBean(FileUtils.class));
-    resourceCyclerRunnable.setIsCycleActive(true);
+        applicationContext.getBean(FileUtils.class),
+        observerMessageBuilder);
+    resourceCyclerRunnable.setIsCycleActive(true, false);
     resourceCyclerRunnable.setSecondsToSleep(secondsToSleep);
 
-    resourceCyclerRunnable.addObserver(cyclerRunnableProcessor);
+    resourceCyclerRunnable.addObserver(cyclerServiceProcessor);
 
     return resourceCyclerRunnable;
   }
