@@ -15,7 +15,8 @@ import org.slf4j.LoggerFactory;
  */
 public class CommandLineUtils {
 
-  private static final Logger Log = LoggerFactory.getLogger(CommandLineUtils.class);
+  private static final Logger Log = LoggerFactory.getLogger(
+    CommandLineUtils.class);
 
   static CommandLine parseArgs(Options options, String[] args) {
     // create the parser
@@ -37,16 +38,16 @@ public class CommandLineUtils {
     // validate numResults
     if (numResults < 1 || numResults > maxResults) {
 
-      System.out.println("Please enter a valid (positive, integer " +
-        "between 0 and 50) number of results");
+      System.out.println("Please enter a valid (positive, " +
+        "integer (between 0 and 50) number of results");
       System.exit(-1);
     }
   }
 
   static void validateSecondsToSleep(int secondsToSleep) {
-    if (secondsToSleep < 0) {
-      System.out.println("Please enter a valid (positive, integer) " +
-        "number of seconds to sleep");
+    if (secondsToSleep < 1) {
+      System.out.println("Please enter a valid (positive, " +
+        "integer) number of seconds to sleep");
       System.exit(-1);
     }
   }
@@ -67,19 +68,23 @@ public class CommandLineUtils {
 
     OptionBuilder.isRequired();
     OptionBuilder.hasArg();
-    OptionBuilder.withDescription("Seed resource query (e.g. wallpaper HD)");
+    OptionBuilder.withDescription("Seed resource query (e.g. " +
+      "wallpaper HD)");
     options.addOption(OptionBuilder.create("query"));
 
     OptionBuilder.hasArg();
-    OptionBuilder.withDescription("Number of seconds to sleep between wallpaper changes");
+    OptionBuilder.withDescription("Number of seconds to sleep " +
+      "between wallpaper changes");
     options.addOption(OptionBuilder.create("numResults"));
 
     OptionBuilder.hasArg();
-    OptionBuilder.withDescription("Number of seconds to sleep between wallpaper changes");
+    OptionBuilder.withDescription("Number of seconds to sleep " +
+      "between wallpaper changes");
     options.addOption(OptionBuilder.create("sleepTime"));
 
     OptionBuilder.hasArg(false);
-    OptionBuilder.withDescription("Whether or not to immediately start the resource cycle. " +
+    OptionBuilder.withDescription("Whether or not to immediately " +
+      "start the resource cycle. " +
       "Requires that the -query argument is set.");
     options.addOption(OptionBuilder.create("startCycle"));
 
@@ -90,7 +95,8 @@ public class CommandLineUtils {
     final Options options = getHtmlResourceOptions();
 
     OptionBuilder.hasArg();
-    OptionBuilder.withDescription("Authorization key for access to Bing API");
+    OptionBuilder.withDescription("Authorization key for access to " +
+      "Bing API");
     options.addOption(OptionBuilder.create("authKey"));
 
     return options;
