@@ -116,6 +116,12 @@ public class ControlPanel {
       "</font/></html>");
   }
 
+  public void refreshButtons() {
+    buttonManager.refreshButtonsEnabled(
+      resourceCycleStarted.get(),
+      resourceCyclePaused.get());
+  }
+
   // ------------------ Internal Methods ------------------//
 
   private void prepareControlPanel() {
@@ -189,7 +195,7 @@ public class ControlPanel {
 
           resourceCycleStarted.set(true);
           refreshQueryFieldEnabled();
-          disableButtonsDuringButtonClickProcess();
+          disableButtonsAfterClick();
           controller.startResourceCycle(currentQueryText);
         }
         else {
@@ -207,7 +213,7 @@ public class ControlPanel {
         setStatusText("Saving...");
 
         refreshQueryFieldEnabled();
-        disableButtonsDuringButtonClickProcess();
+        disableButtonsAfterClick();
         controller.saveCurrentImage();
       }
     });
@@ -221,7 +227,7 @@ public class ControlPanel {
 
         resourceCyclePaused.set(true);
         refreshQueryFieldEnabled();
-        disableButtonsDuringButtonClickProcess();
+        disableButtonsAfterClick();
         controller.pauseResourceCycle();
       }
     });
@@ -235,7 +241,7 @@ public class ControlPanel {
 
         resourceCyclePaused.set(false);
         refreshQueryFieldEnabled();
-        disableButtonsDuringButtonClickProcess();
+        disableButtonsAfterClick();
 
         // Replace query text with current search string
         // if the query text has changed and then 'resume'
@@ -256,7 +262,7 @@ public class ControlPanel {
         statusText.setText("Skipping current resource...");
 
         refreshQueryFieldEnabled();
-        disableButtonsDuringButtonClickProcess();
+        disableButtonsAfterClick();
         controller.cycleNextResource();
       }
     });
@@ -269,7 +275,7 @@ public class ControlPanel {
         setStatusText("Deleting resources...");
 
         refreshQueryFieldEnabled();
-        disableButtonsDuringButtonClickProcess();
+        disableButtonsAfterClick();
         controller.deleteAllResources();
       }
     });
@@ -336,16 +342,8 @@ public class ControlPanel {
       GuiParamNames.DELETE_RESOURCES_BUTTON);
   }
 
-  private void refreshButtons() {
-    buttonManager.refreshButtonsEnabled(
-      resourceCycleStarted.get(),
-      resourceCyclePaused.get());
-  }
-
-  private void disableButtonsDuringButtonClickProcess() {
-    buttonManager.disableButtonsDuringButtonClickProcess(
-      resourceCycleStarted.get(),
-      resourceCyclePaused.get());
+  private void disableButtonsAfterClick() {
+    buttonManager.disableButtonsAfterClick();
   }
 
 }

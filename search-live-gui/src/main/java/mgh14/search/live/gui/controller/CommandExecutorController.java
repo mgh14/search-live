@@ -119,6 +119,7 @@ public class CommandExecutorController implements Observer {
     else {
       controlPanel.setErrorStatusText(guiMessage);
     }
+    controlPanel.refreshButtons();
   }
 
 }

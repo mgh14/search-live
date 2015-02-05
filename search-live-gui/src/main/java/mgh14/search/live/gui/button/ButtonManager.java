@@ -3,7 +3,6 @@ package mgh14.search.live.gui.button;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Observable;
-import java.util.concurrent.ExecutorService;
 import javax.annotation.PostConstruct;
 import javax.swing.JButton;
 
@@ -26,11 +25,7 @@ public class ButtonManager extends Observable {
 
   private static final Dimension BUTTON_DIMENSION_OBJ =
     new Dimension(60, 35);
-  // in milliseconds
-  private static final int CLICK_PROCESS_BUTTON_DISABLE_DURATION = 500;
 
-  @Autowired
-  private ExecutorService executorService;
   @Autowired
   private GuiUtils guiUtils;
 
@@ -84,7 +79,7 @@ public class ButtonManager extends Observable {
   }
 
   public void refreshButtonsEnabled(boolean resourceCycleStarted,
-                                    boolean resourceCyclePaused) {
+    boolean resourceCyclePaused) {
     Log.debug("Refreshing buttons enabled...");
     if (resourceCycleStarted && !resourceCyclePaused) {
       getControlButton(GuiParamNames.SAVE_BUTTON)
@@ -134,24 +129,8 @@ public class ButtonManager extends Observable {
       setEnabled(true);
   }
 
-  public void disableButtonsDuringButtonClickProcess(
-    final boolean resourceCycleStarted,
-    final boolean resourceCyclePaused) {
+  public void disableButtonsAfterClick() {
     setEnabledForAllButtons(false);
-    executorService.execute(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          Thread.sleep(CLICK_PROCESS_BUTTON_DISABLE_DURATION);
-        }
-        catch (InterruptedException e) {
-          Log.info("Interrupt:", e);
-        }
-
-        refreshButtonsEnabled(resourceCycleStarted,
-          resourceCyclePaused);
-      }
-    });
   }
 
   private JButton getNewControlButton() {
