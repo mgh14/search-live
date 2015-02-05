@@ -41,7 +41,8 @@ public class SecondsToWaitDialog extends JDialog
   private JOptionPane optionPane;
   private int result;
 
-  public SecondsToWaitDialog(Frame frame) {
+  public SecondsToWaitDialog(Frame frame,
+    int secondsToSleep) {
     super(frame, true);
 
     final int numAllowedTextChars = 10;
@@ -52,6 +53,7 @@ public class SecondsToWaitDialog extends JDialog
       JOptionPane.PLAIN_MESSAGE,
       JOptionPane.OK_CANCEL_OPTION,
       null);
+    textField.setText(String.valueOf(secondsToSleep));
     result = -1;
 
     setContentPane(optionPane);

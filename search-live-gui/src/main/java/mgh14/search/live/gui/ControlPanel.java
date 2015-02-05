@@ -20,6 +20,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import mgh14.search.live.gui.button.ButtonManager;
 import mgh14.search.live.gui.controller.CommandExecutorController;
+import mgh14.search.live.gui.controller.MenuBarController;
 import mgh14.search.live.gui.menu.MenuBarManager;
 import mgh14.search.live.gui.menu.SecondsToWaitDialog;
 import org.slf4j.Logger;
@@ -42,6 +43,8 @@ public class ControlPanel {
 
   @Autowired
   private CommandExecutorController controller;
+  @Autowired
+  private MenuBarController menuBarController;
   @Autowired
   private MenuBarManager menuBarManager;
   @Autowired
@@ -86,7 +89,8 @@ public class ControlPanel {
 
   public int getNewSecondsToSleep() {
     final SecondsToWaitDialog dialogue =
-      new SecondsToWaitDialog(mainFrame);
+      new SecondsToWaitDialog(mainFrame,
+        menuBarController.getNumSecondsToSleep());
     dialogue.setVisible(true);
 
     return dialogue.getResult();
