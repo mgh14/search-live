@@ -118,7 +118,13 @@ public class SecondsToWaitDialog extends JDialog
 
       if (optionChosenValue == JOptionPane.OK_OPTION) {
         int result = getIntFromString(textField.getText());
-        if (result < 1) {
+        if (result >= 1) {
+          Log.debug("successfully retrieved cycleSeconds result: " +
+            "[{}]", result);
+          this.result = result;
+          dispose();
+        }
+        else {
           Log.error("Control panel cycleSeconds result is not " +
             "a positive integer: [{}]", result);
           JOptionPane.showMessageDialog(this,
@@ -126,12 +132,6 @@ public class SecondsToWaitDialog extends JDialog
             INVALID_RESPONSE_DIALOG_TITLE,
             JOptionPane.ERROR_MESSAGE);
           textField.requestFocusInWindow();
-        }
-        else {
-          Log.debug("successfully retrieved cycleSeconds result: " +
-            "[{}]", result);
-          this.result = result;
-          dispose();
         }
       }
       else if (optionChosenValue == JOptionPane.CANCEL_OPTION) {
