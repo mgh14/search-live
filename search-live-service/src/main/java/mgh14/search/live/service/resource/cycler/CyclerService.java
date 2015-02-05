@@ -65,6 +65,7 @@ public class CyclerService extends Observable {
   @PostConstruct
   public void addInternalObservedObjects() {
     fileUtils.addObserver(cyclerServiceProcessor);
+    addObserver(cyclerServiceProcessor);
   }
 
   public void setResourceSaveDir(String newResourceDirFilepath) {
