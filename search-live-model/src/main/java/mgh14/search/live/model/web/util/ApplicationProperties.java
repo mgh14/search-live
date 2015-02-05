@@ -18,7 +18,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationProperties {
 
-  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
+  private final Logger Log = LoggerFactory.getLogger(
+    getClass().getSimpleName());
 
   private Properties configProperties;
 
