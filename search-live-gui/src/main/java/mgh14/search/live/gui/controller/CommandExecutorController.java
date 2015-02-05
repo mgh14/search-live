@@ -86,15 +86,15 @@ public class CommandExecutorController implements Observer {
     String guiMessage = "";
     if (messageStatusType.equals(CycleAction.START_SERVICE.name())) {
       guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
-        "Cycle started." : ERROR_PREFIX + "cycle not started!";
+        "Cycle started" : ERROR_PREFIX + "cycle not started!";
     }
     if (messageStatusType.equals(CycleAction.PAUSE.name())) {
       guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
-        "Cycle paused." : ERROR_PREFIX + "cycle not paused!";
+        "Cycle paused" : ERROR_PREFIX + "cycle not paused!";
     }
     if (messageStatusType.equals(CycleAction.RESUME.name())) {
       guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
-        "Cycle resumed." : ERROR_PREFIX + "cycle not resumed!";
+        "Cycle resumed" : ERROR_PREFIX + "cycle not resumed!";
     }
     if (messageStatusType.equals(CycleAction.SAVE.name())) {
       guiMessage = (observerMessageProcessor.isSuccessMessage() ?
@@ -104,11 +104,12 @@ public class CommandExecutorController implements Observer {
     }
     if (messageStatusType.equals(CycleAction.NEXT.name())) {
       guiMessage = (observerMessageProcessor.isSuccessMessage()) ?
-        "Resource skipped." : ERROR_PREFIX + "resource not skipped!";
+        "Skipped: " + observerMessageProcessor.getArgument(0) :
+        ERROR_PREFIX + "resource not skipped!";
     }
     if (messageStatusType.equals(CycleAction.DELETE_RESOURCES.name())) {
       guiMessage = (observerMessageProcessor.isSuccessMessage() ?
-        "All resources deleted." : ERROR_PREFIX + "resources couldn't " +
+        "All resources deleted" : ERROR_PREFIX + "resources couldn't " +
         "be deleted!");
     }
 

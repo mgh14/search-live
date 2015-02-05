@@ -182,7 +182,7 @@ public class ControlPanel {
       public void actionPerformed(ActionEvent e) {
         final String currentQueryText = queryText.getText();
         if (!currentSearchString.equals(currentQueryText)) {
-          setStatusText("");
+          setStatusText("Starting cycle...");
 
           currentSearchString = currentQueryText;
           resourceCyclePaused.set(false);
@@ -191,10 +191,9 @@ public class ControlPanel {
           refreshQueryFieldEnabled();
           disableButtonsDuringButtonClickProcess();
           controller.startResourceCycle(currentQueryText);
-          setStatusText("Resource cycle started");
         }
         else {
-          Log.debug("Not starting due to same query entered: {} and {}",
+          Log.debug("Not starting due to same query entered: {}",
             currentQueryText, currentSearchString);
         }
       }
@@ -205,7 +204,7 @@ public class ControlPanel {
     controlButton = getSaveButton();
     controlButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        setStatusText("");
+        setStatusText("Saving...");
 
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
@@ -218,18 +217,12 @@ public class ControlPanel {
     controlButton = getPauseButton();
     controlButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        setStatusText("");
+        setStatusText("Pausing cycle...");
 
         resourceCyclePaused.set(true);
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.pauseResourceCycle();
-
-        // Note: this setText method is used instead of the setStatusText
-        // method because the pause text should stay in the label until
-        // cycling resumes
-        // TODO: make this work with new GUI status field updating
-        statusText.setText("Paused cycle");
       }
     });
     builder.add(controlButton, cellConstraints.xy(6, 4));
@@ -238,7 +231,7 @@ public class ControlPanel {
     controlButton = getResumeButton();
     controlButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        setStatusText("");
+        setStatusText("Resuming cycle...");
 
         resourceCyclePaused.set(false);
         refreshQueryFieldEnabled();
@@ -260,17 +253,11 @@ public class ControlPanel {
     controlButton = getNextButton();
     controlButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        setStatusText("");
+        statusText.setText("Skipping current resource...");
 
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.cycleNextResource();
-
-        // Note: this setText method is used instead of the setStatusText
-        // method because the skipping text should stay in the label until
-        // the current resource has been skipped.
-        // TODO: make this work with new GUI status field updating
-        statusText.setText("Skipping current resource...");
       }
     });
     builder.add(controlButton, cellConstraints.xy(11, 4));
@@ -279,12 +266,11 @@ public class ControlPanel {
     controlButton = getDeleteResourcesButton();
     controlButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        setStatusText("");
+        setStatusText("Deleting resources...");
 
         refreshQueryFieldEnabled();
         disableButtonsDuringButtonClickProcess();
         controller.deleteAllResources();
-        setStatusText("Resources deleted.");
       }
     });
     builder.add(controlButton, cellConstraints.xy(13, 4));

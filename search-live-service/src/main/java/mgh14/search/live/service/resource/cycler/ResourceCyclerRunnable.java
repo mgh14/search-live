@@ -120,6 +120,7 @@ public class ResourceCyclerRunnable extends Observable
             "next resource...", getCurrentFilename());
           sleepStartTime = 0;
           isSleeping.set(false);
+          // TODO: Add "getting next resource" notification
         }
         else {
           continue;
@@ -133,7 +134,9 @@ public class ResourceCyclerRunnable extends Observable
           getCurrentFilename());
         notifyObserversWithMessage(observerMessageBuilder
           .buildObserverMessage(CycleAction.NEXT.name(),
-            ObserverMessageProcessor.MESSAGE_SUCCESS));
+            ObserverMessageProcessor.MESSAGE_SUCCESS,
+            fileUtils.getResourceFilenameFromPath(
+              getCurrentFilename())));
       }
 
       if (!resourcesQueue.isEmpty()) {
