@@ -75,6 +75,7 @@ public class ApiApplication {
   }
 
   void validateSecondsToSleep(int secondsToSleep) {
-    CommandLineUtils.validateSecondsToSleep(secondsToSleep);
+    CommandLineUtils.validateSecondsToSleep(secondsToSleep,
+      null);
   }
 }
