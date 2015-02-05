@@ -38,6 +38,13 @@ public class ApplicationProperties {
     }
   }
 
+  public void validateNumSleepSeconds(int sleepSeconds) {
+    if (sleepSeconds < 1) {
+      throw new IllegalArgumentException("Sleep seconds must" +
+        "be a positive integer");
+    }
+  }
+
   public Object getConfigProperty(String propertyName) {
     return configProperties.get(propertyName);
   }

@@ -1,5 +1,6 @@
 package mgh14.search.live.application;
 
+import mgh14.search.live.model.web.util.ApplicationProperties;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.OptionBuilder;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * Class offering helpful methods for parsing command
  * line options.
  */
-public class CommandLineUtils {
+class CommandLineUtils {
 
   private static final Logger Log = LoggerFactory.getLogger(
     CommandLineUtils.class);
@@ -44,8 +45,13 @@ public class CommandLineUtils {
     }
   }
 
-  static void validateSecondsToSleep(int secondsToSleep) {
-    if (secondsToSleep < 1) {
+  static void validateSecondsToSleep(int secondsToSleep,
+    ApplicationProperties applicationProperties) {
+    try {
+      applicationProperties.validateNumSleepSeconds(
+        secondsToSleep);
+    } catch (IllegalArgumentException e) {
+      Log.error("Illegal seconds to sleep: ", e);
       System.out.println("Please enter a valid (positive, " +
         "integer) number of seconds to sleep");
       System.exit(-1);
