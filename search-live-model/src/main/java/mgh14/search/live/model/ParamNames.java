@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
  * key-value pairs (e.g. preferences or config properties).
  */
 @Component
-public class ParamNames {
+public final class ParamNames {
 
   private ParamNames() {}
 
@@ -19,5 +19,6 @@ public class ParamNames {
 
   // Preferences param names
   public static final String RESOURCE_SAVE_DIR = "resource-save-dir";
+  public static final String NUM_SECONDS_BETWEEN_CYCLES = "cycle-seconds";
 
 }

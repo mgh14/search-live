@@ -123,6 +123,13 @@ public class HtmlApplication {
   }
 
   void validateSecondsToSleep(int secondsToSleep) {
+    if (secondsToSleep < 1) {
+      throw new IllegalArgumentException("Seconds to sleep must be" +
+        "a positive integer");
+    }
+  }
+
+  void validateCommandLineSecondsToSleep(int secondsToSleep) {
     CommandLineUtils.validateSecondsToSleep(secondsToSleep);
   }
 
@@ -157,14 +164,48 @@ public class HtmlApplication {
   }
 
   private void setSecondsToSleep(ApplicationContext context) {
-    final int secondsToSleep = (line.hasOption("sleepTime")) ?
-      Integer.parseInt(line.getOptionValue("sleepTime")) :
-      Integer.parseInt((String) applicationProperties
-        .getConfigProperty("default-num-seconds-to-sleep"));
+    final int defaultSecondsToSleep = Integer.parseInt(
+      (String) applicationProperties.getConfigProperty(
+        "default-num-seconds-to-sleep"));
+    final int prefSecondsToSleep = preferences.getInt(
+      ParamNames.NUM_SECONDS_BETWEEN_CYCLES, -1);
 
-    validateSecondsToSleep(secondsToSleep);
+    int secondsToSleep;
+    // command line option takes precedence
+    if (line.hasOption("sleepTime")) {
+      secondsToSleep = Integer.parseInt(line
+        .getOptionValue("sleepTime"));
+      validateCommandLineSecondsToSleep(secondsToSleep);
+      Log.info("Using command line arg for sleep cycle: [{}]",
+        secondsToSleep);
+    }
+    else {
+      // pref option takes second precedence behind command line
+      secondsToSleep = prefSecondsToSleep;
+      Log.debug("Initial seconds to sleep pref value: [{}]",
+        secondsToSleep);
 
-    context.getBean(CyclerService.class).setSecondsToSleep(secondsToSleep);
+      try {
+        validateSecondsToSleep(secondsToSleep);
+        Log.info("Using pref value of seconds to sleep: [{}]",
+          secondsToSleep);
+      }
+      catch (IllegalArgumentException e) {
+        // Now the default value in the config takes precedence
+        Log.error("Error validating seconds to sleep: ", e);
+        Log.info("Using default value: [{}]", defaultSecondsToSleep);
+        secondsToSleep = defaultSecondsToSleep;
+      }
+
+      // set new cycle seconds pref value
+      if (prefSecondsToSleep != secondsToSleep) {
+        preferences.put(ParamNames.NUM_SECONDS_BETWEEN_CYCLES,
+          String.valueOf(secondsToSleep));
+      }
+    }
+
+    context.getBean(CyclerService.class)
+      .setSecondsToSleep(secondsToSleep);
   }
 
   private void ensureAppDataDirExists() {
