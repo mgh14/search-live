@@ -89,8 +89,17 @@ public class CyclerService extends Observable {
     }
   }
 
-  public void setSecondsToSleep(int secondsToSleep) {
+  public void setSecondsToSleep(int secondsToSleep,
+    boolean setPref) {
     this.secondsToSleep = secondsToSleep;
+    if (setPref) {
+      preferences.put(ParamNames.NUM_SECONDS_BETWEEN_CYCLES,
+        String.valueOf(secondsToSleep));
+    }
+  }
+
+  public int getSecondsToSleep() {
+    return secondsToSleep;
   }
 
   public void startService(final String searchString) {

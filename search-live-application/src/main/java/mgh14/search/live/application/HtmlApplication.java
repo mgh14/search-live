@@ -130,7 +130,8 @@ public class HtmlApplication {
   }
 
   void validateCommandLineSecondsToSleep(int secondsToSleep) {
-    CommandLineUtils.validateSecondsToSleep(secondsToSleep);
+    CommandLineUtils.validateSecondsToSleep(secondsToSleep,
+      applicationProperties);
   }
 
   boolean springProfileIsEnabled(ApplicationContext context, String profile) {
@@ -204,8 +205,10 @@ public class HtmlApplication {
       }
     }
 
+    // Note we are not setting the pref value in this
+    // method call because it
     context.getBean(CyclerService.class)
-      .setSecondsToSleep(secondsToSleep);
+      .setSecondsToSleep(secondsToSleep, false);
   }
 
   private void ensureAppDataDirExists() {
