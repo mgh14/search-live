@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 
+import mgh14.search.live.model.observable.messaging.ObserverMessageBuilder;
+import mgh14.search.live.model.observable.messaging.ObserverMessageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +22,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileUtils extends Observable {
 
-  private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
+  private final Logger Log = LoggerFactory.getLogger(
+    getClass().getSimpleName());
 
-  public static final String RESOURCE_FILENAME_PREPEND = "rsrc";
-  public static final String RESOURCE_FILENAME_TIMESTAMP_SEPARATOR = "-";
-  public static final String RESOURCES_SUCCESSFULLY_DELETED_MESSAGE
-    = "Resources deleted.";
-  public static final String RESOURCES_FAILED_TO_DELETE_MESSAGE =
-    "Failed to delete resources!";
+  public static final String RESOURCE_FILENAME_PREPEND =
+    "rsrc";
+  public static final String
+    RESOURCE_FILENAME_TIMESTAMP_SEPARATOR = "-";
+  public static final String DELETE_RESOURCES_IDENTIFIER =
+    FileUtils.class + ".DELETE_ALL_RESOURCES";
 
   @Autowired
   private ExecutorService executorService;
+  @Autowired
+  private ObserverMessageBuilder observerMessageBuilder;
 
   private String resourceDir;
 
@@ -129,7 +134,9 @@ public class FileUtils extends Observable {
         Log.error("Error deleting files in folder [{}]: " +
             "null returned from file discovery",
           resourceFolder);
-        notifyObserversWithMessage(RESOURCES_FAILED_TO_DELETE_MESSAGE);
+        notifyObserversWithMessage(observerMessageBuilder
+          .buildObserverMessage(DELETE_RESOURCES_IDENTIFIER,
+            ObserverMessageProcessor.MESSAGE_FAILURE));
         return;   // terminate thread
       }
 
@@ -137,7 +144,9 @@ public class FileUtils extends Observable {
         deleteFile(fileEntry.toPath());
       }
 
-      notifyObserversWithMessage(RESOURCES_SUCCESSFULLY_DELETED_MESSAGE);
+      notifyObserversWithMessage(observerMessageBuilder
+      .buildObserverMessage(DELETE_RESOURCES_IDENTIFIER,
+        ObserverMessageProcessor.MESSAGE_SUCCESS));
     }
     });
   }

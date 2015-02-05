@@ -2,7 +2,6 @@ package mgh14.search.live.service.resource.cycler;
 
 import java.io.File;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.prefs.Preferences;
@@ -30,7 +29,7 @@ import org.springframework.stereotype.Component;
  * command executor and the remainder of the classes.
  */
 @Component
-public class CyclerService extends Observable implements Observer {
+public class CyclerService extends Observable {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
   private static final String DIRECTORY_TIME_APPENDER = "-time";
@@ -65,7 +64,7 @@ public class CyclerService extends Observable implements Observer {
 
   @PostConstruct
   public void addInternalObservedObjects() {
-    fileUtils.addObserver(this);
+    fileUtils.addObserver(cyclerServiceProcessor);
   }
 
   public void setResourceSaveDir(String newResourceDirFilepath) {
@@ -102,7 +101,8 @@ public class CyclerService extends Observable implements Observer {
     // reset runnables and queue loader
     if (resourceCyclerRunnable != null) {
       resourceCyclerRunnable.interruptRunnable();
-      resourceCyclerRunnable.deleteObserver(this);
+      resourceCyclerRunnable.deleteObserver(
+        cyclerServiceProcessor);
     }
     retryTimerRunnable.interruptRunnable();
     queueLoader.resetQueueLoader();
@@ -188,29 +188,6 @@ public class CyclerService extends Observable implements Observer {
     resourceCyclerRunnable.addObserver(cyclerServiceProcessor);
 
     return resourceCyclerRunnable;
-  }
-
-  @Override
-  public void update(Observable o, Object arg) {
-    final String message = (String) arg;
-
-    // from observing the file utils class
-    if (o instanceof FileUtils) {
-      processFileUtilsMessage(message);
-    }
-  }
-
-  private void processFileUtilsMessage(String message) {
-    if (FileUtils.RESOURCES_SUCCESSFULLY_DELETED_MESSAGE.equals(message)) {
-      notifyObserversWithMessage(observerMessageBuilder
-        .buildObserverMessage(CycleAction.DELETE_RESOURCES.name(),
-          ObserverMessageProcessor.MESSAGE_SUCCESS));
-    }
-    else if (FileUtils.RESOURCES_FAILED_TO_DELETE_MESSAGE.equals(message)) {
-      notifyObserversWithMessage(observerMessageBuilder
-        .buildObserverMessage(CycleAction.DELETE_RESOURCES.name(),
-          ObserverMessageProcessor.MESSAGE_FAILURE));
-    }
   }
 
 }
