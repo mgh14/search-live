@@ -23,7 +23,9 @@ public class GuiUtils {
 
   private final Logger Log = LoggerFactory.getLogger(getClass().getSimpleName());
 
-  private static final String ICONS_LOCATION = "icons" + File.separator;
+  // resources don't use the file separator.
+  // Instead they always use a forward slash.
+  private static final String ICONS_IDENTIFIER = "icons/";
 
   @Autowired
   private Preferences preferences;
@@ -42,9 +44,13 @@ public class GuiUtils {
   public ImageIcon getImageIcon(String iconFilename) {
     Log.debug("Loading icon [{}]...", iconFilename);
     final URL iconUrl = classLoader.getResource(
-      ICONS_LOCATION + iconFilename);
-    return (iconUrl == null) ? null : new ImageIcon(
-      iconUrl);
+      ICONS_IDENTIFIER + iconFilename);
+    if (iconUrl == null) {
+      Log.error("Error loading icon [{}]", iconFilename);
+      return null;
+    }
+
+    return new ImageIcon(iconUrl);
   }
 
   public String chooseFileLocation(JFrame mainFrame) {

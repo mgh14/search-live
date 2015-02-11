@@ -1,10 +1,8 @@
 package mgh14.search.live.model.web.util;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
 
@@ -32,8 +30,10 @@ public class ApplicationProperties {
   @PostConstruct
   public void loadConfig() {
     try {
-      loadPropertyValues("config" + File.separator +
-        "config.properties", configProperties);
+      // resources don't use the file separator.
+      // Instead they always use a forward slash.
+      loadPropertyValues("config/config.properties",
+        configProperties);
     }
     catch (IOException e) {
       Log.warn("Warning: Couldn't load properties file. " +
@@ -59,14 +59,12 @@ public class ApplicationProperties {
   private void loadPropertyValues(String filename,
       Properties properties) throws IOException {
 
-    final ClassLoader classLoader = getClass().getClassLoader();
-    final URL fullFilepath = classLoader.getResource(filename);
-    if (fullFilepath == null) {
+    final InputStream inputStream = getClass().getClassLoader()
+      .getResourceAsStream(filename);
+    if (inputStream == null) {
       Log.error("File not found: {}", filename);
       throw new FileNotFoundException("File not found: " + filename);
     }
-
-    final InputStream inputStream = fullFilepath.openStream();
     properties.load(inputStream);
 
     inputStream.close();
