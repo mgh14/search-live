@@ -101,8 +101,6 @@ public class ResourceCyclerRunnable extends Observable
       .buildObserverMessage(CycleAction.START_SERVICE.name(),
         ObserverMessageProcessor.MESSAGE_SUCCESS));
 
-    final long secondsToSleepInMillis =
-      secondsToSleep.get() * 1000;
     queueLoader.startResourceDownloads();
     threadInterrupted.set(false);
 
@@ -114,7 +112,7 @@ public class ResourceCyclerRunnable extends Observable
 
       if (isSleeping.get() && !getNextResource.get()) {
         if (System.currentTimeMillis() - sleepStartTime >
-          secondsToSleepInMillis) {
+          secondsToSleep.get() * 1000) {
 
           Log.debug("Sleep for resource {} has finished. Moving to " +
             "next resource...", getCurrentFilename());

@@ -92,6 +92,11 @@ public class CyclerService extends Observable {
   public void setSecondsToSleep(int secondsToSleep,
     boolean setPref) {
     this.secondsToSleep = secondsToSleep;
+    if (resourceCyclerRunnable != null) {
+      resourceCyclerRunnable.setSecondsToSleep(secondsToSleep);
+    }
+
+    // set seconds to sleep value in preferences
     if (setPref) {
       preferences.put(ParamNames.NUM_SECONDS_BETWEEN_CYCLES,
         String.valueOf(secondsToSleep));
