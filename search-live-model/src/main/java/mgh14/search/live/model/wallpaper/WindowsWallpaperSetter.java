@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
  * Class for setting desktop wallpaper given the path to an image
  * for the Windows operating system.
  */
-// TODO: Test in Windows environments other than Windows 7 64-bit
 @Component
 public class WindowsWallpaperSetter {
 
