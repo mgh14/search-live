@@ -12,7 +12,6 @@ import com.jgoodies.looks.HeaderStyle;
 import com.jgoodies.looks.Options;
 import mgh14.search.live.gui.GuiUtils;
 import mgh14.search.live.gui.controller.MenuBarController;
-import mgh14.search.live.gui.menu.action.AboutAction;
 import mgh14.search.live.gui.menu.action.ChooseSaveDirAction;
 import mgh14.search.live.gui.menu.action.SetCycleSecondsAction;
 import org.slf4j.Logger;
@@ -40,28 +39,13 @@ public class MenuBarManager {
   private GuiUtils guiUtils;
 
   private JMenuBar menuBar;
-  private JMenu fileMenu;
   private JMenu settingsMenu;
 
   public MenuBarManager() {
     menuBar = new JMenuBar();
-    fileMenu = new JMenu("File");
     settingsMenu = new JMenu("Settings");
 
     setupMenuBar();
-  }
-
-  @PostConstruct
-  private void createFileMenuItems() {
-    JMenuItem menuItem = new JMenuItem(
-      new AboutAction(
-        getMenuItemFormattedText("About"),
-        guiUtils.getImageIcon("save-small.png")));
-
-    menuItem.setBorder(MENU_ITEM_BORDER);
-    fileMenu.add(menuItem);
-
-    fileMenu.setVisible(true);
   }
 
   @PostConstruct
@@ -102,7 +86,6 @@ public class MenuBarManager {
     Log.debug("Setting up the menu bar...");
     menuBar.putClientProperty(Options.HEADER_STYLE_KEY,
       HeaderStyle.SINGLE);
-    menuBar.add(fileMenu);
     menuBar.add(settingsMenu);
   }
 
