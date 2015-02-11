@@ -1,5 +1,6 @@
 package mgh14.search.live.model.wallpaper;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +44,8 @@ public class QueueLoader {
   private ImageUtils imageUtils;
   @Autowired
   private FileUtils fileUtils;
+  @Autowired
+  private ExpiredResourcesDeleter expiredResourcesDeleter;
 
   private Map<String, String> urlsToFilenames = new HashMap<String, String>();
   private Queue<String> currentResourceLocations = new ConcurrentLinkedQueue<String>();
@@ -53,6 +56,10 @@ public class QueueLoader {
     if (downloadsInProgress.get()) {
       return;
     }
+
+    // delete expired resources
+    expiredResourcesDeleter.deleteExpiredFiles(new File(
+      fileUtils.getResourceDir()));
 
     downloadsInProgress.set(true);
     Log.debug("Download resources cycle invoked. Starting download thread...");

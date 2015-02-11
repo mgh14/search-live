@@ -26,7 +26,7 @@ public class ExpiredResourcesDeleter {
 
     final File[] files = (folder != null) ? folder.listFiles() : null;
     if(files != null) {
-      long expiryPeriod = 5 * 24 * 60 * 60 * 1000;   // 5 days (in milliseconds)
+      long expiryPeriod = 7 * 24 * 60 * 60 * 1000;   // 7 days (in milliseconds)
 
       for (final File fileEntry : files) {
         if (fileEntry.isDirectory()) {
