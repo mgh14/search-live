@@ -20,5 +20,6 @@ public final class ParamNames {
   // Preferences param names
   public static final String RESOURCE_SAVE_DIR = "resource-save-dir";
   public static final String NUM_SECONDS_BETWEEN_CYCLES = "cycle-seconds";
+  public static final String LAST_SEARCH = "last-search";
 
 }

@@ -254,9 +254,22 @@ public class HtmlApplication {
     setInitialResourceSaveDir(context);
 
     // set search string in control panel (if present on command line)
+    setSearchStringInControlPanel(context);
+  }
+
+  private void setSearchStringInControlPanel(ApplicationContext context) {
     final ControlPanel controlPanel = context.getBean(ControlPanel.class);
-    final String query = line.getOptionValue("query");
-    controlPanel.setQueryText((query != null) ? query : "");
+    final String commandQuery = line.getOptionValue("query");
+    String query = (commandQuery != null) ? commandQuery : "";
+
+    if (query.equals("")) {
+      query = preferences.get(ParamNames.LAST_SEARCH, "");
+    }
+    else {
+      preferences.put(ParamNames.LAST_SEARCH, query);
+    }
+
+    controlPanel.setQueryText(query);
   }
 
   private void setUpBingHtmlResourceUrlGetter(ApplicationContext context,

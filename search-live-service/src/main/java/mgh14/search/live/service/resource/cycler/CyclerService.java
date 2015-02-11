@@ -113,6 +113,10 @@ public class CyclerService extends Observable {
       return;
     }
 
+    // save this search as last (previous) search
+    preferences.put(ParamNames.LAST_SEARCH,
+      String.valueOf(searchString));
+
     // reset runnables and queue loader
     if (resourceCyclerRunnable != null) {
       resourceCyclerRunnable.interruptRunnable();

@@ -72,7 +72,6 @@ class CommandLineUtils {
     OptionBuilder.withDescription("Spring profiles to activate");
     options.addOption(OptionBuilder.create("springProfiles"));
 
-    OptionBuilder.isRequired();
     OptionBuilder.hasArg();
     OptionBuilder.withDescription("Seed resource query (e.g. " +
       "wallpaper HD)");
