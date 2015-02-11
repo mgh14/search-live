@@ -66,7 +66,7 @@ public class MenuBarManager {
     menuItem = new JMenuItem(
       new SetCycleSecondsAction(
         getMenuItemFormattedText("Set cycle time"),
-        guiUtils.getImageIcon("save-small.png"),
+        guiUtils.getImageIcon("clock-small.png"),
         menuBarController));
     menuItem.setBorder(MENU_ITEM_BORDER);
     //menuItem.setMnemonic(KeyEvent.VK_A);
