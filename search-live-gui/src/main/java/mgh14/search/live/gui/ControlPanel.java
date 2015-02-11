@@ -23,13 +23,14 @@ import mgh14.search.live.gui.controller.CommandExecutorController;
 import mgh14.search.live.gui.controller.MenuBarController;
 import mgh14.search.live.gui.menu.MenuBarManager;
 import mgh14.search.live.gui.menu.SecondsToWaitDialog;
+import mgh14.search.live.model.web.util.ApplicationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Class for constructing the SearchLive control panel GUI
+ * Class for constructing the application control panel GUI
  */
 @Component
 public class ControlPanel {
@@ -130,7 +131,8 @@ public class ControlPanel {
 
   private void prepareControlPanel() {
     // set up main frame
-    mainFrame = new JFrame("SearchLive Control Panel");
+    mainFrame = new JFrame(ApplicationProperties.APPLICATION_NAME +
+    " Control Panel");
     final Dimension mainFrameDimension = new Dimension(430, 135);
     mainFrame.setMinimumSize(mainFrameDimension);
     mainFrame.setMaximumSize(mainFrameDimension);

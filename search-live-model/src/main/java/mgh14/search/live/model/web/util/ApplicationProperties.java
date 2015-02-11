@@ -21,6 +21,8 @@ public class ApplicationProperties {
   private final Logger Log = LoggerFactory.getLogger(
     getClass().getSimpleName());
 
+  public static final String APPLICATION_NAME = "Dexpec";
+
   private Properties configProperties;
 
   public ApplicationProperties() {
