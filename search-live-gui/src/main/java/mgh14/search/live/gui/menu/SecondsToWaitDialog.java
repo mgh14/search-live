@@ -26,11 +26,14 @@ public class SecondsToWaitDialog extends JDialog
   private final Logger Log = LoggerFactory.getLogger(
     getClass().getSimpleName());
 
-  private static final String INSTRUCTION_STRING = "";
+  private static final String INSTRUCTION_STRING =
+    "Enter the number of seconds you want each image to\n" +
+      "stay on the screen. Make sure the value is a positive\n" +
+      "whole number.\n\n";
   private static final String CALCULATION_TIP_STRING =
-    "Tip: for values greater than 60 seconds, calculate " +
-      "the minutes or hours and use that value instead " +
-      "(e.g. 60 * 5 = 300 seconds, or 5 minutes)";
+    "Tip: for values greater than 60 seconds, calculate\n " +
+      "the minutes or hours and use that value instead\n " +
+      "(e.g. 60 * 5 = 300 seconds, which is 5 minutes)\n";
   private static final String INVALID_RESPONSE_DIALOG_TITLE =
     "Invalid Response";
   private static final String INVALID_RESPONSE_EXPLANATION =
@@ -49,7 +52,7 @@ public class SecondsToWaitDialog extends JDialog
     textField = new JTextField(numAllowedTextChars);
     optionPane = new JOptionPane(
       new Object[]{INSTRUCTION_STRING,
-        CALCULATION_TIP_STRING, textField},
+        CALCULATION_TIP_STRING, "\n", textField},
       JOptionPane.PLAIN_MESSAGE,
       JOptionPane.OK_CANCEL_OPTION,
       null);
