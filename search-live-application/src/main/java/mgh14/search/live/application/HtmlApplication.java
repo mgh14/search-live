@@ -59,8 +59,6 @@ public class HtmlApplication {
 
   }
 
-  public static final String APPLICATION_NAME = "Search-Live";
-
   private static final Logger Log = LoggerFactory.getLogger(HtmlApplication.class);
   private static final String DEFAULT_PROFILE = "DummyResources";
 
@@ -214,7 +212,7 @@ public class HtmlApplication {
   private void ensureAppDataDirExists() {
     final File tempResourceDir = new File(System.getProperty(ParamNames.USER_HOME)
       + File.separator + fileUtils.constructFilepathWithSeparator(
-      "AppData", "Local", APPLICATION_NAME));
+      "AppData", "Local", ApplicationProperties.APPLICATION_NAME));
     if (!Files.exists(tempResourceDir.toPath())) {
       Log.info("Temp directory creation: {}", tempResourceDir.mkdirs());
     }
