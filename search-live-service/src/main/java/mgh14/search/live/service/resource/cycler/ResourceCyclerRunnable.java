@@ -25,6 +25,9 @@ import org.slf4j.LoggerFactory;
 public class ResourceCyclerRunnable extends Observable
   implements Runnable  {
 
+  public static final String SLEEP_FINISHED = "SLEEP_FINISHED";
+  public static final String RESOURCE_SET = "RESOURCE_SET";
+
   private final Logger Log = LoggerFactory.getLogger(
     getClass().getSimpleName());
   private static final int DEFAULT_SECONDS_TO_SLEEP = 300;
@@ -118,6 +121,9 @@ public class ResourceCyclerRunnable extends Observable
             "next resource...", getCurrentFilename());
           sleepStartTime = 0;
           isSleeping.set(false);
+          notifyObserversWithMessage(observerMessageBuilder
+          .buildObserverMessage(SLEEP_FINISHED,
+            ObserverMessageProcessor.MESSAGE_SUCCESS));
           // TODO: Add "getting next resource" notification
         }
         else {
@@ -151,6 +157,9 @@ public class ResourceCyclerRunnable extends Observable
 
           // set image to desktop
           setter.setDesktopWallpaper(filename);
+          notifyObserversWithMessage(observerMessageBuilder
+            .buildObserverMessage(RESOURCE_SET,
+              ObserverMessageProcessor.MESSAGE_SUCCESS));
 
           // sleep for x milliseconds (enjoy the background!)
           sleepStartTime = System.currentTimeMillis();

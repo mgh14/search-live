@@ -10,6 +10,7 @@ import mgh14.search.live.model.observable.messaging.ObserverMessageProcessor;
 import mgh14.search.live.service.CommandExecutor;
 import mgh14.search.live.service.messaging.CycleAction;
 import mgh14.search.live.service.messaging.CycleCommand;
+import mgh14.search.live.service.resource.cycler.ResourceCyclerRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,6 +112,15 @@ public class CommandExecutorController implements Observer {
       guiMessage = (observerMessageProcessor.isSuccessMessage() ?
         "All resources deleted" : ERROR_PREFIX + "resources couldn't " +
         "be deleted!");
+    }
+    if (messageStatusType.equals(ResourceCyclerRunnable.SLEEP_FINISHED)) {
+      guiMessage = (observerMessageProcessor.isSuccessMessage() ?
+      "Getting next resource..." : ERROR_PREFIX + "sleep didn't cycle" +
+        "the resource!");
+    }
+    if (messageStatusType.equals(ResourceCyclerRunnable.RESOURCE_SET)) {
+      guiMessage = (observerMessageProcessor.isSuccessMessage() ?
+        "" : ERROR_PREFIX + "resource setter failed!");
     }
 
     if (observerMessageProcessor.isSuccessMessage()) {
