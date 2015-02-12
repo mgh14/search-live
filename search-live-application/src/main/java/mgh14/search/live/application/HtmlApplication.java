@@ -9,6 +9,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 import mgh14.search.live.gui.ControlPanel;
 import mgh14.search.live.gui.controller.MenuBarController;
 import mgh14.search.live.model.ParamNames;
@@ -255,6 +257,11 @@ public class HtmlApplication {
 
     // set search string in control panel (if present on command line)
     setSearchStringInControlPanel(context);
+
+    // print out logging information
+    final LoggerContext loggerContext = (LoggerContext) LoggerFactory
+      .getILoggerFactory();
+    StatusPrinter.print(loggerContext);
   }
 
   private void setSearchStringInControlPanel(ApplicationContext context) {
