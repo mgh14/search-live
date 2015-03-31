@@ -32,8 +32,13 @@ public class MacWallpaperSetter {
         Log.info("Setting resource image to background: [{}]...", path);
         final String commandArgs[] = {
                 "osascript",
-                "-e", "tell application \"Finder\"",
-                "-e", "set desktop picture to POSIX file \"" + path + "\"",
+                "-e", "tell application \"System Events\"",
+                    "-e", "set desktopCount to count of desktops",
+                    "-e", "repeat with desktopNumber from 1 to desktopCount",
+                        "-e", "tell desktop desktopNumber",
+                            "-e", "set picture to POSIX file \"" + path + "\"",
+                        "-e", "end tell",
+                    "-e", "end repeat",
                 "-e", "end tell"
         };
         final Runtime runtime = Runtime.getRuntime();
