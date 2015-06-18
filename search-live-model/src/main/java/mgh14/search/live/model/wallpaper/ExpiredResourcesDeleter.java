@@ -37,9 +37,13 @@ public class ExpiredResourcesDeleter {
         final String filename = fileEntry.getName();
         final String timestampStr = filename.substring(filename.lastIndexOf("-") + 1,
           filename.lastIndexOf("."));
-        final long timestamp = Long.parseLong(timestampStr);
-        if ((currentTime - timestamp) >= expiryPeriod) {
-          fileUtils.deleteFile(fileEntry.toPath());
+        try {
+          final long timestamp = Long.parseLong(timestampStr);
+          if ((currentTime - timestamp) >= expiryPeriod) {
+            fileUtils.deleteFile(fileEntry.toPath());
+          }
+        } catch (NumberFormatException e) {
+          Log.error("Error deleting expired files: ", e);
         }
       }
     }

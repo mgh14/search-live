@@ -1,5 +1,6 @@
 package mgh14.search.live.model.wallpaper;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import com.sun.jna.Native;
@@ -35,11 +36,35 @@ public class WindowsWallpaperSetter {
     }
 
     Log.info("Setting resource image to background: [{}]...", path);
-    SPI.INSTANCE.SystemParametersInfo(
+    /*String as[] = {
+            "osascript",
+            "-e", "tell application \"Finder\"",
+            "-e", "set desktop picture to POSIX file \"" + path + "\"",
+            "-e", "end tell"
+    };*/
+    String as[] = {
+            "osascript",
+            "-e", "tell application \"System Events\"",
+              "-e", "set desktopCount to count of desktops",
+              "-e", "repeat with desktopNumber from 1 to desktopCount",
+                "-e", "tell desktop desktopNumber",
+                  "-e", "set picture to POSIX file \"" + path + "\"",
+                "-e", "end tell",
+              "-e", "end repeat",
+            "-e", "end tell"
+    };
+    Runtime runtime = Runtime.getRuntime();
+    try {
+      runtime.exec(as);
+      runtime.exec("killall Dock");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    /*SPI.INSTANCE.SystemParametersInfo(
       new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
       new WinDef.UINT_PTR(0),
       path,
-      new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));
+      new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));*/
   }
 
   private interface SPI extends StdCallLibrary {
